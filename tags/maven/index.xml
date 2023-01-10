@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>maven on Code Mark</title>
-    <link>https://hzren.github.io/tags/maven/</link>
+    <link>https://hzren.github.io/blog/tags/maven/</link>
     <description>Recent content in maven on Code Mark</description>
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>hzren@outlook.com (renhongzhen)</managingEditor>
     <webMaster>hzren@outlook.com (renhongzhen)</webMaster>
-    <lastBuildDate>Tue, 07 Dec 2021 17:12:13 +0800</lastBuildDate><atom:link href="https://hzren.github.io/tags/maven/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 07 Dec 2021 17:12:13 +0800</lastBuildDate><atom:link href="https://hzren.github.io/blog/tags/maven/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Spring Boot Maven Plugin K8s</title>
-      <link>https://hzren.github.io/blog/2021-12-07-spring-boot-maven-plugin-k8s/</link>
+      <link>https://hzren.github.io/blog/blog/2021-12-07-spring-boot-maven-plugin-k8s/</link>
       <pubDate>Tue, 07 Dec 2021 17:12:13 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-12-07-spring-boot-maven-plugin-k8s/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-12-07-spring-boot-maven-plugin-k8s/</guid>
       <description>需先安装好docker，minikube等环境依赖 minikube 启动时指定镜像 国内从官网下载太慢, 需指定镜像地址
 minikube start --driver=docker --force=true --image-mirror-country=cn --image-repository=registry.cn-hangzhou.aliyuncs.com/google_containers --registry-mirror=https://ubo05wor.mirror.aliyuncs.com --cache-images=true 配置docker 从docker.hub下载也太慢了，配置docker镜像
 [root@localhost demo]# vi /etc/docker/daemon.json { &amp;#34;registry-mirrors&amp;#34;: [&amp;#34;https://ubo05wor.mirror.aliyuncs.com&amp;#34;], &amp;#34;insecure-registries&amp;#34; : [&amp;#34;10.100.3.35:5000&amp;#34;] } 重启docker服务，10.100.3.35:5000为私有docker仓库，配置为不需要https访问
@@ -26,10 +26,10 @@ push镜像 参考上面xml配置，我本地push，pull镜像是不需要登录�
     
     <item>
       <title>Maven依赖选择原理及解决办法</title>
-      <link>https://hzren.github.io/blog/2019-09-02-maven%E4%BE%9D%E8%B5%96%E9%80%89%E6%8B%A9%E5%8E%9F%E7%90%86%E5%8F%8A%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/</link>
+      <link>https://hzren.github.io/blog/blog/2019-09-02-maven%E4%BE%9D%E8%B5%96%E9%80%89%E6%8B%A9%E5%8E%9F%E7%90%86%E5%8F%8A%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/</link>
       <pubDate>Mon, 02 Sep 2019 11:42:02 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2019-09-02-maven%E4%BE%9D%E8%B5%96%E9%80%89%E6%8B%A9%E5%8E%9F%E7%90%86%E5%8F%8A%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/</guid>
+      <guid>https://hzren.github.io/blog/blog/2019-09-02-maven%E4%BE%9D%E8%B5%96%E9%80%89%E6%8B%A9%E5%8E%9F%E7%90%86%E5%8F%8A%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/</guid>
       <description>Maven Maven 是 Apache 下的一个纯 Java 开发的开源项目。基于项目对象模型（缩写：POM）概念，Maven利用一个中央信息片断能管理一个项目的构建、报告和文档等步骤。Maven 是一个项目管理工具，可以对 Java 项目进行构建、依赖管理。Maven 曾是 Jakarta 项目的子项目，现为由 Apache 软件基金会主持的独立 Apache 项目。
 依赖冲突 当我们使用 Maven 来构建我们的程序时，我们可以用几句配置来代替大量的 Jar 包（一个依赖会引入其依赖的其他依赖，而那些依赖也会引入其依赖的依赖，所以有依赖树这种说法），同时因为这种配置在我们交流代码时可以不用自己引入 Jar 包（避免了版本不一致而出错），只要更新 Maven，它就会在后台帮我们解决这一切。但是在我们享受这种方便的同时，我们也在为这种方便付出代价。
 首先我们先来看一个例子： &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.hibernate&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;hibernate-validator&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;5.1.3.Final&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.hibernate&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;hibernate-core&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;${hibernate.version}&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt; 其依赖树如下: POM中引入的依赖库越多，遇到依赖冲突的可能性就越大。 maven默认是如何选择依赖呢? 不同Jar包可能会依赖不同版本的其它Jar包。在实际当中maven的依赖是以树的形式展现的 从上面的树形方案中可以明显看出， 即使我们没有在POM中明确指定它们，我们的项目 X也会使用所有库（Y，Z和G）。实际上，在这种情况下， 即使我们不知道库Z存在，库 Z也会作为Maven的接建依赖库导入到项目中。这种依赖关系称为 传递依赖关系。 由于 Y 和 G 依赖于Z的不同版本 ，因此我们这两个依赖关系就产生了冲突。在项目 的实际运行时只能使用Z库的一个版本 （1.0或2.0）, 不是两者都包含。如果我们使用的Z的版本与另一个库不兼容；系统最终可能会产生错误并崩溃。假设库 Z 是导致项目错误的元凶。我们就需要知道哪个版本的 Z 会产生错误。

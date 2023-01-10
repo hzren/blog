@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>RDBMS on Code Mark</title>
-    <link>https://hzren.github.io/tags/rdbms/</link>
+    <link>https://hzren.github.io/blog/tags/rdbms/</link>
     <description>Recent content in RDBMS on Code Mark</description>
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>hzren@outlook.com (renhongzhen)</managingEditor>
     <webMaster>hzren@outlook.com (renhongzhen)</webMaster>
-    <lastBuildDate>Wed, 15 Dec 2021 10:54:03 +0800</lastBuildDate><atom:link href="https://hzren.github.io/tags/rdbms/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 15 Dec 2021 10:54:03 +0800</lastBuildDate><atom:link href="https://hzren.github.io/blog/tags/rdbms/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Mysql优化</title>
-      <link>https://hzren.github.io/blog/2021-12-15-mysql%E4%BC%98%E5%8C%96/</link>
+      <link>https://hzren.github.io/blog/blog/2021-12-15-mysql%E4%BC%98%E5%8C%96/</link>
       <pubDate>Wed, 15 Dec 2021 10:54:03 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-12-15-mysql%E4%BC%98%E5%8C%96/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-12-15-mysql%E4%BC%98%E5%8C%96/</guid>
       <description>硬件/参数配置 升级硬件/合适的mysql参数能最直接的带来数据库性能的提升。
 硬件 有些应用数据库合应用服务同时运行在同一台配置较好的物理机器上，在这种场景下，应用本身的磁盘操作.例如写日志，会极大的影响数据库性能，建议日志和数据库使用两块不同的硬盘。
 参数 合适的参数配置，可以提高数据库写脏页的速度，减少因刷新脏页引起的停顿。
@@ -32,10 +32,10 @@ InnoDB存在change buffer， 里面存放了对数据库二级索引的变更记
     
     <item>
       <title>译文：使用子查询计算非重复数目以提高速度</title>
-      <link>https://hzren.github.io/blog/2016-01-07-%E8%AF%91%E6%96%87%E4%BD%BF%E7%94%A8%E5%AD%90%E6%9F%A5%E8%AF%A2%E8%AE%A1%E7%AE%97%E9%9D%9E%E9%87%8D%E5%A4%8D%E6%95%B0%E7%9B%AE%E4%BB%A5%E6%8F%90%E9%AB%98%E9%80%9F%E5%BA%A6/</link>
+      <link>https://hzren.github.io/blog/blog/2016-01-07-%E8%AF%91%E6%96%87%E4%BD%BF%E7%94%A8%E5%AD%90%E6%9F%A5%E8%AF%A2%E8%AE%A1%E7%AE%97%E9%9D%9E%E9%87%8D%E5%A4%8D%E6%95%B0%E7%9B%AE%E4%BB%A5%E6%8F%90%E9%AB%98%E9%80%9F%E5%BA%A6/</link>
       <pubDate>Thu, 07 Jan 2016 16:56:57 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2016-01-07-%E8%AF%91%E6%96%87%E4%BD%BF%E7%94%A8%E5%AD%90%E6%9F%A5%E8%AF%A2%E8%AE%A1%E7%AE%97%E9%9D%9E%E9%87%8D%E5%A4%8D%E6%95%B0%E7%9B%AE%E4%BB%A5%E6%8F%90%E9%AB%98%E9%80%9F%E5%BA%A6/</guid>
+      <guid>https://hzren.github.io/blog/blog/2016-01-07-%E8%AF%91%E6%96%87%E4%BD%BF%E7%94%A8%E5%AD%90%E6%9F%A5%E8%AF%A2%E8%AE%A1%E7%AE%97%E9%9D%9E%E9%87%8D%E5%A4%8D%E6%95%B0%E7%9B%AE%E4%BB%A5%E6%8F%90%E9%AB%98%E9%80%9F%E5%BA%A6/</guid>
       <description>本文说的这个技术是通用的，但为了解释说明，我们选用了 PostgreSQL。感谢 pgAdminIII 提供的解释性插图，这些插图有很大帮助。 很有用，但是却很慢 计算非重复的数目是SQL分析的一个灾难。
 首先一点：我们如果有一个很大的数据集而且可以容忍它不精确。一个像 HyperLogLog的概率统计器可能是你的首选（我们在以后的博客中会讲到HyperLogLog ），但是要追求快速精准的结果，子查询的方法会节省你很多时间。
 让我们从一个简单的查询语句开始吧：哪一个dashboard用户访问的最频繁。

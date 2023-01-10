@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>MySQL on Code Mark</title>
-    <link>https://hzren.github.io/tags/mysql/</link>
+    <link>https://hzren.github.io/blog/tags/mysql/</link>
     <description>Recent content in MySQL on Code Mark</description>
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>hzren@outlook.com (renhongzhen)</managingEditor>
     <webMaster>hzren@outlook.com (renhongzhen)</webMaster>
-    <lastBuildDate>Tue, 02 Aug 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://hzren.github.io/tags/mysql/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 02 Aug 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://hzren.github.io/blog/tags/mysql/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Mysql转义字符</title>
-      <link>https://hzren.github.io/blog/2022-08-02-mysql%E8%BD%AC%E4%B9%89%E5%AD%97%E7%AC%A6/</link>
+      <link>https://hzren.github.io/blog/blog/2022-08-02-mysql%E8%BD%AC%E4%B9%89%E5%AD%97%E7%AC%A6/</link>
       <pubDate>Tue, 02 Aug 2022 00:00:00 +0000</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2022-08-02-mysql%E8%BD%AC%E4%B9%89%E5%AD%97%E7%AC%A6/</guid>
+      <guid>https://hzren.github.io/blog/blog/2022-08-02-mysql%E8%BD%AC%E4%B9%89%E5%AD%97%E7%AC%A6/</guid>
       <description>如果在文本搜索实现LIKE查询，通常会这样做：
 SELECT * FROM T_Whatever WHERE SomeField LIKE CONCAT(&amp;#39;%&amp;#39;, @in_SearchText, &amp;#39;%&amp;#39;) 然而，（除非不使用like使用全文搜索）当有人输入“50%”或“a_b”之类的文本时，这会产生问题。这时候需要使用LIKE转义词来解决这个问题：
 SELECT * FROM T_Whatever WHERE SomeField LIKE CONCAT(&amp;#39;%&amp;#39;, @in_SearchText, &amp;#39;%&amp;#39;) ESCAPE &amp;#39;\&amp;#39; 这意味着\现在将被视为ESCAPE字符。这意味着，现在只需在搜索字符串中的每个字符前加上\，结果就会开始正确，即使用户输入了特殊字符，比如%或_。
@@ -24,10 +24,10 @@ string stringToSearch=“Les Mise\u0301ables”； </description>
     
     <item>
       <title>Mysql优化</title>
-      <link>https://hzren.github.io/blog/2021-12-15-mysql%E4%BC%98%E5%8C%96/</link>
+      <link>https://hzren.github.io/blog/blog/2021-12-15-mysql%E4%BC%98%E5%8C%96/</link>
       <pubDate>Wed, 15 Dec 2021 10:54:03 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-12-15-mysql%E4%BC%98%E5%8C%96/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-12-15-mysql%E4%BC%98%E5%8C%96/</guid>
       <description>硬件/参数配置 升级硬件/合适的mysql参数能最直接的带来数据库性能的提升。
 硬件 有些应用数据库合应用服务同时运行在同一台配置较好的物理机器上，在这种场景下，应用本身的磁盘操作.例如写日志，会极大的影响数据库性能，建议日志和数据库使用两块不同的硬盘。
 参数 合适的参数配置，可以提高数据库写脏页的速度，减少因刷新脏页引起的停顿。

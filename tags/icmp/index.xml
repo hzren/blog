@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>ICMP on Code Mark</title>
-    <link>https://hzren.github.io/tags/icmp/</link>
+    <link>https://hzren.github.io/blog/tags/icmp/</link>
     <description>Recent content in ICMP on Code Mark</description>
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>hzren@outlook.com (renhongzhen)</managingEditor>
     <webMaster>hzren@outlook.com (renhongzhen)</webMaster>
-    <lastBuildDate>Tue, 18 Aug 2020 16:52:07 +0800</lastBuildDate><atom:link href="https://hzren.github.io/tags/icmp/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 18 Aug 2020 16:52:07 +0800</lastBuildDate><atom:link href="https://hzren.github.io/blog/tags/icmp/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>ICMP Ping traceroute</title>
-      <link>https://hzren.github.io/blog/2020-08-18-icmp-ping-traceroute/</link>
+      <link>https://hzren.github.io/blog/blog/2020-08-18-icmp-ping-traceroute/</link>
       <pubDate>Tue, 18 Aug 2020 16:52:07 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-08-18-icmp-ping-traceroute/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-08-18-icmp-ping-traceroute/</guid>
       <description>Ping和traceroute都基于ICMP协议工作。
 ICMP 互联网控制消息协议（英语：Internet Control Message Protocol，缩写：ICMP）是互联网的核心协议之一，用于在网际协议（IP）中发送控制消息，提供可能发生在通信环境中的各种问题的反馈。通过这些信息，可以对所发生的问题作出诊断，然后采取适当的措施解决。
 ICMP基于IP协议，通常不由网络程序直接使用，除了 ping 和 traceroute 这两个特别的例子。 IPv4中的ICMP被称作ICMPv4，IPv6中的ICMP则被称作ICMPv6。

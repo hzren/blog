@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Linux on Code Mark</title>
-    <link>https://hzren.github.io/tags/linux/</link>
+    <link>https://hzren.github.io/blog/tags/linux/</link>
     <description>Recent content in Linux on Code Mark</description>
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>hzren@outlook.com (renhongzhen)</managingEditor>
     <webMaster>hzren@outlook.com (renhongzhen)</webMaster>
-    <lastBuildDate>Tue, 19 Jan 2021 18:30:32 +0800</lastBuildDate><atom:link href="https://hzren.github.io/tags/linux/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 19 Jan 2021 18:30:32 +0800</lastBuildDate><atom:link href="https://hzren.github.io/blog/tags/linux/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Linux网络</title>
-      <link>https://hzren.github.io/blog/2021-01-19-linux%E7%BD%91%E7%BB%9C/</link>
+      <link>https://hzren.github.io/blog/blog/2021-01-19-linux%E7%BD%91%E7%BB%9C/</link>
       <pubDate>Tue, 19 Jan 2021 18:30:32 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-01-19-linux%E7%BD%91%E7%BB%9C/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-01-19-linux%E7%BD%91%E7%BB%9C/</guid>
       <description>摘自 倪朋飞-极客时间-Linux性能优化实战
 Linux 通用 IP 网络栈的示意图：
 网卡是发送和接收网络包的基本设备。在系统启动过程中，网卡通过内核中的网卡驱动程序注册到系统中。而在网络收发过程中，内核通过中断跟网卡进行交互。再结合前面提到的 Linux 网络栈，可以看出，网络包的处理非常复杂。所以，网卡硬中断只处理最核心的网卡数据读取或发送，而协议栈中的大部分逻辑，都会放到软中断中处理。
@@ -29,10 +29,10 @@ Linux 通用 IP 网络栈的示意图：
     
     <item>
       <title>文件系统</title>
-      <link>https://hzren.github.io/blog/2021-01-15-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/</link>
+      <link>https://hzren.github.io/blog/blog/2021-01-15-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/</link>
       <pubDate>Fri, 15 Jan 2021 17:28:36 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-01-15-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-01-15-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/</guid>
       <description>摘自 倪朋飞-极客时间-Linux性能优化实战
 磁盘为系统提供了最基本的持久化存储。文件系统则在磁盘的基础上，提供了一个用来管理文件的树状结构。
 索引节点和目录项 文件系统，本身是对存储设备上的文件，进行组织管理的机制。组织方式不同，就会形成不同的文件系统。你要记住最重要的一点，在 Linux 中一切皆文件。不仅普通的文件和目录，就连块设备、套接字、管道等，也都要通过统一的文件系统来管理。为了方便管理，Linux 文件系统为每个文件都分配两个数据结构，索引节点（indexnode）和目录项（directory entry）。它们主要用来记录文件的元信息和目录结构。
@@ -49,10 +49,10 @@ Linux 通用 IP 网络栈的示意图：
     
     <item>
       <title>Linux内存管理</title>
-      <link>https://hzren.github.io/blog/2021-01-15-linux%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/</link>
+      <link>https://hzren.github.io/blog/blog/2021-01-15-linux%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/</link>
       <pubDate>Fri, 15 Jan 2021 15:07:33 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-01-15-linux%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-01-15-linux%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/</guid>
       <description>摘自 倪朋飞-极客时间-Linux性能优化实战
 内存映射 物理内存也称为主存，大多数计算机用的主存都是动态随机访问内存（DRAM）。只有内核才可以直接访问物理内存。
 Linux 内核给每个进程都提供了一个独立的虚拟地址空间，并且这个地址空间是连续的。这样，进程就可以很方便地访问内存，更确切地说是访问虚拟内存。
@@ -71,10 +71,10 @@ TLB 其实就是 MMU 中页表的高速缓存。由于进程的虚拟地址空�
     
     <item>
       <title>中断</title>
-      <link>https://hzren.github.io/blog/2021-01-15-%E4%B8%AD%E6%96%AD/</link>
+      <link>https://hzren.github.io/blog/blog/2021-01-15-%E4%B8%AD%E6%96%AD/</link>
       <pubDate>Fri, 15 Jan 2021 10:54:40 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-01-15-%E4%B8%AD%E6%96%AD/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-01-15-%E4%B8%AD%E6%96%AD/</guid>
       <description>摘自 倪朋飞-极客时间-Linux性能优化实战
 中断是一种异步的事件处理机制，可以提高系统的并发处理能力。
 由于中断处理程序会打断其他进程的运行，所以，为了减少对正常进程运行调度的影响，中断处理程序就需要尽可能快地运行。如果中断本身要做的事情不多，那么处理起来也不 会有太大问题；但如果中断要处理的事情很多，中断服务程序就有可能要运行很长时间。
@@ -92,10 +92,10 @@ TLB 其实就是 MMU 中页表的高速缓存。由于进程的虚拟地址空�
     
     <item>
       <title>上下文切换</title>
-      <link>https://hzren.github.io/blog/2021-01-14-%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2/</link>
+      <link>https://hzren.github.io/blog/blog/2021-01-14-%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2/</link>
       <pubDate>Thu, 14 Jan 2021 17:13:47 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-01-14-%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-01-14-%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2/</guid>
       <description>摘自 倪朋飞-极客时间-Linux性能优化实战
 在Linux系统中，对于用户创建的进程(线程)来说，CPU分配时间片的单位是线程还是进程?
 是线程。线程是实际工作的单元[1]，进程只是一个容器，用来管理一个或多个线程。
@@ -117,10 +117,10 @@ CPU 寄存器里原来用户态的指令位置，需要先保存起来。接着�
     
     <item>
       <title>Linux 内核 内核态 用户态</title>
-      <link>https://hzren.github.io/blog/2020-08-21-linux-%E5%86%85%E6%A0%B8-%E5%86%85%E6%A0%B8%E6%80%81-%E7%94%A8%E6%88%B7%E6%80%81/</link>
+      <link>https://hzren.github.io/blog/blog/2020-08-21-linux-%E5%86%85%E6%A0%B8-%E5%86%85%E6%A0%B8%E6%80%81-%E7%94%A8%E6%88%B7%E6%80%81/</link>
       <pubDate>Fri, 21 Aug 2020 11:22:52 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-08-21-linux-%E5%86%85%E6%A0%B8-%E5%86%85%E6%A0%B8%E6%80%81-%E7%94%A8%E6%88%B7%E6%80%81/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-08-21-linux-%E5%86%85%E6%A0%B8-%E5%86%85%E6%A0%B8%E6%80%81-%E7%94%A8%E6%88%B7%E6%80%81/</guid>
       <description>概念 时间片 时间片是分时操作系统分配给每个正在运行的进程微观上的一段CPU时间（在抢占内核中是：从进程开始运行直到被抢占的时间）。现代操作系统（如：Windows、Linux、Mac OS X等）允许同时运行多个进程。例如，在打开音乐播放器的同时用浏览器浏览网页并下载文件。由于一台计算机通常只有一个CPU，所以不可能真正地同时运行多个任务。这些进程“看起来像”同时运行，实则是轮番运行，由于时间片通常很短（在Linux上为5ms－800ms），用户不会感觉到。
 时间片由操作系统内核的调度程序分配给每个进程。首先，内核会给每个进程分配相等的初始时间片，然后每个进程轮番地执行相应时间，当所有进程都处于时间片耗尽的状态时，内核会重新为每个进程计算并分配时间片，如此往复。
 时间片分配 通常状况下，一个系统中所有的进程被分配到的时间片长短并不是相等的，尽管初始时间片基本相等（在Linux系统中，初始时间片也不相等，而是各自父进程的一半），系统通过测量进程处于“睡眠”和“正在运行”状态的时间长短来计算每个进程的交互性，交互性和每个进程预设的静态优先级（Nice值）的叠加即是动态优先级，动态优先级按比例缩放就是要分配给那个进程时间片的长短。一般地，为了获得较快的响应速度，交互性强的进程（即趋向于IO消耗型）被分配到的时间片要长于交互性弱的（趋向于处理器消耗型）进程。
@@ -145,10 +145,10 @@ CPU 寄存器里原来用户态的指令位置，需要先保存起来。接着�
     
     <item>
       <title>Linux IP地址 DHCP</title>
-      <link>https://hzren.github.io/blog/2020-08-18-linux-ip%E5%9C%B0%E5%9D%80-dhcp/</link>
+      <link>https://hzren.github.io/blog/blog/2020-08-18-linux-ip%E5%9C%B0%E5%9D%80-dhcp/</link>
       <pubDate>Tue, 18 Aug 2020 15:06:02 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-08-18-linux-ip%E5%9C%B0%E5%9D%80-dhcp/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-08-18-linux-ip%E5%9C%B0%E5%9D%80-dhcp/</guid>
       <description>配置 IP 地址 可以使用ifconfig，也可以使用 ip addr。设置好以后，将网卡 up 一下，就可以开始工作了。 使用 net-tools：
 $ sudo ifconfig eth1 10.0.0.1/24 $ sudo ifconfig eth1 up 使用 iproute2：
 $ sudo ip addr add 10.0.0.1/24 dev eth1 $ sudo ip link set up eth1 如果配置一个和谁都不搭边的地址呢？例如，旁边的机器都是 192.168.1.x，我非得配置一个 16.158.23.6，会出现什么现象呢？

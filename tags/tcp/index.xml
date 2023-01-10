@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>TCP on Code Mark</title>
-    <link>https://hzren.github.io/tags/tcp/</link>
+    <link>https://hzren.github.io/blog/tags/tcp/</link>
     <description>Recent content in TCP on Code Mark</description>
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>hzren@outlook.com (renhongzhen)</managingEditor>
     <webMaster>hzren@outlook.com (renhongzhen)</webMaster>
-    <lastBuildDate>Wed, 19 Aug 2020 15:04:38 +0800</lastBuildDate><atom:link href="https://hzren.github.io/tags/tcp/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 19 Aug 2020 15:04:38 +0800</lastBuildDate><atom:link href="https://hzren.github.io/blog/tags/tcp/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>TCP / UDP 总结</title>
-      <link>https://hzren.github.io/blog/2020-08-19-tcp-udp-%E6%80%BB%E7%BB%93/</link>
+      <link>https://hzren.github.io/blog/blog/2020-08-19-tcp-udp-%E6%80%BB%E7%BB%93/</link>
       <pubDate>Wed, 19 Aug 2020 15:04:38 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-08-19-tcp-udp-%E6%80%BB%E7%BB%93/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-08-19-tcp-udp-%E6%80%BB%E7%BB%93/</guid>
       <description>send()最大可以接受多少字节的数据？ 函数层面无限制，超过缓冲区大小函数会block
 TCP接到send()发送的字节，会立马保持原封不动发送吗？ 不确定！
 TCP会先将这些数据放在自己的仓库（发送缓冲区），至于什么时候发，每次发多少，已经不是应用层所能左右的了。什么时候发，一次发多少取决于不同算法，有RCP_NODELAY配置，有MSS限制TCP分组最大长度。
@@ -37,10 +37,10 @@ TCP丢包 路由器或交换机，一旦TCP流量暴力来袭时，会尽最大�
     
     <item>
       <title>TCP协议</title>
-      <link>https://hzren.github.io/blog/2020-08-14-tcp%E5%8D%8F%E8%AE%AE/</link>
+      <link>https://hzren.github.io/blog/blog/2020-08-14-tcp%E5%8D%8F%E8%AE%AE/</link>
       <pubDate>Fri, 14 Aug 2020 14:46:06 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-08-14-tcp%E5%8D%8F%E8%AE%AE/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-08-14-tcp%E5%8D%8F%E8%AE%AE/</guid>
       <description>传输控制协议（缩写：TCP）是一种面向连接的、可靠的、基于字节流的传输层通信协议，由IETF的RFC 793定义。在计算机网络OSI模型中，它处于第四层传输层，同用户数据报协议（UDP）位于同一层。
 应用层向TCP层发送用于网络间传输的、用8位字节表示的数据流，然后TCP把数据流分割成适当长度的报文段（通常受链接数据链路层的最大传输单元（MTU）限制）。之后TCP把结果包传给IP层，由它来透过网络将包传送给接收端实体的TCP层。
 TCP为了保证不发生丢包，就给每个包一个序号，同时序号也保证了传送到接收端实体的包的按序接收。然后接收端实体对已成功收到的包发回一个相应的确认信息（ACK）；如果发送端实体在合理的往返时延（RTT）内未收到确认，那么对应的数据包就被假设为已丢失并进行重传。TCP用一个校验和函数来检验数据是否有错误，在发送和接收时都要计算校验和。

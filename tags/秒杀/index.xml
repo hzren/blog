@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>秒杀 on Code Mark</title>
-    <link>https://hzren.github.io/tags/%E7%A7%92%E6%9D%80/</link>
+    <link>https://hzren.github.io/blog/tags/%E7%A7%92%E6%9D%80/</link>
     <description>Recent content in 秒杀 on Code Mark</description>
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>hzren@outlook.com (renhongzhen)</managingEditor>
     <webMaster>hzren@outlook.com (renhongzhen)</webMaster>
-    <lastBuildDate>Sat, 01 Aug 2020 15:11:11 +0800</lastBuildDate><atom:link href="https://hzren.github.io/tags/%E7%A7%92%E6%9D%80/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 01 Aug 2020 15:11:11 +0800</lastBuildDate><atom:link href="https://hzren.github.io/blog/tags/%E7%A7%92%E6%9D%80/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>电商网站高并发场景下的库存加减思路思考</title>
-      <link>https://hzren.github.io/blog/2020-08-01-%E7%94%B5%E5%95%86%E7%BD%91%E7%AB%99%E9%AB%98%E5%B9%B6%E5%8F%91%E5%9C%BA%E6%99%AF%E4%B8%8B%E7%9A%84%E5%BA%93%E5%AD%98%E5%8A%A0%E5%87%8F%E6%80%9D%E8%B7%AF%E6%80%9D%E8%80%83/</link>
+      <link>https://hzren.github.io/blog/blog/2020-08-01-%E7%94%B5%E5%95%86%E7%BD%91%E7%AB%99%E9%AB%98%E5%B9%B6%E5%8F%91%E5%9C%BA%E6%99%AF%E4%B8%8B%E7%9A%84%E5%BA%93%E5%AD%98%E5%8A%A0%E5%87%8F%E6%80%9D%E8%B7%AF%E6%80%9D%E8%80%83/</link>
       <pubDate>Sat, 01 Aug 2020 15:11:11 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-08-01-%E7%94%B5%E5%95%86%E7%BD%91%E7%AB%99%E9%AB%98%E5%B9%B6%E5%8F%91%E5%9C%BA%E6%99%AF%E4%B8%8B%E7%9A%84%E5%BA%93%E5%AD%98%E5%8A%A0%E5%87%8F%E6%80%9D%E8%B7%AF%E6%80%9D%E8%80%83/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-08-01-%E7%94%B5%E5%95%86%E7%BD%91%E7%AB%99%E9%AB%98%E5%B9%B6%E5%8F%91%E5%9C%BA%E6%99%AF%E4%B8%8B%E7%9A%84%E5%BA%93%E5%AD%98%E5%8A%A0%E5%87%8F%E6%80%9D%E8%B7%AF%E6%80%9D%E8%80%83/</guid>
       <description>前言 每当电子商务平台搞活动，“秒杀”经常是提升网站活跃度的利器之一。比如活动日早上10点1元爱疯7秒杀7台，谁看到了估计都想去秒一把，万一秒中了呢。秒杀的典型特征就是在特定的短时间突然涌入大量请求，对系统造成洪峰冲击，如果系统设计得不好，很容易被直接打垮掉。现在因为疫情原因，秒杀场景也变得更泛化，很多时候会出现商品被瞬间抢完的情况，如果时通过数据库直接扣库存的话， 会给数据库带来了很大压力。很有可能整个数据库会HANG在那里，导致整个系统被拖垮。
 问题 为什么高并发场景下直接数据库扣库存会搞垮整个数据库呢？
 数据库事务特性： 对于一条记录，数据库在该事务修改的时候加锁，在整个事务提交完才释放锁。 这样就导致一个问题，当同时有多个请求对同一条记录(库存记录)进行修改时，会在该记录上造成锁排队现象，流程大概时这样的：

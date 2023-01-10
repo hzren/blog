@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>tool on Code Mark</title>
-    <link>https://hzren.github.io/tags/tool/</link>
+    <link>https://hzren.github.io/blog/tags/tool/</link>
     <description>Recent content in tool on Code Mark</description>
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>hzren@outlook.com (renhongzhen)</managingEditor>
     <webMaster>hzren@outlook.com (renhongzhen)</webMaster>
-    <lastBuildDate>Tue, 07 Dec 2021 17:12:13 +0800</lastBuildDate><atom:link href="https://hzren.github.io/tags/tool/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 07 Dec 2021 17:12:13 +0800</lastBuildDate><atom:link href="https://hzren.github.io/blog/tags/tool/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Spring Boot Maven Plugin K8s</title>
-      <link>https://hzren.github.io/blog/2021-12-07-spring-boot-maven-plugin-k8s/</link>
+      <link>https://hzren.github.io/blog/blog/2021-12-07-spring-boot-maven-plugin-k8s/</link>
       <pubDate>Tue, 07 Dec 2021 17:12:13 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-12-07-spring-boot-maven-plugin-k8s/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-12-07-spring-boot-maven-plugin-k8s/</guid>
       <description>需先安装好docker，minikube等环境依赖 minikube 启动时指定镜像 国内从官网下载太慢, 需指定镜像地址
 minikube start --driver=docker --force=true --image-mirror-country=cn --image-repository=registry.cn-hangzhou.aliyuncs.com/google_containers --registry-mirror=https://ubo05wor.mirror.aliyuncs.com --cache-images=true 配置docker 从docker.hub下载也太慢了，配置docker镜像
 [root@localhost demo]# vi /etc/docker/daemon.json { &amp;#34;registry-mirrors&amp;#34;: [&amp;#34;https://ubo05wor.mirror.aliyuncs.com&amp;#34;], &amp;#34;insecure-registries&amp;#34; : [&amp;#34;10.100.3.35:5000&amp;#34;] } 重启docker服务，10.100.3.35:5000为私有docker仓库，配置为不需要https访问
@@ -26,10 +26,10 @@ push镜像 参考上面xml配置，我本地push，pull镜像是不需要登录�
     
     <item>
       <title>Go语言</title>
-      <link>https://hzren.github.io/blog/2021-06-22-go%E8%AF%AD%E8%A8%80/</link>
+      <link>https://hzren.github.io/blog/blog/2021-06-22-go%E8%AF%AD%E8%A8%80/</link>
       <pubDate>Tue, 22 Jun 2021 11:20:11 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-06-22-go%E8%AF%AD%E8%A8%80/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-06-22-go%E8%AF%AD%E8%A8%80/</guid>
       <description>GOPATH 在一台电脑上GOPATH值是固定的，不因开发的代码工程的目录改变而改变。GOPATH可以通过go env命令查看：
 go env
 输出：
@@ -38,10 +38,10 @@ C:\Users\Administrator\go&amp;gt;go env set GO111MODULE=on set GOARCH=amd64 set 
     
     <item>
       <title>Arthas使用</title>
-      <link>https://hzren.github.io/blog/2021-01-27-arthas%E4%BD%BF%E7%94%A8/</link>
+      <link>https://hzren.github.io/blog/blog/2021-01-27-arthas%E4%BD%BF%E7%94%A8/</link>
       <pubDate>Wed, 27 Jan 2021 15:11:16 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-01-27-arthas%E4%BD%BF%E7%94%A8/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-01-27-arthas%E4%BD%BF%E7%94%A8/</guid>
       <description>官方教程
 文档
 下载 下载全量zip包：从Github Releases页下载

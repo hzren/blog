@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Redis on Code Mark</title>
-    <link>https://hzren.github.io/tags/redis/</link>
+    <link>https://hzren.github.io/blog/tags/redis/</link>
     <description>Recent content in Redis on Code Mark</description>
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>hzren@outlook.com (renhongzhen)</managingEditor>
     <webMaster>hzren@outlook.com (renhongzhen)</webMaster>
-    <lastBuildDate>Mon, 14 Sep 2020 16:39:56 +0800</lastBuildDate><atom:link href="https://hzren.github.io/tags/redis/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 14 Sep 2020 16:39:56 +0800</lastBuildDate><atom:link href="https://hzren.github.io/blog/tags/redis/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Redis备份</title>
-      <link>https://hzren.github.io/blog/2020-09-14-redis%E5%A4%87%E4%BB%BD/</link>
+      <link>https://hzren.github.io/blog/blog/2020-09-14-redis%E5%A4%87%E4%BB%BD/</link>
       <pubDate>Mon, 14 Sep 2020 16:39:56 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-09-14-redis%E5%A4%87%E4%BB%BD/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-09-14-redis%E5%A4%87%E4%BB%BD/</guid>
       <description>| 导语 本文详细分析redis持久化的俩种模式的详细流程
 一. 概述redis持久化的俩种模式 随着redis越来越流行，使用者不在仅仅满足其只是一个内存数据库，同时也期望其能将内存数据落磁盘，这样重启服务就不会导致缓存数据丢失了
 redis持久化有俩种模式模式，分别如下:
@@ -29,10 +29,10 @@ save 900 1 //15分钟内有一条数据写入时触发rdb持久化 save 300 10 /
     
     <item>
       <title>Redis哨兵模式概要</title>
-      <link>https://hzren.github.io/blog/2020-08-06-redis%E5%93%A8%E5%85%B5%E6%A8%A1%E5%BC%8F%E6%A6%82%E8%A6%81/</link>
+      <link>https://hzren.github.io/blog/blog/2020-08-06-redis%E5%93%A8%E5%85%B5%E6%A8%A1%E5%BC%8F%E6%A6%82%E8%A6%81/</link>
       <pubDate>Thu, 06 Aug 2020 15:10:38 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-08-06-redis%E5%93%A8%E5%85%B5%E6%A8%A1%E5%BC%8F%E6%A6%82%E8%A6%81/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-08-06-redis%E5%93%A8%E5%85%B5%E6%A8%A1%E5%BC%8F%E6%A6%82%E8%A6%81/</guid>
       <description>哨兵模式的官方说明 Redis 的 Sentinel 系统用于管理多个 Redis 服务器（instance）， 该系统执行以下三个任务： . 监控（Monitoring）： Sentinel 会不断地检查你的主服务器和从服务器是否运作正常。 . 提醒（Notification）： 当被监控的某个 Redis 服务器出现问题时， Sentinel 可以通过 API 向管理员或者其他应用程序发送通知。 . 自动故障迁移（Automatic failover）： 当一个主服务器不能正常工作时， Sentinel 会开始一次自动故障迁移操作， 它会将失效主服务器的其中一个从服务器升级为新的主服务器， 并让失效主服务器的其他从服务器改为复制新的主服务器； 当客户端试图连接失效的主服务器时， 集群也会向客户端返回新主服务器的地址， 使得集群可以使用新主服务器代替失效服务器。
 获取 Sentinel 现在Sentinel就包含在redis发行版中，sentinel是redis发行版的一部分。
 启动 Sentinel 对于 redis-sentinel 程序， 可以用以下命令来启动 Sentinel 系统：

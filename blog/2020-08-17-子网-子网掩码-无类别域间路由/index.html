@@ -34,14 +34,14 @@
     "@type": "WebSite",
     "name": "Code Mark",
     
-    "url": "https:\/\/hzren.github.io"
+    "url": "https:\/\/hzren.github.io\/blog\/"
 }
 </script><script type="application/ld+json">
 {
   "@context": "http://schema.org",
   "@type": "Organization",
   "name": "",
-  "url": "https:\/\/hzren.github.io"
+  "url": "https:\/\/hzren.github.io\/blog\/"
   
   
   
@@ -56,14 +56,14 @@
         "@type": "ListItem",
         "position": 1,
         "item": {
-          "@id": "https:\/\/hzren.github.io",
+          "@id": "https:\/\/hzren.github.io\/blog\/",
           "name": "home"
         }
     },{
         "@type": "ListItem",
         "position": 3,
         "item": {
-          "@id": "https:\/\/hzren.github.io\/blog\/2020-08-17-%E5%AD%90%E7%BD%91-%E5%AD%90%E7%BD%91%E6%8E%A9%E7%A0%81-%E6%97%A0%E7%B1%BB%E5%88%AB%E5%9F%9F%E9%97%B4%E8%B7%AF%E7%94%B1\/",
+          "@id": "https:\/\/hzren.github.io\/blog\/blog\/2020-08-17-%E5%AD%90%E7%BD%91-%E5%AD%90%E7%BD%91%E6%8E%A9%E7%A0%81-%E6%97%A0%E7%B1%BB%E5%88%AB%E5%9F%9F%E9%97%B4%E8%B7%AF%E7%94%B1\/",
           "name": "子网 子网掩码 无类别域间路由"
         }
     }]
@@ -81,15 +81,15 @@
   "wordCount":  182 ,
   "datePublished" : "2020-08-17T16:54:10",
   "dateModified" : "2020-08-17T16:54:10",
-  "image" : "https:\/\/hzren.github.io\/img\/avatar-icon.png",
+  "image" : "https:\/\/hzren.github.io\/blog\/img\/avatar-icon.png",
   "keywords" : [ "Network" ],
-  "mainEntityOfPage" : "https:\/\/hzren.github.io\/blog\/2020-08-17-%E5%AD%90%E7%BD%91-%E5%AD%90%E7%BD%91%E6%8E%A9%E7%A0%81-%E6%97%A0%E7%B1%BB%E5%88%AB%E5%9F%9F%E9%97%B4%E8%B7%AF%E7%94%B1\/",
+  "mainEntityOfPage" : "https:\/\/hzren.github.io\/blog\/blog\/2020-08-17-%E5%AD%90%E7%BD%91-%E5%AD%90%E7%BD%91%E6%8E%A9%E7%A0%81-%E6%97%A0%E7%B1%BB%E5%88%AB%E5%9F%9F%E9%97%B4%E8%B7%AF%E7%94%B1\/",
   "publisher" : {
     "@type": "Organization",
-    "name" : "https:\/\/hzren.github.io",
+    "name" : "https:\/\/hzren.github.io\/blog\/",
     "logo" : {
         "@type" : "ImageObject",
-        "url" : "https:\/\/hzren.github.io\/img\/avatar-icon.png",
+        "url" : "https:\/\/hzren.github.io\/blog\/img\/avatar-icon.png",
         "height" :  60 ,
         "width" :  60
     }
@@ -114,25 +114,25 @@
 255.255.255.193的二进制：1111 1111.1111 1111.1111 1111.1100 0001可以看出它1并不连续，所以255.255.255.193不能作为子网掩码使用。255.255.255.0就很符合条件。那子网掩码怎么用？
 用乘法来遮掩IP地址。1×1=1、1×0=0、0×0=0、0×1=0IP地址：192.168.1.129 ， 二进制：1100 0000.1010 1000.0000 0001.1000 0001 子网掩码：255.255.255.0 二进制：1111 1111.1111 1111.1111 1111.0000 0000计算：
 1100 0000.1010 1000.0000 0001.1011 1100 1111 1111.1111 1111.1111 1111.1110 0000 ———————————————————— 1100 0000.1010 1000.0000 0001.1010 0000 不再是24位未被遮掩了，而是27位未被遮掩。被遮掩的后5位，我们不必再关心它是1还是0了。 这就意味着：后5位不论怎么变换，都是在同一个网段里。后5位的变化是在1100 0000.1010 000.0000 0001.">
-<meta property="og:image" content="https://hzren.github.io/img/avatar-icon.png" />
-<meta property="og:url" content="https://hzren.github.io/blog/2020-08-17-%E5%AD%90%E7%BD%91-%E5%AD%90%E7%BD%91%E6%8E%A9%E7%A0%81-%E6%97%A0%E7%B1%BB%E5%88%AB%E5%9F%9F%E9%97%B4%E8%B7%AF%E7%94%B1/" />
+<meta property="og:image" content="https://hzren.github.io/blog/img/avatar-icon.png" />
+<meta property="og:url" content="https://hzren.github.io/blog/blog/2020-08-17-%E5%AD%90%E7%BD%91-%E5%AD%90%E7%BD%91%E6%8E%A9%E7%A0%81-%E6%97%A0%E7%B1%BB%E5%88%AB%E5%9F%9F%E9%97%B4%E8%B7%AF%E7%94%B1/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Code Mark" />
 
   <meta name="twitter:title" content="子网 子网掩码 无类别域间路由" />
   <meta name="twitter:description" content="子网 在因特网协议（Internet Protocol，IP）中，子网指的是从分类网络中划分出来的一部分。
 具有相同的前半部分地址的一组IP地址，可以利用地址的前半部分划分组。在一个IP网络中划分子网使我们能将一个单一的大型网络分成若干个较小的网络。在最初引入这个概念的时候，IPv4还未引入分类网络这个概念。引入划分子网这个概念的目的是为了允许一个单一的站点能拥有多个局域网。在引入了分类网络号之 …">
-  <meta name="twitter:image" content="https://hzren.github.io/img/avatar-icon.png" />
+  <meta name="twitter:image" content="https://hzren.github.io/blog/img/avatar-icon.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:site" content="@username" />
   <meta name="twitter:creator" content="@username" />
-  <link href='https://hzren.github.io/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <link href='https://hzren.github.io/blog/img/favicon.ico' rel='icon' type='image/x-icon'/>
   <meta name="generator" content="Hugo 0.109.0">
-  <link rel="alternate" href="https://hzren.github.io/index.xml" type="application/rss+xml" title="Code Mark"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+  <link rel="alternate" href="https://hzren.github.io/blog/index.xml" type="application/rss+xml" title="Code Mark"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://hzren.github.io/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://hzren.github.io/blog/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
-  <link rel="stylesheet" href="https://hzren.github.io/css/highlight.min.css" /><link rel="stylesheet" href="https://hzren.github.io/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://hzren.github.io/blog/css/highlight.min.css" /><link rel="stylesheet" href="https://hzren.github.io/blog/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
 
 
@@ -147,7 +147,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="https://hzren.github.io">Code Mark</a>
+      <a class="navbar-brand" href="https://hzren.github.io/blog/">Code Mark</a>
     </div>
 
     <div class="collapse navbar-collapse" id="main-navbar">
@@ -155,7 +155,7 @@
         
           
             <li>
-              <a title="文章" href="/">文章</a>
+              <a title="文章" href="/blog/">文章</a>
             </li>
           
         
@@ -164,11 +164,11 @@
               <a class="navlinks-parent">代码</a>
               <div class="navlinks-children">
                 
-                  <a href="/post/2017-03-07-bigimg-sample">Big Image Sample</a>
+                  <a href="/blog/post/2017-03-07-bigimg-sample">Big Image Sample</a>
                 
-                  <a href="/post/2017-03-05-math-sample">Math Sample</a>
+                  <a href="/blog/post/2017-03-05-math-sample">Math Sample</a>
                 
-                  <a href="/post/2016-03-08-code-sample">Code Sample</a>
+                  <a href="/blog/post/2016-03-08-code-sample">Code Sample</a>
                 
               </div>
             </li>
@@ -176,13 +176,13 @@
         
           
             <li>
-              <a title="关于我" href="/page/about/">关于我</a>
+              <a title="关于我" href="/blog/page/about/">关于我</a>
             </li>
           
         
           
             <li>
-              <a title="分类" href="/tags">分类</a>
+              <a title="分类" href="/blog/tags">分类</a>
             </li>
           
         
@@ -196,8 +196,8 @@
     
       <div class="avatar-container">
         <div class="avatar-img-border">
-          <a title="Code Mark" href="https://hzren.github.io">
-            <img class="avatar-img" src="https://hzren.github.io/img/avatar-icon.png" alt="Code Mark" />
+          <a title="Code Mark" href="https://hzren.github.io/blog/">
+            <img class="avatar-img" src="https://hzren.github.io/blog/img/avatar-icon.png" alt="Code Mark" />
           </a>
         </div>
       </div>
@@ -447,7 +447,7 @@
         
           <div class="blog-tags">
             
-              <a href="https://hzren.github.io/tags/network/">Network</a>&nbsp;
+              <a href="https://hzren.github.io/blog//tags/network/">Network</a>&nbsp;
             
           </div>
         
@@ -462,42 +462,42 @@
     <ul class="share">
       
       <li>
-        <a href="//twitter.com/share?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-08-17-%25E5%25AD%2590%25E7%25BD%2591-%25E5%25AD%2590%25E7%25BD%2591%25E6%258E%25A9%25E7%25A0%2581-%25E6%2597%25A0%25E7%25B1%25BB%25E5%2588%25AB%25E5%259F%259F%25E9%2597%25B4%25E8%25B7%25AF%25E7%2594%25B1%2f&amp;text=%e5%ad%90%e7%bd%91%20%e5%ad%90%e7%bd%91%e6%8e%a9%e7%a0%81%20%e6%97%a0%e7%b1%bb%e5%88%ab%e5%9f%9f%e9%97%b4%e8%b7%af%e7%94%b1&amp;via=username" target="_blank" title="Share on Twitter">
+        <a href="//twitter.com/share?url=https%3a%2f%2fhzren.github.io%2fblog%2fblog%2f2020-08-17-%25E5%25AD%2590%25E7%25BD%2591-%25E5%25AD%2590%25E7%25BD%2591%25E6%258E%25A9%25E7%25A0%2581-%25E6%2597%25A0%25E7%25B1%25BB%25E5%2588%25AB%25E5%259F%259F%25E9%2597%25B4%25E8%25B7%25AF%25E7%2594%25B1%2f&amp;text=%e5%ad%90%e7%bd%91%20%e5%ad%90%e7%bd%91%e6%8e%a9%e7%a0%81%20%e6%97%a0%e7%b1%bb%e5%88%ab%e5%9f%9f%e9%97%b4%e8%b7%af%e7%94%b1&amp;via=username" target="_blank" title="Share on Twitter">
           <i class="fab fa-twitter"></i>
         </a>
       </li>
   
       
       <li>
-        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fhzren.github.io%2fblog%2f2020-08-17-%25E5%25AD%2590%25E7%25BD%2591-%25E5%25AD%2590%25E7%25BD%2591%25E6%258E%25A9%25E7%25A0%2581-%25E6%2597%25A0%25E7%25B1%25BB%25E5%2588%25AB%25E5%259F%259F%25E9%2597%25B4%25E8%25B7%25AF%25E7%2594%25B1%2f" target="_blank" title="Share on Facebook">
+        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fhzren.github.io%2fblog%2fblog%2f2020-08-17-%25E5%25AD%2590%25E7%25BD%2591-%25E5%25AD%2590%25E7%25BD%2591%25E6%258E%25A9%25E7%25A0%2581-%25E6%2597%25A0%25E7%25B1%25BB%25E5%2588%25AB%25E5%259F%259F%25E9%2597%25B4%25E8%25B7%25AF%25E7%2594%25B1%2f" target="_blank" title="Share on Facebook">
           <i class="fab fa-facebook"></i>
         </a>
       </li>
   
       
       <li>
-        <a href="//reddit.com/submit?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-08-17-%25E5%25AD%2590%25E7%25BD%2591-%25E5%25AD%2590%25E7%25BD%2591%25E6%258E%25A9%25E7%25A0%2581-%25E6%2597%25A0%25E7%25B1%25BB%25E5%2588%25AB%25E5%259F%259F%25E9%2597%25B4%25E8%25B7%25AF%25E7%2594%25B1%2f&amp;title=%e5%ad%90%e7%bd%91%20%e5%ad%90%e7%bd%91%e6%8e%a9%e7%a0%81%20%e6%97%a0%e7%b1%bb%e5%88%ab%e5%9f%9f%e9%97%b4%e8%b7%af%e7%94%b1" target="_blank" title="Share on Reddit">
+        <a href="//reddit.com/submit?url=https%3a%2f%2fhzren.github.io%2fblog%2fblog%2f2020-08-17-%25E5%25AD%2590%25E7%25BD%2591-%25E5%25AD%2590%25E7%25BD%2591%25E6%258E%25A9%25E7%25A0%2581-%25E6%2597%25A0%25E7%25B1%25BB%25E5%2588%25AB%25E5%259F%259F%25E9%2597%25B4%25E8%25B7%25AF%25E7%2594%25B1%2f&amp;title=%e5%ad%90%e7%bd%91%20%e5%ad%90%e7%bd%91%e6%8e%a9%e7%a0%81%20%e6%97%a0%e7%b1%bb%e5%88%ab%e5%9f%9f%e9%97%b4%e8%b7%af%e7%94%b1" target="_blank" title="Share on Reddit">
           <i class="fab fa-reddit"></i>
         </a>
       </li>
   
       
       <li>
-        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-08-17-%25E5%25AD%2590%25E7%25BD%2591-%25E5%25AD%2590%25E7%25BD%2591%25E6%258E%25A9%25E7%25A0%2581-%25E6%2597%25A0%25E7%25B1%25BB%25E5%2588%25AB%25E5%259F%259F%25E9%2597%25B4%25E8%25B7%25AF%25E7%2594%25B1%2f&amp;title=%e5%ad%90%e7%bd%91%20%e5%ad%90%e7%bd%91%e6%8e%a9%e7%a0%81%20%e6%97%a0%e7%b1%bb%e5%88%ab%e5%9f%9f%e9%97%b4%e8%b7%af%e7%94%b1" target="_blank" title="Share on LinkedIn">
+        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fhzren.github.io%2fblog%2fblog%2f2020-08-17-%25E5%25AD%2590%25E7%25BD%2591-%25E5%25AD%2590%25E7%25BD%2591%25E6%258E%25A9%25E7%25A0%2581-%25E6%2597%25A0%25E7%25B1%25BB%25E5%2588%25AB%25E5%259F%259F%25E9%2597%25B4%25E8%25B7%25AF%25E7%2594%25B1%2f&amp;title=%e5%ad%90%e7%bd%91%20%e5%ad%90%e7%bd%91%e6%8e%a9%e7%a0%81%20%e6%97%a0%e7%b1%bb%e5%88%ab%e5%9f%9f%e9%97%b4%e8%b7%af%e7%94%b1" target="_blank" title="Share on LinkedIn">
           <i class="fab fa-linkedin"></i>
         </a>
       </li>
   
       
       <li>
-        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-08-17-%25E5%25AD%2590%25E7%25BD%2591-%25E5%25AD%2590%25E7%25BD%2591%25E6%258E%25A9%25E7%25A0%2581-%25E6%2597%25A0%25E7%25B1%25BB%25E5%2588%25AB%25E5%259F%259F%25E9%2597%25B4%25E8%25B7%25AF%25E7%2594%25B1%2f&amp;title=%e5%ad%90%e7%bd%91%20%e5%ad%90%e7%bd%91%e6%8e%a9%e7%a0%81%20%e6%97%a0%e7%b1%bb%e5%88%ab%e5%9f%9f%e9%97%b4%e8%b7%af%e7%94%b1" target="_blank" title="Share on StumbleUpon">
+        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fhzren.github.io%2fblog%2fblog%2f2020-08-17-%25E5%25AD%2590%25E7%25BD%2591-%25E5%25AD%2590%25E7%25BD%2591%25E6%258E%25A9%25E7%25A0%2581-%25E6%2597%25A0%25E7%25B1%25BB%25E5%2588%25AB%25E5%259F%259F%25E9%2597%25B4%25E8%25B7%25AF%25E7%2594%25B1%2f&amp;title=%e5%ad%90%e7%bd%91%20%e5%ad%90%e7%bd%91%e6%8e%a9%e7%a0%81%20%e6%97%a0%e7%b1%bb%e5%88%ab%e5%9f%9f%e9%97%b4%e8%b7%af%e7%94%b1" target="_blank" title="Share on StumbleUpon">
           <i class="fab fa-stumbleupon"></i>
         </a>
       </li>
   
       
       <li>
-        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-08-17-%25E5%25AD%2590%25E7%25BD%2591-%25E5%25AD%2590%25E7%25BD%2591%25E6%258E%25A9%25E7%25A0%2581-%25E6%2597%25A0%25E7%25B1%25BB%25E5%2588%25AB%25E5%259F%259F%25E9%2597%25B4%25E8%25B7%25AF%25E7%2594%25B1%2f&amp;description=%e5%ad%90%e7%bd%91%20%e5%ad%90%e7%bd%91%e6%8e%a9%e7%a0%81%20%e6%97%a0%e7%b1%bb%e5%88%ab%e5%9f%9f%e9%97%b4%e8%b7%af%e7%94%b1" target="_blank" title="Share on Pinterest">
+        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fhzren.github.io%2fblog%2fblog%2f2020-08-17-%25E5%25AD%2590%25E7%25BD%2591-%25E5%25AD%2590%25E7%25BD%2591%25E6%258E%25A9%25E7%25A0%2581-%25E6%2597%25A0%25E7%25B1%25BB%25E5%2588%25AB%25E5%259F%259F%25E9%2597%25B4%25E8%25B7%25AF%25E7%2594%25B1%2f&amp;description=%e5%ad%90%e7%bd%91%20%e5%ad%90%e7%bd%91%e6%8e%a9%e7%a0%81%20%e6%97%a0%e7%b1%bb%e5%88%ab%e5%9f%9f%e9%97%b4%e8%b7%af%e7%94%b1" target="_blank" title="Share on Pinterest">
           <i class="fab fa-pinterest"></i>
         </a>
       </li>
@@ -519,15 +519,15 @@
                   <ul>
                 
                 
-                    <li><a href="/blog/2021-01-19-linux%E7%BD%91%E7%BB%9C/">Linux网络</a></li>
+                    <li><a href="/blog/blog/2021-01-19-linux%E7%BD%91%E7%BB%9C/">Linux网络</a></li>
                 
-                    <li><a href="/blog/2021-01-13-%E8%B7%AF%E7%94%B1%E6%9D%A1%E7%9B%AE/">路由条目</a></li>
+                    <li><a href="/blog/blog/2021-01-13-%E8%B7%AF%E7%94%B1%E6%9D%A1%E7%9B%AE/">路由条目</a></li>
                 
-                    <li><a href="/blog/2021-01-12-%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C/">容器网络</a></li>
+                    <li><a href="/blog/blog/2021-01-12-%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C/">容器网络</a></li>
                 
-                    <li><a href="/blog/2021-01-06-%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E5%88%B0%E5%85%AC%E7%BD%91_%E5%85%AC%E7%BD%91%E5%AF%BC%E5%86%85%E7%BD%91%E7%9A%84%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E8%BF%87%E7%A8%8B/">一次内网到公网_公网导内网的数据链路过程</a></li>
+                    <li><a href="/blog/blog/2021-01-06-%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E5%88%B0%E5%85%AC%E7%BD%91_%E5%85%AC%E7%BD%91%E5%AF%BC%E5%86%85%E7%BD%91%E7%9A%84%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E8%BF%87%E7%A8%8B/">一次内网到公网_公网导内网的数据链路过程</a></li>
                 
-                    <li><a href="/blog/2020-08-19-tcp-udp-%E6%80%BB%E7%BB%93/">TCP / UDP 总结</a></li>
+                    <li><a href="/blog/blog/2020-08-19-tcp-udp-%E6%80%BB%E7%BB%93/">TCP / UDP 总结</a></li>
                 
               </ul>
 
@@ -539,12 +539,12 @@
         <ul class="pager blog-pager">
           
             <li class="previous">
-              <a href="https://hzren.github.io/blog/2020-08-14-tcp%E5%8D%8F%E8%AE%AE/" data-toggle="tooltip" data-placement="top" title="TCP协议">&larr; 前一篇</a>
+              <a href="https://hzren.github.io/blog/blog/2020-08-14-tcp%E5%8D%8F%E8%AE%AE/" data-toggle="tooltip" data-placement="top" title="TCP协议">&larr; 前一篇</a>
             </li>
           
           
             <li class="next">
-              <a href="https://hzren.github.io/blog/2020-08-17-%E4%B8%93%E7%94%A8%E7%BD%91%E7%BB%9C%E5%86%85%E7%BD%91-%E7%A7%81%E6%9C%89%E7%BD%91%E7%BB%9C/" data-toggle="tooltip" data-placement="top" title="专用网络（内网 / 私有网络）">后一篇 &rarr;</a>
+              <a href="https://hzren.github.io/blog/blog/2020-08-17-%E4%B8%93%E7%94%A8%E7%BD%91%E7%BB%9C%E5%86%85%E7%BD%91-%E7%A7%81%E6%9C%89%E7%BD%91%E7%BB%9C/" data-toggle="tooltip" data-placement="top" title="专用网络（内网 / 私有网络）">后一篇 &rarr;</a>
             </li>
           
         </ul>
@@ -861,7 +861,7 @@
         <p class="credits copyright text-muted">
           
             
-              <a href="https://hyllo.gitee.io/">renhongzhen</a>
+              <a href="https://hzren.github.io/blog/">renhongzhen</a>
             
           
 
@@ -872,7 +872,7 @@
 
           
             &nbsp;&bull;&nbsp;
-            <a href="https://hzren.github.io">Code Mark</a>
+            <a href="https://hzren.github.io/blog/">Code Mark</a>
           
         </p>
         
@@ -888,11 +888,11 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
-<script src="https://hzren.github.io/js/main.js"></script>
-<script src="https://hzren.github.io/js/highlight.min.js"></script>
+<script src="https://hzren.github.io/blog/js/main.js"></script>
+<script src="https://hzren.github.io/blog/js/highlight.min.js"></script>
 <script> hljs.initHighlightingOnLoad(); </script>
 <script> $(document).ready(function() {$("pre.chroma").css("padding","0");}); </script><script> renderMathInElement(document.body); </script><script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://hzren.github.io/js/load-photoswipe.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://hzren.github.io/blog/js/load-photoswipe.js"></script>
 
 
 

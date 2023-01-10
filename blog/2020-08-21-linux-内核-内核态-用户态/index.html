@@ -38,14 +38,14 @@ CPU 寄存器里原来用户态的指令位置，需要先保存起来。接着�
     "@type": "WebSite",
     "name": "Code Mark",
     
-    "url": "https:\/\/hzren.github.io"
+    "url": "https:\/\/hzren.github.io\/blog\/"
 }
 </script><script type="application/ld+json">
 {
   "@context": "http://schema.org",
   "@type": "Organization",
   "name": "",
-  "url": "https:\/\/hzren.github.io"
+  "url": "https:\/\/hzren.github.io\/blog\/"
   
   
   
@@ -60,14 +60,14 @@ CPU 寄存器里原来用户态的指令位置，需要先保存起来。接着�
         "@type": "ListItem",
         "position": 1,
         "item": {
-          "@id": "https:\/\/hzren.github.io",
+          "@id": "https:\/\/hzren.github.io\/blog\/",
           "name": "home"
         }
     },{
         "@type": "ListItem",
         "position": 3,
         "item": {
-          "@id": "https:\/\/hzren.github.io\/blog\/2020-08-21-linux-%E5%86%85%E6%A0%B8-%E5%86%85%E6%A0%B8%E6%80%81-%E7%94%A8%E6%88%B7%E6%80%81\/",
+          "@id": "https:\/\/hzren.github.io\/blog\/blog\/2020-08-21-linux-%E5%86%85%E6%A0%B8-%E5%86%85%E6%A0%B8%E6%80%81-%E7%94%A8%E6%88%B7%E6%80%81\/",
           "name": "Linux 内核 内核态 用户态"
         }
     }]
@@ -85,15 +85,15 @@ CPU 寄存器里原来用户态的指令位置，需要先保存起来。接着�
   "wordCount":  67 ,
   "datePublished" : "2020-08-21T11:22:52",
   "dateModified" : "2020-08-21T11:22:52",
-  "image" : "https:\/\/hzren.github.io\/img\/avatar-icon.png",
+  "image" : "https:\/\/hzren.github.io\/blog\/img\/avatar-icon.png",
   "keywords" : [ "Linux" ],
-  "mainEntityOfPage" : "https:\/\/hzren.github.io\/blog\/2020-08-21-linux-%E5%86%85%E6%A0%B8-%E5%86%85%E6%A0%B8%E6%80%81-%E7%94%A8%E6%88%B7%E6%80%81\/",
+  "mainEntityOfPage" : "https:\/\/hzren.github.io\/blog\/blog\/2020-08-21-linux-%E5%86%85%E6%A0%B8-%E5%86%85%E6%A0%B8%E6%80%81-%E7%94%A8%E6%88%B7%E6%80%81\/",
   "publisher" : {
     "@type": "Organization",
-    "name" : "https:\/\/hzren.github.io",
+    "name" : "https:\/\/hzren.github.io\/blog\/",
     "logo" : {
         "@type" : "ImageObject",
-        "url" : "https:\/\/hzren.github.io\/img\/avatar-icon.png",
+        "url" : "https:\/\/hzren.github.io\/blog\/img\/avatar-icon.png",
         "height" :  60 ,
         "width" :  60
     }
@@ -122,24 +122,24 @@ CPU 寄存器里原来用户态的指令位置，需要先保存起来。接着�
 内核态 / 用户态 区别 内存分为两部分：
 用户空间，它是正常用户进程运行的一组位置（即除了内核之外的所有内容）。内核的作用是管理在这个空间中运行的应用程序，使之不至于弄乱彼此和机器。 内核空间，即存储内核代码并在其下执行的位置。 在用户空间下运行的进程只能访问有限的部分内存，而内核可以访问所有内存。在用户空间中运行的进程无权访问内核空间。用户空间进程只能通过内核公开的接口（系统调用）访问内核的一小部分内存(例如 共享内存， 获得系统时间用的就是共享内存)。如果进程执行系统调用，则会将软件中断发送到内核，内核将分派适当的中断处理程序，并在处理程序完成后继续其工作。
 切换 系统调用，其实系统调用本身就是中断，但是软件中断，跟硬中断不同。异常：如果当前进程运行在用户态，如果这个时候发生了异常事件，就会触发切换。例如：缺页异常。外设中断：当外设完成用户的请求时，会向CPU发送中断信号。">
-<meta property="og:image" content="https://hzren.github.io/img/avatar-icon.png" />
-<meta property="og:url" content="https://hzren.github.io/blog/2020-08-21-linux-%E5%86%85%E6%A0%B8-%E5%86%85%E6%A0%B8%E6%80%81-%E7%94%A8%E6%88%B7%E6%80%81/" />
+<meta property="og:image" content="https://hzren.github.io/blog/img/avatar-icon.png" />
+<meta property="og:url" content="https://hzren.github.io/blog/blog/2020-08-21-linux-%E5%86%85%E6%A0%B8-%E5%86%85%E6%A0%B8%E6%80%81-%E7%94%A8%E6%88%B7%E6%80%81/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Code Mark" />
 
   <meta name="twitter:title" content="Linux 内核 内核态 用户态" />
   <meta name="twitter:description" content="概念 时间片 时间片是分时操作系统分配给每个正在运行的进程微观上的一段CPU时间（在抢占内核中是：从进程开始运行直到被抢占的时间）。现代操作系统（如：Windows、Linux、Mac OS X等）允许同时运行多个进程。例如，在打开音乐播放器的同时用浏览器浏览网页并下载文件。由于一台计算机通常只有一个CPU，所以不可能真正地同时运行多个任务。这些进程“看起来像”同时运行，实则是轮番运行，由于时间片 …">
-  <meta name="twitter:image" content="https://hzren.github.io/img/avatar-icon.png" />
+  <meta name="twitter:image" content="https://hzren.github.io/blog/img/avatar-icon.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:site" content="@username" />
   <meta name="twitter:creator" content="@username" />
-  <link href='https://hzren.github.io/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <link href='https://hzren.github.io/blog/img/favicon.ico' rel='icon' type='image/x-icon'/>
   <meta name="generator" content="Hugo 0.109.0">
-  <link rel="alternate" href="https://hzren.github.io/index.xml" type="application/rss+xml" title="Code Mark"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+  <link rel="alternate" href="https://hzren.github.io/blog/index.xml" type="application/rss+xml" title="Code Mark"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://hzren.github.io/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://hzren.github.io/blog/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
-  <link rel="stylesheet" href="https://hzren.github.io/css/highlight.min.css" /><link rel="stylesheet" href="https://hzren.github.io/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://hzren.github.io/blog/css/highlight.min.css" /><link rel="stylesheet" href="https://hzren.github.io/blog/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
 
 
@@ -154,7 +154,7 @@ CPU 寄存器里原来用户态的指令位置，需要先保存起来。接着�
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="https://hzren.github.io">Code Mark</a>
+      <a class="navbar-brand" href="https://hzren.github.io/blog/">Code Mark</a>
     </div>
 
     <div class="collapse navbar-collapse" id="main-navbar">
@@ -162,7 +162,7 @@ CPU 寄存器里原来用户态的指令位置，需要先保存起来。接着�
         
           
             <li>
-              <a title="文章" href="/">文章</a>
+              <a title="文章" href="/blog/">文章</a>
             </li>
           
         
@@ -171,11 +171,11 @@ CPU 寄存器里原来用户态的指令位置，需要先保存起来。接着�
               <a class="navlinks-parent">代码</a>
               <div class="navlinks-children">
                 
-                  <a href="/post/2017-03-07-bigimg-sample">Big Image Sample</a>
+                  <a href="/blog/post/2017-03-07-bigimg-sample">Big Image Sample</a>
                 
-                  <a href="/post/2017-03-05-math-sample">Math Sample</a>
+                  <a href="/blog/post/2017-03-05-math-sample">Math Sample</a>
                 
-                  <a href="/post/2016-03-08-code-sample">Code Sample</a>
+                  <a href="/blog/post/2016-03-08-code-sample">Code Sample</a>
                 
               </div>
             </li>
@@ -183,13 +183,13 @@ CPU 寄存器里原来用户态的指令位置，需要先保存起来。接着�
         
           
             <li>
-              <a title="关于我" href="/page/about/">关于我</a>
+              <a title="关于我" href="/blog/page/about/">关于我</a>
             </li>
           
         
           
             <li>
-              <a title="分类" href="/tags">分类</a>
+              <a title="分类" href="/blog/tags">分类</a>
             </li>
           
         
@@ -203,8 +203,8 @@ CPU 寄存器里原来用户态的指令位置，需要先保存起来。接着�
     
       <div class="avatar-container">
         <div class="avatar-img-border">
-          <a title="Code Mark" href="https://hzren.github.io">
-            <img class="avatar-img" src="https://hzren.github.io/img/avatar-icon.png" alt="Code Mark" />
+          <a title="Code Mark" href="https://hzren.github.io/blog/">
+            <img class="avatar-img" src="https://hzren.github.io/blog/img/avatar-icon.png" alt="Code Mark" />
           </a>
         </div>
       </div>
@@ -376,7 +376,7 @@ CPU 寄存器里原来用户态的指令位置，需要先保存起来。接着�
         
           <div class="blog-tags">
             
-              <a href="https://hzren.github.io/tags/linux/">Linux</a>&nbsp;
+              <a href="https://hzren.github.io/blog//tags/linux/">Linux</a>&nbsp;
             
           </div>
         
@@ -391,42 +391,42 @@ CPU 寄存器里原来用户态的指令位置，需要先保存起来。接着�
     <ul class="share">
       
       <li>
-        <a href="//twitter.com/share?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-08-21-linux-%25E5%2586%2585%25E6%25A0%25B8-%25E5%2586%2585%25E6%25A0%25B8%25E6%2580%2581-%25E7%2594%25A8%25E6%2588%25B7%25E6%2580%2581%2f&amp;text=Linux%20%e5%86%85%e6%a0%b8%20%e5%86%85%e6%a0%b8%e6%80%81%20%e7%94%a8%e6%88%b7%e6%80%81&amp;via=username" target="_blank" title="Share on Twitter">
+        <a href="//twitter.com/share?url=https%3a%2f%2fhzren.github.io%2fblog%2fblog%2f2020-08-21-linux-%25E5%2586%2585%25E6%25A0%25B8-%25E5%2586%2585%25E6%25A0%25B8%25E6%2580%2581-%25E7%2594%25A8%25E6%2588%25B7%25E6%2580%2581%2f&amp;text=Linux%20%e5%86%85%e6%a0%b8%20%e5%86%85%e6%a0%b8%e6%80%81%20%e7%94%a8%e6%88%b7%e6%80%81&amp;via=username" target="_blank" title="Share on Twitter">
           <i class="fab fa-twitter"></i>
         </a>
       </li>
   
       
       <li>
-        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fhzren.github.io%2fblog%2f2020-08-21-linux-%25E5%2586%2585%25E6%25A0%25B8-%25E5%2586%2585%25E6%25A0%25B8%25E6%2580%2581-%25E7%2594%25A8%25E6%2588%25B7%25E6%2580%2581%2f" target="_blank" title="Share on Facebook">
+        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fhzren.github.io%2fblog%2fblog%2f2020-08-21-linux-%25E5%2586%2585%25E6%25A0%25B8-%25E5%2586%2585%25E6%25A0%25B8%25E6%2580%2581-%25E7%2594%25A8%25E6%2588%25B7%25E6%2580%2581%2f" target="_blank" title="Share on Facebook">
           <i class="fab fa-facebook"></i>
         </a>
       </li>
   
       
       <li>
-        <a href="//reddit.com/submit?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-08-21-linux-%25E5%2586%2585%25E6%25A0%25B8-%25E5%2586%2585%25E6%25A0%25B8%25E6%2580%2581-%25E7%2594%25A8%25E6%2588%25B7%25E6%2580%2581%2f&amp;title=Linux%20%e5%86%85%e6%a0%b8%20%e5%86%85%e6%a0%b8%e6%80%81%20%e7%94%a8%e6%88%b7%e6%80%81" target="_blank" title="Share on Reddit">
+        <a href="//reddit.com/submit?url=https%3a%2f%2fhzren.github.io%2fblog%2fblog%2f2020-08-21-linux-%25E5%2586%2585%25E6%25A0%25B8-%25E5%2586%2585%25E6%25A0%25B8%25E6%2580%2581-%25E7%2594%25A8%25E6%2588%25B7%25E6%2580%2581%2f&amp;title=Linux%20%e5%86%85%e6%a0%b8%20%e5%86%85%e6%a0%b8%e6%80%81%20%e7%94%a8%e6%88%b7%e6%80%81" target="_blank" title="Share on Reddit">
           <i class="fab fa-reddit"></i>
         </a>
       </li>
   
       
       <li>
-        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-08-21-linux-%25E5%2586%2585%25E6%25A0%25B8-%25E5%2586%2585%25E6%25A0%25B8%25E6%2580%2581-%25E7%2594%25A8%25E6%2588%25B7%25E6%2580%2581%2f&amp;title=Linux%20%e5%86%85%e6%a0%b8%20%e5%86%85%e6%a0%b8%e6%80%81%20%e7%94%a8%e6%88%b7%e6%80%81" target="_blank" title="Share on LinkedIn">
+        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fhzren.github.io%2fblog%2fblog%2f2020-08-21-linux-%25E5%2586%2585%25E6%25A0%25B8-%25E5%2586%2585%25E6%25A0%25B8%25E6%2580%2581-%25E7%2594%25A8%25E6%2588%25B7%25E6%2580%2581%2f&amp;title=Linux%20%e5%86%85%e6%a0%b8%20%e5%86%85%e6%a0%b8%e6%80%81%20%e7%94%a8%e6%88%b7%e6%80%81" target="_blank" title="Share on LinkedIn">
           <i class="fab fa-linkedin"></i>
         </a>
       </li>
   
       
       <li>
-        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-08-21-linux-%25E5%2586%2585%25E6%25A0%25B8-%25E5%2586%2585%25E6%25A0%25B8%25E6%2580%2581-%25E7%2594%25A8%25E6%2588%25B7%25E6%2580%2581%2f&amp;title=Linux%20%e5%86%85%e6%a0%b8%20%e5%86%85%e6%a0%b8%e6%80%81%20%e7%94%a8%e6%88%b7%e6%80%81" target="_blank" title="Share on StumbleUpon">
+        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fhzren.github.io%2fblog%2fblog%2f2020-08-21-linux-%25E5%2586%2585%25E6%25A0%25B8-%25E5%2586%2585%25E6%25A0%25B8%25E6%2580%2581-%25E7%2594%25A8%25E6%2588%25B7%25E6%2580%2581%2f&amp;title=Linux%20%e5%86%85%e6%a0%b8%20%e5%86%85%e6%a0%b8%e6%80%81%20%e7%94%a8%e6%88%b7%e6%80%81" target="_blank" title="Share on StumbleUpon">
           <i class="fab fa-stumbleupon"></i>
         </a>
       </li>
   
       
       <li>
-        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-08-21-linux-%25E5%2586%2585%25E6%25A0%25B8-%25E5%2586%2585%25E6%25A0%25B8%25E6%2580%2581-%25E7%2594%25A8%25E6%2588%25B7%25E6%2580%2581%2f&amp;description=Linux%20%e5%86%85%e6%a0%b8%20%e5%86%85%e6%a0%b8%e6%80%81%20%e7%94%a8%e6%88%b7%e6%80%81" target="_blank" title="Share on Pinterest">
+        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fhzren.github.io%2fblog%2fblog%2f2020-08-21-linux-%25E5%2586%2585%25E6%25A0%25B8-%25E5%2586%2585%25E6%25A0%25B8%25E6%2580%2581-%25E7%2594%25A8%25E6%2588%25B7%25E6%2580%2581%2f&amp;description=Linux%20%e5%86%85%e6%a0%b8%20%e5%86%85%e6%a0%b8%e6%80%81%20%e7%94%a8%e6%88%b7%e6%80%81" target="_blank" title="Share on Pinterest">
           <i class="fab fa-pinterest"></i>
         </a>
       </li>
@@ -448,15 +448,15 @@ CPU 寄存器里原来用户态的指令位置，需要先保存起来。接着�
                   <ul>
                 
                 
-                    <li><a href="/blog/2021-01-19-linux%E7%BD%91%E7%BB%9C/">Linux网络</a></li>
+                    <li><a href="/blog/blog/2021-01-19-linux%E7%BD%91%E7%BB%9C/">Linux网络</a></li>
                 
-                    <li><a href="/blog/2021-01-15-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/">文件系统</a></li>
+                    <li><a href="/blog/blog/2021-01-15-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/">文件系统</a></li>
                 
-                    <li><a href="/blog/2021-01-15-linux%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">Linux内存管理</a></li>
+                    <li><a href="/blog/blog/2021-01-15-linux%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">Linux内存管理</a></li>
                 
-                    <li><a href="/blog/2021-01-15-%E4%B8%AD%E6%96%AD/">中断</a></li>
+                    <li><a href="/blog/blog/2021-01-15-%E4%B8%AD%E6%96%AD/">中断</a></li>
                 
-                    <li><a href="/blog/2021-01-14-%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2/">上下文切换</a></li>
+                    <li><a href="/blog/blog/2021-01-14-%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2/">上下文切换</a></li>
                 
               </ul>
 
@@ -468,12 +468,12 @@ CPU 寄存器里原来用户态的指令位置，需要先保存起来。接着�
         <ul class="pager blog-pager">
           
             <li class="previous">
-              <a href="https://hzren.github.io/blog/2020-08-19-tcp-udp-%E6%80%BB%E7%BB%93/" data-toggle="tooltip" data-placement="top" title="TCP / UDP 总结">&larr; 前一篇</a>
+              <a href="https://hzren.github.io/blog/blog/2020-08-19-tcp-udp-%E6%80%BB%E7%BB%93/" data-toggle="tooltip" data-placement="top" title="TCP / UDP 总结">&larr; 前一篇</a>
             </li>
           
           
             <li class="next">
-              <a href="https://hzren.github.io/blog/2020-08-25-centos-%E5%AE%89%E8%A3%85-stress-sysstat/" data-toggle="tooltip" data-placement="top" title="centos 安装 stress sysstat">后一篇 &rarr;</a>
+              <a href="https://hzren.github.io/blog/blog/2020-08-25-centos-%E5%AE%89%E8%A3%85-stress-sysstat/" data-toggle="tooltip" data-placement="top" title="centos 安装 stress sysstat">后一篇 &rarr;</a>
             </li>
           
         </ul>
@@ -790,7 +790,7 @@ CPU 寄存器里原来用户态的指令位置，需要先保存起来。接着�
         <p class="credits copyright text-muted">
           
             
-              <a href="https://hyllo.gitee.io/">renhongzhen</a>
+              <a href="https://hzren.github.io/blog/">renhongzhen</a>
             
           
 
@@ -801,7 +801,7 @@ CPU 寄存器里原来用户态的指令位置，需要先保存起来。接着�
 
           
             &nbsp;&bull;&nbsp;
-            <a href="https://hzren.github.io">Code Mark</a>
+            <a href="https://hzren.github.io/blog/">Code Mark</a>
           
         </p>
         
@@ -817,11 +817,11 @@ CPU 寄存器里原来用户态的指令位置，需要先保存起来。接着�
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
-<script src="https://hzren.github.io/js/main.js"></script>
-<script src="https://hzren.github.io/js/highlight.min.js"></script>
+<script src="https://hzren.github.io/blog/js/main.js"></script>
+<script src="https://hzren.github.io/blog/js/highlight.min.js"></script>
 <script> hljs.initHighlightingOnLoad(); </script>
 <script> $(document).ready(function() {$("pre.chroma").css("padding","0");}); </script><script> renderMathInElement(document.body); </script><script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://hzren.github.io/js/load-photoswipe.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://hzren.github.io/blog/js/load-photoswipe.js"></script>
 
 
 

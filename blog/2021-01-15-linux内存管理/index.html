@@ -32,14 +32,14 @@ TLB 其实就是 MMU 中页表的高速缓存。由于进程的虚拟地址空�
     "@type": "WebSite",
     "name": "Code Mark",
     
-    "url": "https:\/\/hzren.github.io"
+    "url": "https:\/\/hzren.github.io\/blog\/"
 }
 </script><script type="application/ld+json">
 {
   "@context": "http://schema.org",
   "@type": "Organization",
   "name": "",
-  "url": "https:\/\/hzren.github.io"
+  "url": "https:\/\/hzren.github.io\/blog\/"
   
   
   
@@ -54,14 +54,14 @@ TLB 其实就是 MMU 中页表的高速缓存。由于进程的虚拟地址空�
         "@type": "ListItem",
         "position": 1,
         "item": {
-          "@id": "https:\/\/hzren.github.io",
+          "@id": "https:\/\/hzren.github.io\/blog\/",
           "name": "home"
         }
     },{
         "@type": "ListItem",
         "position": 3,
         "item": {
-          "@id": "https:\/\/hzren.github.io\/blog\/2021-01-15-linux%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86\/",
+          "@id": "https:\/\/hzren.github.io\/blog\/blog\/2021-01-15-linux%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86\/",
           "name": "Linux内存管理"
         }
     }]
@@ -79,15 +79,15 @@ TLB 其实就是 MMU 中页表的高速缓存。由于进程的虚拟地址空�
   "wordCount":  418 ,
   "datePublished" : "2021-01-15T15:07:33",
   "dateModified" : "2021-01-15T15:07:33",
-  "image" : "https:\/\/hzren.github.io\/img\/avatar-icon.png",
+  "image" : "https:\/\/hzren.github.io\/blog\/img\/avatar-icon.png",
   "keywords" : [ "Performance, Linux" ],
-  "mainEntityOfPage" : "https:\/\/hzren.github.io\/blog\/2021-01-15-linux%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86\/",
+  "mainEntityOfPage" : "https:\/\/hzren.github.io\/blog\/blog\/2021-01-15-linux%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86\/",
   "publisher" : {
     "@type": "Organization",
-    "name" : "https:\/\/hzren.github.io",
+    "name" : "https:\/\/hzren.github.io\/blog\/",
     "logo" : {
         "@type" : "ImageObject",
-        "url" : "https:\/\/hzren.github.io\/img\/avatar-icon.png",
+        "url" : "https:\/\/hzren.github.io\/blog\/img\/avatar-icon.png",
         "height" :  60 ,
         "width" :  60
     }
@@ -110,8 +110,8 @@ TLB 其实就是 MMU 中页表的高速缓存。由于进程的虚拟地址空�
 决页表项过多的问题，Linux 提供了两种机制，也就是多级页表和大页（HugePage）。多级页表就是把内存分成区块来管理，将原来的映射关系改成区块索引和区块内的偏移。由于虚拟内存空间通常只用了很少一部分，那么，多级页表就只保存这些使用中的区块，这样就可以大大地减少页表的项数。
 在发现内存紧张时，系统就会通过一系列机制来回收内存，比如下面这三种方式：
 回收缓存，比如使用 LRU（Least Recently Used）算法，回收最近使用最少的内存页面； 回收不常访问的内存，把不常用的内存通过交换分区直接写到磁盘中； 杀死进程，内存紧张时系统还会通过 OOM（Out of Memory），直接杀掉占用大量内存的进程。 第二种方式回收不常访问的内存时，会用到交换分区（以下简称 Swap）。Swap其实就是把一块磁盘空间当成内存来用。它可以把进程暂时不用的数据存储到磁盘中（这个过程称为换出），当进程访问这些内存时，再从磁盘读取这些数据到内存中（这个过程称为换入）。所以，你可以发现，Swap 把系统的可用内存变大了。不过要注意，通常只在内存不足时，才会发生 Swap 交换。并且由于磁盘读写的速度远比内存慢，Swap 会导致严重的内存性能问题。">
-<meta property="og:image" content="https://hzren.github.io/img/avatar-icon.png" />
-<meta property="og:url" content="https://hzren.github.io/blog/2021-01-15-linux%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" />
+<meta property="og:image" content="https://hzren.github.io/blog/img/avatar-icon.png" />
+<meta property="og:url" content="https://hzren.github.io/blog/blog/2021-01-15-linux%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Code Mark" />
 
@@ -120,17 +120,17 @@ TLB 其实就是 MMU 中页表的高速缓存。由于进程的虚拟地址空�
 内存映射 物理内存也称为主存，大多数计算机用的主存都是动态随机访问内存（DRAM）。只有内核才可以直接访问物理内存。
 Linux 内核给每个进程都提供了一个独立的虚拟地址空间，并且这个地址空间是连续的。这样，进程就可以很方便地访问内存，更确切地说是访问虚拟内存。
 虚拟地址空间的内部又被分为内核空间和用户空间两部分，不同字长（也就是单个 CPU 指令可 …">
-  <meta name="twitter:image" content="https://hzren.github.io/img/avatar-icon.png" />
+  <meta name="twitter:image" content="https://hzren.github.io/blog/img/avatar-icon.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:site" content="@username" />
   <meta name="twitter:creator" content="@username" />
-  <link href='https://hzren.github.io/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <link href='https://hzren.github.io/blog/img/favicon.ico' rel='icon' type='image/x-icon'/>
   <meta name="generator" content="Hugo 0.109.0">
-  <link rel="alternate" href="https://hzren.github.io/index.xml" type="application/rss+xml" title="Code Mark"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+  <link rel="alternate" href="https://hzren.github.io/blog/index.xml" type="application/rss+xml" title="Code Mark"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://hzren.github.io/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://hzren.github.io/blog/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
-  <link rel="stylesheet" href="https://hzren.github.io/css/highlight.min.css" /><link rel="stylesheet" href="https://hzren.github.io/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://hzren.github.io/blog/css/highlight.min.css" /><link rel="stylesheet" href="https://hzren.github.io/blog/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
 
 
@@ -145,7 +145,7 @@ Linux 内核给每个进程都提供了一个独立的虚拟地址空间，并�
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="https://hzren.github.io">Code Mark</a>
+      <a class="navbar-brand" href="https://hzren.github.io/blog/">Code Mark</a>
     </div>
 
     <div class="collapse navbar-collapse" id="main-navbar">
@@ -153,7 +153,7 @@ Linux 内核给每个进程都提供了一个独立的虚拟地址空间，并�
         
           
             <li>
-              <a title="文章" href="/">文章</a>
+              <a title="文章" href="/blog/">文章</a>
             </li>
           
         
@@ -162,11 +162,11 @@ Linux 内核给每个进程都提供了一个独立的虚拟地址空间，并�
               <a class="navlinks-parent">代码</a>
               <div class="navlinks-children">
                 
-                  <a href="/post/2017-03-07-bigimg-sample">Big Image Sample</a>
+                  <a href="/blog/post/2017-03-07-bigimg-sample">Big Image Sample</a>
                 
-                  <a href="/post/2017-03-05-math-sample">Math Sample</a>
+                  <a href="/blog/post/2017-03-05-math-sample">Math Sample</a>
                 
-                  <a href="/post/2016-03-08-code-sample">Code Sample</a>
+                  <a href="/blog/post/2016-03-08-code-sample">Code Sample</a>
                 
               </div>
             </li>
@@ -174,13 +174,13 @@ Linux 内核给每个进程都提供了一个独立的虚拟地址空间，并�
         
           
             <li>
-              <a title="关于我" href="/page/about/">关于我</a>
+              <a title="关于我" href="/blog/page/about/">关于我</a>
             </li>
           
         
           
             <li>
-              <a title="分类" href="/tags">分类</a>
+              <a title="分类" href="/blog/tags">分类</a>
             </li>
           
         
@@ -194,8 +194,8 @@ Linux 内核给每个进程都提供了一个独立的虚拟地址空间，并�
     
       <div class="avatar-container">
         <div class="avatar-img-border">
-          <a title="Code Mark" href="https://hzren.github.io">
-            <img class="avatar-img" src="https://hzren.github.io/img/avatar-icon.png" alt="Code Mark" />
+          <a title="Code Mark" href="https://hzren.github.io/blog/">
+            <img class="avatar-img" src="https://hzren.github.io/blog/img/avatar-icon.png" alt="Code Mark" />
           </a>
         </div>
       </div>
@@ -393,9 +393,9 @@ Linux 内核给每个进程都提供了一个独立的虚拟地址空间，并�
         
           <div class="blog-tags">
             
-              <a href="https://hzren.github.io/tags/performance/">Performance</a>&nbsp;
+              <a href="https://hzren.github.io/blog//tags/performance/">Performance</a>&nbsp;
             
-              <a href="https://hzren.github.io/tags/linux/">Linux</a>&nbsp;
+              <a href="https://hzren.github.io/blog//tags/linux/">Linux</a>&nbsp;
             
           </div>
         
@@ -410,42 +410,42 @@ Linux 内核给每个进程都提供了一个独立的虚拟地址空间，并�
     <ul class="share">
       
       <li>
-        <a href="//twitter.com/share?url=https%3a%2f%2fhzren.github.io%2fblog%2f2021-01-15-linux%25E5%2586%2585%25E5%25AD%2598%25E7%25AE%25A1%25E7%2590%2586%2f&amp;text=Linux%e5%86%85%e5%ad%98%e7%ae%a1%e7%90%86&amp;via=username" target="_blank" title="Share on Twitter">
+        <a href="//twitter.com/share?url=https%3a%2f%2fhzren.github.io%2fblog%2fblog%2f2021-01-15-linux%25E5%2586%2585%25E5%25AD%2598%25E7%25AE%25A1%25E7%2590%2586%2f&amp;text=Linux%e5%86%85%e5%ad%98%e7%ae%a1%e7%90%86&amp;via=username" target="_blank" title="Share on Twitter">
           <i class="fab fa-twitter"></i>
         </a>
       </li>
   
       
       <li>
-        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fhzren.github.io%2fblog%2f2021-01-15-linux%25E5%2586%2585%25E5%25AD%2598%25E7%25AE%25A1%25E7%2590%2586%2f" target="_blank" title="Share on Facebook">
+        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fhzren.github.io%2fblog%2fblog%2f2021-01-15-linux%25E5%2586%2585%25E5%25AD%2598%25E7%25AE%25A1%25E7%2590%2586%2f" target="_blank" title="Share on Facebook">
           <i class="fab fa-facebook"></i>
         </a>
       </li>
   
       
       <li>
-        <a href="//reddit.com/submit?url=https%3a%2f%2fhzren.github.io%2fblog%2f2021-01-15-linux%25E5%2586%2585%25E5%25AD%2598%25E7%25AE%25A1%25E7%2590%2586%2f&amp;title=Linux%e5%86%85%e5%ad%98%e7%ae%a1%e7%90%86" target="_blank" title="Share on Reddit">
+        <a href="//reddit.com/submit?url=https%3a%2f%2fhzren.github.io%2fblog%2fblog%2f2021-01-15-linux%25E5%2586%2585%25E5%25AD%2598%25E7%25AE%25A1%25E7%2590%2586%2f&amp;title=Linux%e5%86%85%e5%ad%98%e7%ae%a1%e7%90%86" target="_blank" title="Share on Reddit">
           <i class="fab fa-reddit"></i>
         </a>
       </li>
   
       
       <li>
-        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fhzren.github.io%2fblog%2f2021-01-15-linux%25E5%2586%2585%25E5%25AD%2598%25E7%25AE%25A1%25E7%2590%2586%2f&amp;title=Linux%e5%86%85%e5%ad%98%e7%ae%a1%e7%90%86" target="_blank" title="Share on LinkedIn">
+        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fhzren.github.io%2fblog%2fblog%2f2021-01-15-linux%25E5%2586%2585%25E5%25AD%2598%25E7%25AE%25A1%25E7%2590%2586%2f&amp;title=Linux%e5%86%85%e5%ad%98%e7%ae%a1%e7%90%86" target="_blank" title="Share on LinkedIn">
           <i class="fab fa-linkedin"></i>
         </a>
       </li>
   
       
       <li>
-        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fhzren.github.io%2fblog%2f2021-01-15-linux%25E5%2586%2585%25E5%25AD%2598%25E7%25AE%25A1%25E7%2590%2586%2f&amp;title=Linux%e5%86%85%e5%ad%98%e7%ae%a1%e7%90%86" target="_blank" title="Share on StumbleUpon">
+        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fhzren.github.io%2fblog%2fblog%2f2021-01-15-linux%25E5%2586%2585%25E5%25AD%2598%25E7%25AE%25A1%25E7%2590%2586%2f&amp;title=Linux%e5%86%85%e5%ad%98%e7%ae%a1%e7%90%86" target="_blank" title="Share on StumbleUpon">
           <i class="fab fa-stumbleupon"></i>
         </a>
       </li>
   
       
       <li>
-        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fhzren.github.io%2fblog%2f2021-01-15-linux%25E5%2586%2585%25E5%25AD%2598%25E7%25AE%25A1%25E7%2590%2586%2f&amp;description=Linux%e5%86%85%e5%ad%98%e7%ae%a1%e7%90%86" target="_blank" title="Share on Pinterest">
+        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fhzren.github.io%2fblog%2fblog%2f2021-01-15-linux%25E5%2586%2585%25E5%25AD%2598%25E7%25AE%25A1%25E7%2590%2586%2f&amp;description=Linux%e5%86%85%e5%ad%98%e7%ae%a1%e7%90%86" target="_blank" title="Share on Pinterest">
           <i class="fab fa-pinterest"></i>
         </a>
       </li>
@@ -467,15 +467,15 @@ Linux 内核给每个进程都提供了一个独立的虚拟地址空间，并�
                   <ul>
                 
                 
-                    <li><a href="/blog/2021-01-19-linux%E7%BD%91%E7%BB%9C/">Linux网络</a></li>
+                    <li><a href="/blog/blog/2021-01-19-linux%E7%BD%91%E7%BB%9C/">Linux网络</a></li>
                 
-                    <li><a href="/blog/2021-01-15-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/">文件系统</a></li>
+                    <li><a href="/blog/blog/2021-01-15-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/">文件系统</a></li>
                 
-                    <li><a href="/blog/2021-01-15-cpu%E4%BC%98%E5%8C%96/">CPU优化</a></li>
+                    <li><a href="/blog/blog/2021-01-15-cpu%E4%BC%98%E5%8C%96/">CPU优化</a></li>
                 
-                    <li><a href="/blog/2021-01-15-%E4%B8%AD%E6%96%AD/">中断</a></li>
+                    <li><a href="/blog/blog/2021-01-15-%E4%B8%AD%E6%96%AD/">中断</a></li>
                 
-                    <li><a href="/blog/2021-01-14-%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2/">上下文切换</a></li>
+                    <li><a href="/blog/blog/2021-01-14-%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2/">上下文切换</a></li>
                 
               </ul>
 
@@ -487,12 +487,12 @@ Linux 内核给每个进程都提供了一个独立的虚拟地址空间，并�
         <ul class="pager blog-pager">
           
             <li class="previous">
-              <a href="https://hzren.github.io/blog/2021-01-15-cpu%E4%BC%98%E5%8C%96/" data-toggle="tooltip" data-placement="top" title="CPU优化">&larr; 前一篇</a>
+              <a href="https://hzren.github.io/blog/blog/2021-01-15-cpu%E4%BC%98%E5%8C%96/" data-toggle="tooltip" data-placement="top" title="CPU优化">&larr; 前一篇</a>
             </li>
           
           
             <li class="next">
-              <a href="https://hzren.github.io/blog/2021-01-15-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/" data-toggle="tooltip" data-placement="top" title="文件系统">后一篇 &rarr;</a>
+              <a href="https://hzren.github.io/blog/blog/2021-01-15-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/" data-toggle="tooltip" data-placement="top" title="文件系统">后一篇 &rarr;</a>
             </li>
           
         </ul>
@@ -809,7 +809,7 @@ Linux 内核给每个进程都提供了一个独立的虚拟地址空间，并�
         <p class="credits copyright text-muted">
           
             
-              <a href="https://hyllo.gitee.io/">renhongzhen</a>
+              <a href="https://hzren.github.io/blog/">renhongzhen</a>
             
           
 
@@ -820,7 +820,7 @@ Linux 内核给每个进程都提供了一个独立的虚拟地址空间，并�
 
           
             &nbsp;&bull;&nbsp;
-            <a href="https://hzren.github.io">Code Mark</a>
+            <a href="https://hzren.github.io/blog/">Code Mark</a>
           
         </p>
         
@@ -836,11 +836,11 @@ Linux 内核给每个进程都提供了一个独立的虚拟地址空间，并�
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
-<script src="https://hzren.github.io/js/main.js"></script>
-<script src="https://hzren.github.io/js/highlight.min.js"></script>
+<script src="https://hzren.github.io/blog/js/main.js"></script>
+<script src="https://hzren.github.io/blog/js/highlight.min.js"></script>
 <script> hljs.initHighlightingOnLoad(); </script>
 <script> $(document).ready(function() {$("pre.chroma").css("padding","0");}); </script><script> renderMathInElement(document.body); </script><script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://hzren.github.io/js/load-photoswipe.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://hzren.github.io/blog/js/load-photoswipe.js"></script>
 
 
 

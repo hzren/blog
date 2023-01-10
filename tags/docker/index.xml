@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Docker on Code Mark</title>
-    <link>https://hzren.github.io/tags/docker/</link>
+    <link>https://hzren.github.io/blog/tags/docker/</link>
     <description>Recent content in Docker on Code Mark</description>
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>hzren@outlook.com (renhongzhen)</managingEditor>
     <webMaster>hzren@outlook.com (renhongzhen)</webMaster>
-    <lastBuildDate>Tue, 12 Jan 2021 10:43:21 +0800</lastBuildDate><atom:link href="https://hzren.github.io/tags/docker/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 12 Jan 2021 10:43:21 +0800</lastBuildDate><atom:link href="https://hzren.github.io/blog/tags/docker/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>容器网络</title>
-      <link>https://hzren.github.io/blog/2021-01-12-%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C/</link>
+      <link>https://hzren.github.io/blog/blog/2021-01-12-%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C/</link>
       <pubDate>Tue, 12 Jan 2021 10:43:21 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-01-12-%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-01-12-%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C/</guid>
       <description>容器网络的核心是和物理网络实现网络隔离，物理网络对于容器来说为虚拟的，不可见的。
 概念 Overlay / 覆盖网络
 覆盖网络（Overlay network）是一种建立在另一网络之上的计算机网络。
@@ -32,10 +32,10 @@ admin@ip-172-20-33-102:~$ ip route default via 172.20.32.1 dev eth0 100.96.0.0/1
     
     <item>
       <title>docker容器内进程的启动</title>
-      <link>https://hzren.github.io/blog/2020-07-27-docker%E5%AE%B9%E5%99%A8%E5%86%85%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%90%AF%E5%8A%A8/</link>
+      <link>https://hzren.github.io/blog/blog/2020-07-27-docker%E5%AE%B9%E5%99%A8%E5%86%85%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%90%AF%E5%8A%A8/</link>
       <pubDate>Mon, 27 Jul 2020 15:30:26 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-07-27-docker%E5%AE%B9%E5%99%A8%E5%86%85%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%90%AF%E5%8A%A8/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-07-27-docker%E5%AE%B9%E5%99%A8%E5%86%85%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%90%AF%E5%8A%A8/</guid>
       <description>CMD 容器启动命令 CMD 指令的格式和 RUN 相似，也是两种格式：
 shell 格式：CMD &amp;lt;命令&amp;gt; exec 格式：CMD [&amp;quot;可执行文件&amp;quot;, &amp;quot;参数1&amp;quot;, &amp;quot;参数2&amp;quot;...] 参数列表格式：CMD [&amp;quot;参数1&amp;quot;, &amp;quot;参数2&amp;quot;...]。在指定了 ENTRYPOINT 指令后，用 CMD 指定具体的参数。 之前介绍容器的时候曾经说过，Docker 不是虚拟机，容器就是进程。既然是进程，那么在启动容器的时候，需要指定所运行的程序及参数。CMD 指令就是用于指定默认的容器主进程的启动命令的。
 在运行时可以指定新的命令来替代镜像设置中的这个默认命令，比如，ubuntu 镜像默认的 CMD 是 /bin/bash，如果我们直接 docker run -it ubuntu 的话，会直接进入 bash。我们也可以在运行时指定运行别的命令，如 docker run -it ubuntu cat /etc/os-release。这就是用 cat /etc/os-release 命令替换了默认的 /bin/bash 命令了，输出了系统版本信息。

@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>NoSQL on Code Mark</title>
-    <link>https://hzren.github.io/tags/nosql/</link>
+    <link>https://hzren.github.io/blog/tags/nosql/</link>
     <description>Recent content in NoSQL on Code Mark</description>
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>hzren@outlook.com (renhongzhen)</managingEditor>
     <webMaster>hzren@outlook.com (renhongzhen)</webMaster>
-    <lastBuildDate>Mon, 14 Sep 2020 16:39:56 +0800</lastBuildDate><atom:link href="https://hzren.github.io/tags/nosql/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 14 Sep 2020 16:39:56 +0800</lastBuildDate><atom:link href="https://hzren.github.io/blog/tags/nosql/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Redis备份</title>
-      <link>https://hzren.github.io/blog/2020-09-14-redis%E5%A4%87%E4%BB%BD/</link>
+      <link>https://hzren.github.io/blog/blog/2020-09-14-redis%E5%A4%87%E4%BB%BD/</link>
       <pubDate>Mon, 14 Sep 2020 16:39:56 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-09-14-redis%E5%A4%87%E4%BB%BD/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-09-14-redis%E5%A4%87%E4%BB%BD/</guid>
       <description>| 导语 本文详细分析redis持久化的俩种模式的详细流程
 一. 概述redis持久化的俩种模式 随着redis越来越流行，使用者不在仅仅满足其只是一个内存数据库，同时也期望其能将内存数据落磁盘，这样重启服务就不会导致缓存数据丢失了
 redis持久化有俩种模式模式，分别如下:

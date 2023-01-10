@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>math on Code Mark</title>
-    <link>https://hzren.github.io/tags/math/</link>
+    <link>https://hzren.github.io/blog/tags/math/</link>
     <description>Recent content in math on Code Mark</description>
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>hzren@outlook.com (renhongzhen)</managingEditor>
     <webMaster>hzren@outlook.com (renhongzhen)</webMaster>
-    <lastBuildDate>Sun, 05 Mar 2017 00:00:00 +0000</lastBuildDate><atom:link href="https://hzren.github.io/tags/math/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 05 Mar 2017 00:00:00 +0000</lastBuildDate><atom:link href="https://hzren.github.io/blog/tags/math/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Math Sample</title>
-      <link>https://hzren.github.io/post/2017-03-05-math-sample/</link>
+      <link>https://hzren.github.io/blog/post/2017-03-05-math-sample/</link>
       <pubDate>Sun, 05 Mar 2017 00:00:00 +0000</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/post/2017-03-05-math-sample/</guid>
+      <guid>https://hzren.github.io/blog/post/2017-03-05-math-sample/</guid>
       <description>&lt;p&gt;KaTeX can be used to generate complex math formulas server-side.&lt;/p&gt;
 &lt;p&gt;$$
 \phi = \frac{(1+\sqrt{5})}{2} = 1.6180339887\cdots

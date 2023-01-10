@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>go on Code Mark</title>
-    <link>https://hzren.github.io/tags/go/</link>
+    <link>https://hzren.github.io/blog/tags/go/</link>
     <description>Recent content in go on Code Mark</description>
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>hzren@outlook.com (renhongzhen)</managingEditor>
     <webMaster>hzren@outlook.com (renhongzhen)</webMaster>
-    <lastBuildDate>Tue, 22 Jun 2021 11:20:11 +0800</lastBuildDate><atom:link href="https://hzren.github.io/tags/go/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 22 Jun 2021 11:20:11 +0800</lastBuildDate><atom:link href="https://hzren.github.io/blog/tags/go/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Go语言</title>
-      <link>https://hzren.github.io/blog/2021-06-22-go%E8%AF%AD%E8%A8%80/</link>
+      <link>https://hzren.github.io/blog/blog/2021-06-22-go%E8%AF%AD%E8%A8%80/</link>
       <pubDate>Tue, 22 Jun 2021 11:20:11 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-06-22-go%E8%AF%AD%E8%A8%80/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-06-22-go%E8%AF%AD%E8%A8%80/</guid>
       <description>GOPATH 在一台电脑上GOPATH值是固定的，不因开发的代码工程的目录改变而改变。GOPATH可以通过go env命令查看：
 go env
 输出：

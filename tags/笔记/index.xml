@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>笔记 on Code Mark</title>
-    <link>https://hzren.github.io/tags/%E7%AC%94%E8%AE%B0/</link>
+    <link>https://hzren.github.io/blog/tags/%E7%AC%94%E8%AE%B0/</link>
     <description>Recent content in 笔记 on Code Mark</description>
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>hzren@outlook.com (renhongzhen)</managingEditor>
     <webMaster>hzren@outlook.com (renhongzhen)</webMaster>
-    <lastBuildDate>Wed, 03 Aug 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://hzren.github.io/tags/%E7%AC%94%E8%AE%B0/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 03 Aug 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://hzren.github.io/blog/tags/%E7%AC%94%E8%AE%B0/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Spring唯一约束异常统一处理</title>
-      <link>https://hzren.github.io/blog/2022-08-03-spring%E5%94%AF%E4%B8%80%E7%BA%A6%E6%9D%9F%E5%BC%82%E5%B8%B8%E7%BB%9F%E4%B8%80%E5%A4%84%E7%90%86/</link>
+      <link>https://hzren.github.io/blog/blog/2022-08-03-spring%E5%94%AF%E4%B8%80%E7%BA%A6%E6%9D%9F%E5%BC%82%E5%B8%B8%E7%BB%9F%E4%B8%80%E5%A4%84%E7%90%86/</link>
       <pubDate>Wed, 03 Aug 2022 00:00:00 +0000</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2022-08-03-spring%E5%94%AF%E4%B8%80%E7%BA%A6%E6%9D%9F%E5%BC%82%E5%B8%B8%E7%BB%9F%E4%B8%80%E5%A4%84%E7%90%86/</guid>
+      <guid>https://hzren.github.io/blog/blog/2022-08-03-spring%E5%94%AF%E4%B8%80%E7%BA%A6%E6%9D%9F%E5%BC%82%E5%B8%B8%E7%BB%9F%E4%B8%80%E5%A4%84%E7%90%86/</guid>
       <description>背景：在数据库唯一约束冲突时，需要根据冲突的唯一约束自动生成错误信息然后返回给前端。
 前提 Spring会将数据库层错误统一转化为DataAccessException ，DataAccessException知只是针对数据库层错误的抽象，根据错误类型不同，Spring实现了不同DataAccessException子类，本篇文章我们只处理DataIntegrityViolationException(唯一约束冲突)。
 在WEB层做统一异常处理 Controller类上添加@ControllerAdvice注解来统一所有WEB接口异常处理。
@@ -23,10 +23,10 @@ private static Response parseAndReturn(DataIntegrityViolationException dive) thr
     
     <item>
       <title>一次HttpHeaders setContentDispositionFormData 引发的服务端链接异常记录</title>
-      <link>https://hzren.github.io/blog/2020-08-04-%E4%B8%80%E6%AC%A1httpheaders-setcontentdispositionformdata-%E5%BC%95%E5%8F%91%E7%9A%84%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%93%BE%E6%8E%A5%E5%BC%82%E5%B8%B8%E8%AE%B0%E5%BD%95/</link>
+      <link>https://hzren.github.io/blog/blog/2020-08-04-%E4%B8%80%E6%AC%A1httpheaders-setcontentdispositionformdata-%E5%BC%95%E5%8F%91%E7%9A%84%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%93%BE%E6%8E%A5%E5%BC%82%E5%B8%B8%E8%AE%B0%E5%BD%95/</link>
       <pubDate>Tue, 04 Aug 2020 14:20:42 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-08-04-%E4%B8%80%E6%AC%A1httpheaders-setcontentdispositionformdata-%E5%BC%95%E5%8F%91%E7%9A%84%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%93%BE%E6%8E%A5%E5%BC%82%E5%B8%B8%E8%AE%B0%E5%BD%95/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-08-04-%E4%B8%80%E6%AC%A1httpheaders-setcontentdispositionformdata-%E5%BC%95%E5%8F%91%E7%9A%84%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%93%BE%E6%8E%A5%E5%BC%82%E5%B8%B8%E8%AE%B0%E5%BD%95/</guid>
       <description>正常情况下，告诉浏览器当前请求的响应是下载一个文件，对应的http header应该是这样的 ：
 HTTP/1.1 200 OK Server: Apache-Coyote/1.1 Content-Disposition: attachment;fileName=CMClient.apk Content-Type: application/octet-stream;charset=UTF-8 Content-Length: 3501505 Date: Wed, 26 Feb 2014 06:06:53 GMT 该头信息的关键就在于这两个字段：
 Content-Disposition: attachment;fileName=CMClient.apk Content-Type: application/octet-stream;charset=UTF-8 Content-Disposition: attachment;fileName=CMClient.apk 告诉浏览器当前的响应是下载文件， 文件以CMClient.apk这个名字进行存储。 Content-Type: application/octet-stream;charset=UTF-8 告诉浏览器响应的内容是以流的形式传输。

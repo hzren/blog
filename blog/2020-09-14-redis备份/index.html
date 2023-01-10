@@ -29,14 +29,14 @@ save 900 1 //15分钟内有一条数据写入时触发rdb持久化 save 300 10 /
     "@type": "WebSite",
     "name": "Code Mark",
     
-    "url": "https:\/\/hzren.github.io"
+    "url": "https:\/\/hzren.github.io\/blog\/"
 }
 </script><script type="application/ld+json">
 {
   "@context": "http://schema.org",
   "@type": "Organization",
   "name": "",
-  "url": "https:\/\/hzren.github.io"
+  "url": "https:\/\/hzren.github.io\/blog\/"
   
   
   
@@ -51,14 +51,14 @@ save 900 1 //15分钟内有一条数据写入时触发rdb持久化 save 300 10 /
         "@type": "ListItem",
         "position": 1,
         "item": {
-          "@id": "https:\/\/hzren.github.io",
+          "@id": "https:\/\/hzren.github.io\/blog\/",
           "name": "home"
         }
     },{
         "@type": "ListItem",
         "position": 3,
         "item": {
-          "@id": "https:\/\/hzren.github.io\/blog\/2020-09-14-redis%E5%A4%87%E4%BB%BD\/",
+          "@id": "https:\/\/hzren.github.io\/blog\/blog\/2020-09-14-redis%E5%A4%87%E4%BB%BD\/",
           "name": "Redis备份"
         }
     }]
@@ -76,15 +76,15 @@ save 900 1 //15分钟内有一条数据写入时触发rdb持久化 save 300 10 /
   "wordCount":  209 ,
   "datePublished" : "2020-09-14T16:39:56",
   "dateModified" : "2020-09-14T16:39:56",
-  "image" : "https:\/\/hzren.github.io\/img\/avatar-icon.png",
+  "image" : "https:\/\/hzren.github.io\/blog\/img\/avatar-icon.png",
   "keywords" : [ "Redis, NoSQL" ],
-  "mainEntityOfPage" : "https:\/\/hzren.github.io\/blog\/2020-09-14-redis%E5%A4%87%E4%BB%BD\/",
+  "mainEntityOfPage" : "https:\/\/hzren.github.io\/blog\/blog\/2020-09-14-redis%E5%A4%87%E4%BB%BD\/",
   "publisher" : {
     "@type": "Organization",
-    "name" : "https:\/\/hzren.github.io",
+    "name" : "https:\/\/hzren.github.io\/blog\/",
     "logo" : {
         "@type" : "ImageObject",
-        "url" : "https:\/\/hzren.github.io\/img\/avatar-icon.png",
+        "url" : "https:\/\/hzren.github.io\/blog\/img\/avatar-icon.png",
         "height" :  60 ,
         "width" :  60
     }
@@ -104,8 +104,8 @@ save 900 1 //15分钟内有一条数据写入时触发rdb持久化 save 300 10 /
 &gt;save //主进程执行rdb持久化操作 &gt;bgsave //生成后台进程执行rdb持久化(默认方式) 4.rdb持久化数据安全性 疑问: rdb持久化模式下，当机器宕机，会丢失多少数据？
 答: 从最近一次rdb保存到宕机时的数据都会丢失
 5.rdb持久化核心源码(bgsave为例) int rdbSaveBackground(char *filename, rdbSaveInfo *rsi) { pid_t childpid; long long start; //如果已经存在aof重写进程或rdb持久化进程则返回错误 if (server.aof_child_pid != -1 || server.rdb_child_pid != -1) return C_ERR; server.dirty_before_bgsave = server.">
-<meta property="og:image" content="https://hzren.github.io/img/avatar-icon.png" />
-<meta property="og:url" content="https://hzren.github.io/blog/2020-09-14-redis%E5%A4%87%E4%BB%BD/" />
+<meta property="og:image" content="https://hzren.github.io/blog/img/avatar-icon.png" />
+<meta property="og:url" content="https://hzren.github.io/blog/blog/2020-09-14-redis%E5%A4%87%E4%BB%BD/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Code Mark" />
 
@@ -114,17 +114,17 @@ save 900 1 //15分钟内有一条数据写入时触发rdb持久化 save 300 10 /
 一. 概述redis持久化的俩种模式 随着redis越来越流行，使用者不在仅仅满足其只是一个内存数据库，同时也期望其能将内存数据落磁盘，这样重启服务就不会导致缓存数据丢失了
 redis持久化有俩种模式模式，分别如下:
 rdb(默认) aof 二. rdb持久化模式 1.rdb持久化核心思路 获取当前内存快照并将快照数据保存到磁盘实现当前数 …">
-  <meta name="twitter:image" content="https://hzren.github.io/img/avatar-icon.png" />
+  <meta name="twitter:image" content="https://hzren.github.io/blog/img/avatar-icon.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:site" content="@username" />
   <meta name="twitter:creator" content="@username" />
-  <link href='https://hzren.github.io/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <link href='https://hzren.github.io/blog/img/favicon.ico' rel='icon' type='image/x-icon'/>
   <meta name="generator" content="Hugo 0.109.0">
-  <link rel="alternate" href="https://hzren.github.io/index.xml" type="application/rss+xml" title="Code Mark"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+  <link rel="alternate" href="https://hzren.github.io/blog/index.xml" type="application/rss+xml" title="Code Mark"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://hzren.github.io/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://hzren.github.io/blog/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
-  <link rel="stylesheet" href="https://hzren.github.io/css/highlight.min.css" /><link rel="stylesheet" href="https://hzren.github.io/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://hzren.github.io/blog/css/highlight.min.css" /><link rel="stylesheet" href="https://hzren.github.io/blog/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
 
 
@@ -139,7 +139,7 @@ rdb(默认) aof 二. rdb持久化模式 1.rdb持久化核心思路 获取当前�
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="https://hzren.github.io">Code Mark</a>
+      <a class="navbar-brand" href="https://hzren.github.io/blog/">Code Mark</a>
     </div>
 
     <div class="collapse navbar-collapse" id="main-navbar">
@@ -147,7 +147,7 @@ rdb(默认) aof 二. rdb持久化模式 1.rdb持久化核心思路 获取当前�
         
           
             <li>
-              <a title="文章" href="/">文章</a>
+              <a title="文章" href="/blog/">文章</a>
             </li>
           
         
@@ -156,11 +156,11 @@ rdb(默认) aof 二. rdb持久化模式 1.rdb持久化核心思路 获取当前�
               <a class="navlinks-parent">代码</a>
               <div class="navlinks-children">
                 
-                  <a href="/post/2017-03-07-bigimg-sample">Big Image Sample</a>
+                  <a href="/blog/post/2017-03-07-bigimg-sample">Big Image Sample</a>
                 
-                  <a href="/post/2017-03-05-math-sample">Math Sample</a>
+                  <a href="/blog/post/2017-03-05-math-sample">Math Sample</a>
                 
-                  <a href="/post/2016-03-08-code-sample">Code Sample</a>
+                  <a href="/blog/post/2016-03-08-code-sample">Code Sample</a>
                 
               </div>
             </li>
@@ -168,13 +168,13 @@ rdb(默认) aof 二. rdb持久化模式 1.rdb持久化核心思路 获取当前�
         
           
             <li>
-              <a title="关于我" href="/page/about/">关于我</a>
+              <a title="关于我" href="/blog/page/about/">关于我</a>
             </li>
           
         
           
             <li>
-              <a title="分类" href="/tags">分类</a>
+              <a title="分类" href="/blog/tags">分类</a>
             </li>
           
         
@@ -188,8 +188,8 @@ rdb(默认) aof 二. rdb持久化模式 1.rdb持久化核心思路 获取当前�
     
       <div class="avatar-container">
         <div class="avatar-img-border">
-          <a title="Code Mark" href="https://hzren.github.io">
-            <img class="avatar-img" src="https://hzren.github.io/img/avatar-icon.png" alt="Code Mark" />
+          <a title="Code Mark" href="https://hzren.github.io/blog/">
+            <img class="avatar-img" src="https://hzren.github.io/blog/img/avatar-icon.png" alt="Code Mark" />
           </a>
         </div>
       </div>
@@ -410,9 +410,9 @@ aof持久化刷盘频率控制</p>
         
           <div class="blog-tags">
             
-              <a href="https://hzren.github.io/tags/redis/">Redis</a>&nbsp;
+              <a href="https://hzren.github.io/blog//tags/redis/">Redis</a>&nbsp;
             
-              <a href="https://hzren.github.io/tags/nosql/">NoSQL</a>&nbsp;
+              <a href="https://hzren.github.io/blog//tags/nosql/">NoSQL</a>&nbsp;
             
           </div>
         
@@ -427,42 +427,42 @@ aof持久化刷盘频率控制</p>
     <ul class="share">
       
       <li>
-        <a href="//twitter.com/share?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-09-14-redis%25E5%25A4%2587%25E4%25BB%25BD%2f&amp;text=Redis%e5%a4%87%e4%bb%bd&amp;via=username" target="_blank" title="Share on Twitter">
+        <a href="//twitter.com/share?url=https%3a%2f%2fhzren.github.io%2fblog%2fblog%2f2020-09-14-redis%25E5%25A4%2587%25E4%25BB%25BD%2f&amp;text=Redis%e5%a4%87%e4%bb%bd&amp;via=username" target="_blank" title="Share on Twitter">
           <i class="fab fa-twitter"></i>
         </a>
       </li>
   
       
       <li>
-        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fhzren.github.io%2fblog%2f2020-09-14-redis%25E5%25A4%2587%25E4%25BB%25BD%2f" target="_blank" title="Share on Facebook">
+        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fhzren.github.io%2fblog%2fblog%2f2020-09-14-redis%25E5%25A4%2587%25E4%25BB%25BD%2f" target="_blank" title="Share on Facebook">
           <i class="fab fa-facebook"></i>
         </a>
       </li>
   
       
       <li>
-        <a href="//reddit.com/submit?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-09-14-redis%25E5%25A4%2587%25E4%25BB%25BD%2f&amp;title=Redis%e5%a4%87%e4%bb%bd" target="_blank" title="Share on Reddit">
+        <a href="//reddit.com/submit?url=https%3a%2f%2fhzren.github.io%2fblog%2fblog%2f2020-09-14-redis%25E5%25A4%2587%25E4%25BB%25BD%2f&amp;title=Redis%e5%a4%87%e4%bb%bd" target="_blank" title="Share on Reddit">
           <i class="fab fa-reddit"></i>
         </a>
       </li>
   
       
       <li>
-        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-09-14-redis%25E5%25A4%2587%25E4%25BB%25BD%2f&amp;title=Redis%e5%a4%87%e4%bb%bd" target="_blank" title="Share on LinkedIn">
+        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fhzren.github.io%2fblog%2fblog%2f2020-09-14-redis%25E5%25A4%2587%25E4%25BB%25BD%2f&amp;title=Redis%e5%a4%87%e4%bb%bd" target="_blank" title="Share on LinkedIn">
           <i class="fab fa-linkedin"></i>
         </a>
       </li>
   
       
       <li>
-        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-09-14-redis%25E5%25A4%2587%25E4%25BB%25BD%2f&amp;title=Redis%e5%a4%87%e4%bb%bd" target="_blank" title="Share on StumbleUpon">
+        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fhzren.github.io%2fblog%2fblog%2f2020-09-14-redis%25E5%25A4%2587%25E4%25BB%25BD%2f&amp;title=Redis%e5%a4%87%e4%bb%bd" target="_blank" title="Share on StumbleUpon">
           <i class="fab fa-stumbleupon"></i>
         </a>
       </li>
   
       
       <li>
-        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-09-14-redis%25E5%25A4%2587%25E4%25BB%25BD%2f&amp;description=Redis%e5%a4%87%e4%bb%bd" target="_blank" title="Share on Pinterest">
+        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fhzren.github.io%2fblog%2fblog%2f2020-09-14-redis%25E5%25A4%2587%25E4%25BB%25BD%2f&amp;description=Redis%e5%a4%87%e4%bb%bd" target="_blank" title="Share on Pinterest">
           <i class="fab fa-pinterest"></i>
         </a>
       </li>
@@ -484,7 +484,7 @@ aof持久化刷盘频率控制</p>
                   <ul>
                 
                 
-                    <li><a href="/blog/2020-08-06-redis%E5%93%A8%E5%85%B5%E6%A8%A1%E5%BC%8F%E6%A6%82%E8%A6%81/">Redis哨兵模式概要</a></li>
+                    <li><a href="/blog/blog/2020-08-06-redis%E5%93%A8%E5%85%B5%E6%A8%A1%E5%BC%8F%E6%A6%82%E8%A6%81/">Redis哨兵模式概要</a></li>
                 
               </ul>
 
@@ -496,12 +496,12 @@ aof持久化刷盘频率控制</p>
         <ul class="pager blog-pager">
           
             <li class="previous">
-              <a href="https://hzren.github.io/blog/2020-08-28-centos-%E5%AE%89%E8%A3%85-hadoop/" data-toggle="tooltip" data-placement="top" title="centos 安装 hadoop">&larr; 前一篇</a>
+              <a href="https://hzren.github.io/blog/blog/2020-08-28-centos-%E5%AE%89%E8%A3%85-hadoop/" data-toggle="tooltip" data-placement="top" title="centos 安装 hadoop">&larr; 前一篇</a>
             </li>
           
           
             <li class="next">
-              <a href="https://hzren.github.io/blog/2020-09-29-java%E4%BD%BF%E7%94%A8protocol-buffers/" data-toggle="tooltip" data-placement="top" title="Java使用Protocol Buffers">后一篇 &rarr;</a>
+              <a href="https://hzren.github.io/blog/blog/2020-09-29-java%E4%BD%BF%E7%94%A8protocol-buffers/" data-toggle="tooltip" data-placement="top" title="Java使用Protocol Buffers">后一篇 &rarr;</a>
             </li>
           
         </ul>
@@ -818,7 +818,7 @@ aof持久化刷盘频率控制</p>
         <p class="credits copyright text-muted">
           
             
-              <a href="https://hyllo.gitee.io/">renhongzhen</a>
+              <a href="https://hzren.github.io/blog/">renhongzhen</a>
             
           
 
@@ -829,7 +829,7 @@ aof持久化刷盘频率控制</p>
 
           
             &nbsp;&bull;&nbsp;
-            <a href="https://hzren.github.io">Code Mark</a>
+            <a href="https://hzren.github.io/blog/">Code Mark</a>
           
         </p>
         
@@ -845,11 +845,11 @@ aof持久化刷盘频率控制</p>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
-<script src="https://hzren.github.io/js/main.js"></script>
-<script src="https://hzren.github.io/js/highlight.min.js"></script>
+<script src="https://hzren.github.io/blog/js/main.js"></script>
+<script src="https://hzren.github.io/blog/js/highlight.min.js"></script>
 <script> hljs.initHighlightingOnLoad(); </script>
 <script> $(document).ready(function() {$("pre.chroma").css("padding","0");}); </script><script> renderMathInElement(document.body); </script><script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://hzren.github.io/js/load-photoswipe.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://hzren.github.io/blog/js/load-photoswipe.js"></script>
 
 
 

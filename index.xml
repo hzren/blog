@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Code Mark</title>
-    <link>https://hzren.github.io/</link>
+    <link>https://hzren.github.io/blog/</link>
     <description>Recent content on Code Mark</description>
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>hzren@outlook.com (renhongzhen)</managingEditor>
     <webMaster>hzren@outlook.com (renhongzhen)</webMaster>
-    <lastBuildDate>Wed, 03 Aug 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://hzren.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 03 Aug 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://hzren.github.io/blog/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Spring唯一约束异常统一处理</title>
-      <link>https://hzren.github.io/blog/2022-08-03-spring%E5%94%AF%E4%B8%80%E7%BA%A6%E6%9D%9F%E5%BC%82%E5%B8%B8%E7%BB%9F%E4%B8%80%E5%A4%84%E7%90%86/</link>
+      <link>https://hzren.github.io/blog/blog/2022-08-03-spring%E5%94%AF%E4%B8%80%E7%BA%A6%E6%9D%9F%E5%BC%82%E5%B8%B8%E7%BB%9F%E4%B8%80%E5%A4%84%E7%90%86/</link>
       <pubDate>Wed, 03 Aug 2022 00:00:00 +0000</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2022-08-03-spring%E5%94%AF%E4%B8%80%E7%BA%A6%E6%9D%9F%E5%BC%82%E5%B8%B8%E7%BB%9F%E4%B8%80%E5%A4%84%E7%90%86/</guid>
+      <guid>https://hzren.github.io/blog/blog/2022-08-03-spring%E5%94%AF%E4%B8%80%E7%BA%A6%E6%9D%9F%E5%BC%82%E5%B8%B8%E7%BB%9F%E4%B8%80%E5%A4%84%E7%90%86/</guid>
       <description>背景：在数据库唯一约束冲突时，需要根据冲突的唯一约束自动生成错误信息然后返回给前端。
 前提 Spring会将数据库层错误统一转化为DataAccessException ，DataAccessException知只是针对数据库层错误的抽象，根据错误类型不同，Spring实现了不同DataAccessException子类，本篇文章我们只处理DataIntegrityViolationException(唯一约束冲突)。
 在WEB层做统一异常处理 Controller类上添加@ControllerAdvice注解来统一所有WEB接口异常处理。
@@ -23,10 +23,10 @@ private static Response parseAndReturn(DataIntegrityViolationException dive) thr
     
     <item>
       <title>Mysql转义字符</title>
-      <link>https://hzren.github.io/blog/2022-08-02-mysql%E8%BD%AC%E4%B9%89%E5%AD%97%E7%AC%A6/</link>
+      <link>https://hzren.github.io/blog/blog/2022-08-02-mysql%E8%BD%AC%E4%B9%89%E5%AD%97%E7%AC%A6/</link>
       <pubDate>Tue, 02 Aug 2022 00:00:00 +0000</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2022-08-02-mysql%E8%BD%AC%E4%B9%89%E5%AD%97%E7%AC%A6/</guid>
+      <guid>https://hzren.github.io/blog/blog/2022-08-02-mysql%E8%BD%AC%E4%B9%89%E5%AD%97%E7%AC%A6/</guid>
       <description>如果在文本搜索实现LIKE查询，通常会这样做：
 SELECT * FROM T_Whatever WHERE SomeField LIKE CONCAT(&amp;#39;%&amp;#39;, @in_SearchText, &amp;#39;%&amp;#39;) 然而，（除非不使用like使用全文搜索）当有人输入“50%”或“a_b”之类的文本时，这会产生问题。这时候需要使用LIKE转义词来解决这个问题：
 SELECT * FROM T_Whatever WHERE SomeField LIKE CONCAT(&amp;#39;%&amp;#39;, @in_SearchText, &amp;#39;%&amp;#39;) ESCAPE &amp;#39;\&amp;#39; 这意味着\现在将被视为ESCAPE字符。这意味着，现在只需在搜索字符串中的每个字符前加上\，结果就会开始正确，即使用户输入了特殊字符，比如%或_。
@@ -37,10 +37,10 @@ string stringToSearch=“Les Mise\u0301ables”； </description>
     
     <item>
       <title>Mysql优化</title>
-      <link>https://hzren.github.io/blog/2021-12-15-mysql%E4%BC%98%E5%8C%96/</link>
+      <link>https://hzren.github.io/blog/blog/2021-12-15-mysql%E4%BC%98%E5%8C%96/</link>
       <pubDate>Wed, 15 Dec 2021 10:54:03 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-12-15-mysql%E4%BC%98%E5%8C%96/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-12-15-mysql%E4%BC%98%E5%8C%96/</guid>
       <description>硬件/参数配置 升级硬件/合适的mysql参数能最直接的带来数据库性能的提升。
 硬件 有些应用数据库合应用服务同时运行在同一台配置较好的物理机器上，在这种场景下，应用本身的磁盘操作.例如写日志，会极大的影响数据库性能，建议日志和数据库使用两块不同的硬盘。
 参数 合适的参数配置，可以提高数据库写脏页的速度，减少因刷新脏页引起的停顿。
@@ -59,10 +59,10 @@ InnoDB存在change buffer， 里面存放了对数据库二级索引的变更记
     
     <item>
       <title>Spring Boot Maven Plugin K8s</title>
-      <link>https://hzren.github.io/blog/2021-12-07-spring-boot-maven-plugin-k8s/</link>
+      <link>https://hzren.github.io/blog/blog/2021-12-07-spring-boot-maven-plugin-k8s/</link>
       <pubDate>Tue, 07 Dec 2021 17:12:13 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-12-07-spring-boot-maven-plugin-k8s/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-12-07-spring-boot-maven-plugin-k8s/</guid>
       <description>需先安装好docker，minikube等环境依赖 minikube 启动时指定镜像 国内从官网下载太慢, 需指定镜像地址
 minikube start --driver=docker --force=true --image-mirror-country=cn --image-repository=registry.cn-hangzhou.aliyuncs.com/google_containers --registry-mirror=https://ubo05wor.mirror.aliyuncs.com --cache-images=true 配置docker 从docker.hub下载也太慢了，配置docker镜像
 [root@localhost demo]# vi /etc/docker/daemon.json { &amp;#34;registry-mirrors&amp;#34;: [&amp;#34;https://ubo05wor.mirror.aliyuncs.com&amp;#34;], &amp;#34;insecure-registries&amp;#34; : [&amp;#34;10.100.3.35:5000&amp;#34;] } 重启docker服务，10.100.3.35:5000为私有docker仓库，配置为不需要https访问
@@ -75,10 +75,10 @@ push镜像 参考上面xml配置，我本地push，pull镜像是不需要登录�
     
     <item>
       <title>Kubeadm搭建</title>
-      <link>https://hzren.github.io/blog/2021-12-02-kubeadm%E6%90%AD%E5%BB%BA/</link>
+      <link>https://hzren.github.io/blog/blog/2021-12-02-kubeadm%E6%90%AD%E5%BB%BA/</link>
       <pubDate>Thu, 02 Dec 2021 15:06:03 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-12-02-kubeadm%E6%90%AD%E5%BB%BA/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-12-02-kubeadm%E6%90%AD%E5%BB%BA/</guid>
       <description>新建虚拟机 vmware 安装虚拟机，安装完成后配置网卡为桥接模式。
 配置网卡自动获取IP地址:
 [root@localhost ~]# vi /etc/sysconfig/network-scripts/ ifcfg-ens33 ifdown-Team ifup-post ifcfg-lo ifdown-TeamPort ifup-ppp ifdown ifdown-tunnel ifup-routes ifdown-bnep ifup ifup-sit ifdown-eth ifup-aliases ifup-Team ifdown-ippp ifup-bnep ifup-TeamPort ifdown-ipv6 ifup-eth ifup-tunnel ifdown-isdn ifup-ippp ifup-wireless ifdown-post ifup-ipv6 init.ipv6-global ifdown-ppp ifup-isdn network-functions ifdown-routes ifup-plip network-functions-ipv6 ifdown-sit ifup-plusb [root@localhost ~]# vi /etc/sysconfig/network-scripts/ 当前新建的虚拟机里面主机网卡名称为ifcfg-ens33 vi /etc/sysconfig/network-scripts/ifcfg-ens33 修改里面ONBOOT=no 为ONBOOT=yes
@@ -92,10 +92,10 @@ free -m vi /etc/fstab 在swap配置前加#注释掉</description>
     
     <item>
       <title>Byte&amp;bit</title>
-      <link>https://hzren.github.io/blog/2021-06-22-bytebit/</link>
+      <link>https://hzren.github.io/blog/blog/2021-06-22-bytebit/</link>
       <pubDate>Tue, 22 Jun 2021 11:20:11 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-06-22-bytebit/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-06-22-bytebit/</guid>
       <description>基本概念： 在计算机科学中，bit（比特）是表示信息的最小单位，叫做二进制位，一般用0和1表示。
 Byte叫做字节，由8个位（8bit）组成一个字节(1Byte)，用于表示计算机中的一个字符。
 bit与Byte之间可以进行换算，其换算关系为：1Byte=8bit（或简写为：1B=8b）；在实际应用中一般用简称， 即1bit简写为1b(注意是小写英文字母b)，1Byte简写为1B（注意是大写英文字母B）。
@@ -123,10 +123,10 @@ char：16位，是整数类型，用单引号括起来的1个字符（可以是�
     
     <item>
       <title>Go语言</title>
-      <link>https://hzren.github.io/blog/2021-06-22-go%E8%AF%AD%E8%A8%80/</link>
+      <link>https://hzren.github.io/blog/blog/2021-06-22-go%E8%AF%AD%E8%A8%80/</link>
       <pubDate>Tue, 22 Jun 2021 11:20:11 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-06-22-go%E8%AF%AD%E8%A8%80/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-06-22-go%E8%AF%AD%E8%A8%80/</guid>
       <description>GOPATH 在一台电脑上GOPATH值是固定的，不因开发的代码工程的目录改变而改变。GOPATH可以通过go env命令查看：
 go env
 输出：
@@ -135,10 +135,10 @@ C:\Users\Administrator\go&amp;gt;go env set GO111MODULE=on set GOARCH=amd64 set 
     
     <item>
       <title>二进制-位移计算</title>
-      <link>https://hzren.github.io/blog/2021-05-26-%E4%BA%8C%E8%BF%9B%E5%88%B6-%E4%BD%8D%E7%A7%BB%E8%AE%A1%E7%AE%97/</link>
+      <link>https://hzren.github.io/blog/blog/2021-05-26-%E4%BA%8C%E8%BF%9B%E5%88%B6-%E4%BD%8D%E7%A7%BB%E8%AE%A1%E7%AE%97/</link>
       <pubDate>Wed, 26 May 2021 09:59:43 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-05-26-%E4%BA%8C%E8%BF%9B%E5%88%B6-%E4%BD%8D%E7%A7%BB%E8%AE%A1%E7%AE%97/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-05-26-%E4%BA%8C%E8%BF%9B%E5%88%B6-%E4%BD%8D%E7%A7%BB%E8%AE%A1%E7%AE%97/</guid>
       <description>原码 所谓原码就是机器数，是加了一位符号位的二进制数，正数符号位为0，负数符号位为1，计算机中存储、处理、运算的数据通常是8位、16位、32位或64位的，这里以最简单的8位为例讲解。注意符号位是包含在8位中的其中1位，故可直观读出的数只有7位（只有后7位数可以按权展开）。有心人可能注意到原码是有缺陷的，它只能表示255种状态，因为00000000（＋0）和10000000（－0）其实是一个数，因此原码的表示范围成了－127到＋127，这个问题需要神奇的补码来解决，因为在补码中10000000被用来表示－128。
 反码 所谓反码，英语里又叫ones&amp;rsquo; complement（对1求补），这里的1，本质上是一个有限位计数系统里所能表示出的最大值，在8位二进制里就是11111111，在1位十进制里就是9，在3位十六进制里就是FFF（再大就要进位了）。求反又被称为对一求补，用最大数减去一个数就能得到它的反，很容易看出在二进制里11111111减去任何数结果都是把这个数按位取反，0变1，1变零，所以才称之为反码。用原码求反码的方法是：正数不变，负数保留符号位1不变，剩下位按位取反。
 补码 英语里又叫two&amp;rsquo;s complement（对2求补），这个2指的是计数系统的容量（模），就是计数系统所能表示的状态数。对1位二进制数来说只有0和1两种状态，所以模是二进制 10 也就是十进制的2，对7位二进制数来说就是10 000 000，这个模是不可能取到的，因为位数多一位。用模减去一个数（无符号部分）就能得到这个数的补，比如10000000－1010010=0101110，事实上因为10 000 000=1 111 111+1， 稍加改变就成了（1 111 111－1 010 010）+1，所以又可以表述为先求反再加1。总结求补码的方法就是正数依旧不变，负数保留符号位不变，先求反码再加上1。
@@ -153,10 +153,10 @@ Java 中的左移位和右移位的表示是不太一样的; 左移位是 &amp;l
     
     <item>
       <title>Arthas使用</title>
-      <link>https://hzren.github.io/blog/2021-01-27-arthas%E4%BD%BF%E7%94%A8/</link>
+      <link>https://hzren.github.io/blog/blog/2021-01-27-arthas%E4%BD%BF%E7%94%A8/</link>
       <pubDate>Wed, 27 Jan 2021 15:11:16 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-01-27-arthas%E4%BD%BF%E7%94%A8/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-01-27-arthas%E4%BD%BF%E7%94%A8/</guid>
       <description>官方教程
 文档
 下载 下载全量zip包：从Github Releases页下载
@@ -171,10 +171,10 @@ $ $ java -jar arthas-boot.jar * [1]: 35542 [2]: 71560 arthas-demo.jar Demo进程
     
     <item>
       <title>JVM</title>
-      <link>https://hzren.github.io/blog/2021-01-25-jvm/</link>
+      <link>https://hzren.github.io/blog/blog/2021-01-25-jvm/</link>
       <pubDate>Mon, 25 Jan 2021 15:48:02 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-01-25-jvm/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-01-25-jvm/</guid>
       <description>在 Java 虚拟机规范中，局部变量区等价于一个数组，并且可以用正整数来索引。除了 long、double 值需要用两个数组单元来存储之外，其他基本类型以及引用类型的值均占用一个数组单元。
 也就是说，boolean、byte、char、short 这四种类型，在栈上占用的空间和 int 是一样的，和引用类型也是一样的。因此，在 32 位的 HotSpot 中，这些类型在栈上将占用 4 个字节；而在 64 位的 HotSpot 中，他们将占 8 个字节。
 当然，这种情况仅存在于局部变量，而并不会出现在存储于堆中的字段或者数组元素上。对于 byte、char 以及 short 这三种类型的字段或者数组单元，它们在堆上占用的空间分别为一字节、两字节，以及两字节，也就是说，跟这些类型的值域相吻合。
@@ -188,10 +188,10 @@ JVM 的静态绑定和动态绑定 Java 虚拟机中关于方法重写的判定�
     
     <item>
       <title>Java语言</title>
-      <link>https://hzren.github.io/blog/2021-01-22-java%E8%AF%AD%E8%A8%80/</link>
+      <link>https://hzren.github.io/blog/blog/2021-01-22-java%E8%AF%AD%E8%A8%80/</link>
       <pubDate>Fri, 22 Jan 2021 10:55:31 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-01-22-java%E8%AF%AD%E8%A8%80/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-01-22-java%E8%AF%AD%E8%A8%80/</guid>
       <description>引用类型 不同的引用类型，主要体现的是对象不同的可达性（reachable）状态和对垃圾收集的影响
 强引用（&amp;ldquo;Strong&amp;rdquo; Reference），就是我们最常见的普通对象引用，只要还有强引用指向一个对象，就能表明对象还“活着”，垃圾收集器不会碰这种对象。对于一个普通的对象，如果没有其他的引用关系，只要超过了引用的作用域或者显式地将相应（强）引用赋值为null，就是可以被垃圾收集的了，当然具体回收时机还是要看垃圾收集策略。
 软引用（SoftReference），是一种相对强引用弱化一些的引用，可以让对象豁免一些垃圾收集，只有当JVM认为内存不足时，才会去试图回收软引用指向的对象。JVM会确保在抛出OutOfMemoryError之前，清理软引用指向的对象。软引用通常用来实现内存敏感的缓存，如果还有空闲内存，就可以暂时保留缓存，当内存不足时清理掉，这样就保证了使用缓存的同时，不会耗尽内存。
@@ -219,10 +219,10 @@ AtomicLongFieldUpdater中代码：
     
     <item>
       <title>Linux网络</title>
-      <link>https://hzren.github.io/blog/2021-01-19-linux%E7%BD%91%E7%BB%9C/</link>
+      <link>https://hzren.github.io/blog/blog/2021-01-19-linux%E7%BD%91%E7%BB%9C/</link>
       <pubDate>Tue, 19 Jan 2021 18:30:32 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-01-19-linux%E7%BD%91%E7%BB%9C/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-01-19-linux%E7%BD%91%E7%BB%9C/</guid>
       <description>摘自 倪朋飞-极客时间-Linux性能优化实战
 Linux 通用 IP 网络栈的示意图：
 网卡是发送和接收网络包的基本设备。在系统启动过程中，网卡通过内核中的网卡驱动程序注册到系统中。而在网络收发过程中，内核通过中断跟网卡进行交互。再结合前面提到的 Linux 网络栈，可以看出，网络包的处理非常复杂。所以，网卡硬中断只处理最核心的网卡数据读取或发送，而协议栈中的大部分逻辑，都会放到软中断中处理。
@@ -238,10 +238,10 @@ Linux 通用 IP 网络栈的示意图：
     
     <item>
       <title>文件系统</title>
-      <link>https://hzren.github.io/blog/2021-01-15-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/</link>
+      <link>https://hzren.github.io/blog/blog/2021-01-15-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/</link>
       <pubDate>Fri, 15 Jan 2021 17:28:36 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-01-15-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-01-15-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/</guid>
       <description>摘自 倪朋飞-极客时间-Linux性能优化实战
 磁盘为系统提供了最基本的持久化存储。文件系统则在磁盘的基础上，提供了一个用来管理文件的树状结构。
 索引节点和目录项 文件系统，本身是对存储设备上的文件，进行组织管理的机制。组织方式不同，就会形成不同的文件系统。你要记住最重要的一点，在 Linux 中一切皆文件。不仅普通的文件和目录，就连块设备、套接字、管道等，也都要通过统一的文件系统来管理。为了方便管理，Linux 文件系统为每个文件都分配两个数据结构，索引节点（indexnode）和目录项（directory entry）。它们主要用来记录文件的元信息和目录结构。
@@ -258,10 +258,10 @@ Linux 通用 IP 网络栈的示意图：
     
     <item>
       <title>Linux内存管理</title>
-      <link>https://hzren.github.io/blog/2021-01-15-linux%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/</link>
+      <link>https://hzren.github.io/blog/blog/2021-01-15-linux%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/</link>
       <pubDate>Fri, 15 Jan 2021 15:07:33 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-01-15-linux%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-01-15-linux%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/</guid>
       <description>摘自 倪朋飞-极客时间-Linux性能优化实战
 内存映射 物理内存也称为主存，大多数计算机用的主存都是动态随机访问内存（DRAM）。只有内核才可以直接访问物理内存。
 Linux 内核给每个进程都提供了一个独立的虚拟地址空间，并且这个地址空间是连续的。这样，进程就可以很方便地访问内存，更确切地说是访问虚拟内存。
@@ -280,10 +280,10 @@ TLB 其实就是 MMU 中页表的高速缓存。由于进程的虚拟地址空�
     
     <item>
       <title>CPU优化</title>
-      <link>https://hzren.github.io/blog/2021-01-15-cpu%E4%BC%98%E5%8C%96/</link>
+      <link>https://hzren.github.io/blog/blog/2021-01-15-cpu%E4%BC%98%E5%8C%96/</link>
       <pubDate>Fri, 15 Jan 2021 14:06:46 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-01-15-cpu%E4%BC%98%E5%8C%96/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-01-15-cpu%E4%BC%98%E5%8C%96/</guid>
       <description>摘自 倪朋飞-极客时间-Linux性能优化实战
 应用程序优化 首先，从应用程序的角度来说，降低 CPU 使用率的最好方法当然是，排除所有不必要的工作，只保留最核心的逻辑。比如减少循环的层次、减少递归、减少动态内存分配等等。
 除此之外，应用程序的性能优化也包括很多种方法，我在这里列出了最常见的几种，你可以记下来。
@@ -295,10 +295,10 @@ CPU 绑定：把进程绑定到一个或者多个 CPU 上，可以提高 CPU 缓
     
     <item>
       <title>中断</title>
-      <link>https://hzren.github.io/blog/2021-01-15-%E4%B8%AD%E6%96%AD/</link>
+      <link>https://hzren.github.io/blog/blog/2021-01-15-%E4%B8%AD%E6%96%AD/</link>
       <pubDate>Fri, 15 Jan 2021 10:54:40 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-01-15-%E4%B8%AD%E6%96%AD/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-01-15-%E4%B8%AD%E6%96%AD/</guid>
       <description>摘自 倪朋飞-极客时间-Linux性能优化实战
 中断是一种异步的事件处理机制，可以提高系统的并发处理能力。
 由于中断处理程序会打断其他进程的运行，所以，为了减少对正常进程运行调度的影响，中断处理程序就需要尽可能快地运行。如果中断本身要做的事情不多，那么处理起来也不 会有太大问题；但如果中断要处理的事情很多，中断服务程序就有可能要运行很长时间。
@@ -316,10 +316,10 @@ CPU 绑定：把进程绑定到一个或者多个 CPU 上，可以提高 CPU 缓
     
     <item>
       <title>上下文切换</title>
-      <link>https://hzren.github.io/blog/2021-01-14-%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2/</link>
+      <link>https://hzren.github.io/blog/blog/2021-01-14-%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2/</link>
       <pubDate>Thu, 14 Jan 2021 17:13:47 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-01-14-%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-01-14-%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2/</guid>
       <description>摘自 倪朋飞-极客时间-Linux性能优化实战
 在Linux系统中，对于用户创建的进程(线程)来说，CPU分配时间片的单位是线程还是进程?
 是线程。线程是实际工作的单元[1]，进程只是一个容器，用来管理一个或多个线程。
@@ -341,10 +341,10 @@ CPU 寄存器里原来用户态的指令位置，需要先保存起来。接着�
     
     <item>
       <title>路由条目</title>
-      <link>https://hzren.github.io/blog/2021-01-13-%E8%B7%AF%E7%94%B1%E6%9D%A1%E7%9B%AE/</link>
+      <link>https://hzren.github.io/blog/blog/2021-01-13-%E8%B7%AF%E7%94%B1%E6%9D%A1%E7%9B%AE/</link>
       <pubDate>Wed, 13 Jan 2021 10:13:06 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-01-13-%E8%B7%AF%E7%94%B1%E6%9D%A1%E7%9B%AE/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-01-13-%E8%B7%AF%E7%94%B1%E6%9D%A1%E7%9B%AE/</guid>
       <description>ip route命令的输出解释。
 获取工具 ip命令包含在net-tools包中，可以通过安装net-tools包获得该命令。
 常见用法 执行man ip route
@@ -353,10 +353,10 @@ IP-ROUTE(8) Linux IP-ROUTE(8) NAME ip-route - routing table management SYNOPSIS 
     
     <item>
       <title>容器网络</title>
-      <link>https://hzren.github.io/blog/2021-01-12-%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C/</link>
+      <link>https://hzren.github.io/blog/blog/2021-01-12-%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C/</link>
       <pubDate>Tue, 12 Jan 2021 10:43:21 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-01-12-%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-01-12-%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C/</guid>
       <description>容器网络的核心是和物理网络实现网络隔离，物理网络对于容器来说为虚拟的，不可见的。
 概念 Overlay / 覆盖网络
 覆盖网络（Overlay network）是一种建立在另一网络之上的计算机网络。
@@ -375,10 +375,10 @@ admin@ip-172-20-33-102:~$ ip route default via 172.20.32.1 dev eth0 100.96.0.0/1
     
     <item>
       <title>一次内网到公网_公网导内网的数据链路过程</title>
-      <link>https://hzren.github.io/blog/2021-01-06-%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E5%88%B0%E5%85%AC%E7%BD%91_%E5%85%AC%E7%BD%91%E5%AF%BC%E5%86%85%E7%BD%91%E7%9A%84%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E8%BF%87%E7%A8%8B/</link>
+      <link>https://hzren.github.io/blog/blog/2021-01-06-%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E5%88%B0%E5%85%AC%E7%BD%91_%E5%85%AC%E7%BD%91%E5%AF%BC%E5%86%85%E7%BD%91%E7%9A%84%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E8%BF%87%E7%A8%8B/</link>
       <pubDate>Wed, 06 Jan 2021 10:32:30 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-01-06-%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E5%88%B0%E5%85%AC%E7%BD%91_%E5%85%AC%E7%BD%91%E5%AF%BC%E5%86%85%E7%BD%91%E7%9A%84%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E8%BF%87%E7%A8%8B/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-01-06-%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E5%88%B0%E5%85%AC%E7%BD%91_%E5%85%AC%E7%BD%91%E5%AF%BC%E5%86%85%E7%BD%91%E7%9A%84%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E8%BF%87%E7%A8%8B/</guid>
       <description>以一次从内网到公网，公网到内网的数据交互过程来梳理整个网络链路。
 网络拓扑图 MAC地址是一个局域网内才有效的地址。因而，MAC地址只要过网关，就必定会改变，因为已经换了局域网。两者主要的区别在于IP地址是否改变。不改变IP地址的网关，我们称为转发网关；改变IP地址的网关，我们称为NAT网关。
 每到一个新的局域网，MAC都是要变的，但是IP地址都不变。在IP头里面，不会保存任何网关的IP地址。所谓的下一跳是，某个IP要将这个IP地址转换为MAC放入MAC头
@@ -396,10 +396,10 @@ TCP/UDP请求 根据NAT映射关系，修改数据包数据 修改三层数据�
     
     <item>
       <title>计算机编程体系</title>
-      <link>https://hzren.github.io/blog/2021-01-04-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BC%96%E7%A8%8B%E4%BD%93%E7%B3%BB/</link>
+      <link>https://hzren.github.io/blog/blog/2021-01-04-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BC%96%E7%A8%8B%E4%BD%93%E7%B3%BB/</link>
       <pubDate>Mon, 04 Jan 2021 09:14:30 +0000</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-01-04-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BC%96%E7%A8%8B%E4%BD%93%E7%B3%BB/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-01-04-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BC%96%E7%A8%8B%E4%BD%93%E7%B3%BB/</guid>
       <description>计算机网络 Hub / 交换机 / 路由器 计算机网络中常见中间设备名称及功能
 路由条目 路由条目
 一次内网到公网的HTTP访问请求 一次内网到公网_公网导内网的数据链路过程
@@ -437,10 +437,10 @@ MySQL数据库 序列号 百度的Snowflake算法实现</description>
     
     <item>
       <title>DMA 简介</title>
-      <link>https://hzren.github.io/blog/2020-12-31-direct-memory-access-dma-%E7%AE%80%E4%BB%8B/</link>
+      <link>https://hzren.github.io/blog/blog/2020-12-31-direct-memory-access-dma-%E7%AE%80%E4%BB%8B/</link>
       <pubDate>Thu, 31 Dec 2020 10:45:29 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-12-31-direct-memory-access-dma-%E7%AE%80%E4%BB%8B/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-12-31-direct-memory-access-dma-%E7%AE%80%E4%BB%8B/</guid>
       <description>摘自 倪朋飞-极客时间-Linux性能优化实战
 概述 编程式I/O
 在编程I/O中，处理器不断扫描是否有任何设备准备好进行数据传输。如果一个I/O设备准备好了，处理器就会全力以赴地在I/O和内存之间传输数据。它以高速率传输数据，但在数据传输过程中不能参与任何其他活动。这是编程I/O的主要缺点。
@@ -460,10 +460,10 @@ DMA 基本配置 DMA 可以通过以下几种方式进行实现，包括：
     
     <item>
       <title>Java使用Protocol Buffers</title>
-      <link>https://hzren.github.io/blog/2020-09-29-java%E4%BD%BF%E7%94%A8protocol-buffers/</link>
+      <link>https://hzren.github.io/blog/blog/2020-09-29-java%E4%BD%BF%E7%94%A8protocol-buffers/</link>
       <pubDate>Tue, 29 Sep 2020 16:00:09 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-09-29-java%E4%BD%BF%E7%94%A8protocol-buffers/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-09-29-java%E4%BD%BF%E7%94%A8protocol-buffers/</guid>
       <description>简介 Protocol Buffers，是Google公司开发的一种数据描述语言，类似于XML能够将结构化数据序列化，可用于数据存储、通信协议等方面。
 准备工作 下载protoc代码生成器 编写.proto文件 编译.proto文件 下载protoc代码生成器 protoc可以从Google Protocol Buffers官网下载, 也可以从github ProtocBuffer仓库下载. 仓库地址
 下载文成后, 编译器位于bin文件夹下面.
@@ -484,10 +484,10 @@ Java集成 添加依赖 添加maven插件 生成代码 编写测试代码 添加
     
     <item>
       <title>Redis备份</title>
-      <link>https://hzren.github.io/blog/2020-09-14-redis%E5%A4%87%E4%BB%BD/</link>
+      <link>https://hzren.github.io/blog/blog/2020-09-14-redis%E5%A4%87%E4%BB%BD/</link>
       <pubDate>Mon, 14 Sep 2020 16:39:56 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-09-14-redis%E5%A4%87%E4%BB%BD/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-09-14-redis%E5%A4%87%E4%BB%BD/</guid>
       <description>| 导语 本文详细分析redis持久化的俩种模式的详细流程
 一. 概述redis持久化的俩种模式 随着redis越来越流行，使用者不在仅仅满足其只是一个内存数据库，同时也期望其能将内存数据落磁盘，这样重启服务就不会导致缓存数据丢失了
 redis持久化有俩种模式模式，分别如下:
@@ -503,10 +503,10 @@ save 900 1 //15分钟内有一条数据写入时触发rdb持久化 save 300 10 /
     
     <item>
       <title>centos 安装 hadoop</title>
-      <link>https://hzren.github.io/blog/2020-08-28-centos-%E5%AE%89%E8%A3%85-hadoop/</link>
+      <link>https://hzren.github.io/blog/blog/2020-08-28-centos-%E5%AE%89%E8%A3%85-hadoop/</link>
       <pubDate>Fri, 28 Aug 2020 17:00:38 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-08-28-centos-%E5%AE%89%E8%A3%85-hadoop/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-08-28-centos-%E5%AE%89%E8%A3%85-hadoop/</guid>
       <description>安装JDK 上传JDK包到centos.
 解压
 tar xvf server-jre-8u251-linux-x64.tar.gz 配置环境变量
@@ -527,10 +527,10 @@ tar xvf hadoop-2.10.0.tar.gz hadoop有三种部署模式:
     
     <item>
       <title>centos 安装 stress sysstat</title>
-      <link>https://hzren.github.io/blog/2020-08-25-centos-%E5%AE%89%E8%A3%85-stress-sysstat/</link>
+      <link>https://hzren.github.io/blog/blog/2020-08-25-centos-%E5%AE%89%E8%A3%85-stress-sysstat/</link>
       <pubDate>Tue, 25 Aug 2020 11:03:20 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-08-25-centos-%E5%AE%89%E8%A3%85-stress-sysstat/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-08-25-centos-%E5%AE%89%E8%A3%85-stress-sysstat/</guid>
       <description>检查安装的仓库列表
 yum repolist 仓库列表:
 Loaded plugins: fastestmirror Loading mirror speeds from cached hostfile * base: mirrors.163.com * epel: mirrors.bfsu.edu.cn * extras: mirrors.cn99.com * updates: mirrors.163.com repo id repo name status base/7/x86_64 CentOS-7 - Base 10,070 docker-ce-stable/x86_64 Docker CE Stable - x86_64 79 extras/7/x86_64 CentOS-7 - Extras 413 updates/7/x86_64 CentOS-7 - Updates 1,112 repolist: 25,100 先安装epel
@@ -541,10 +541,10 @@ Loaded plugins: fastestmirror Loading mirror speeds from cached hostfile * base:
     
     <item>
       <title>Linux 内核 内核态 用户态</title>
-      <link>https://hzren.github.io/blog/2020-08-21-linux-%E5%86%85%E6%A0%B8-%E5%86%85%E6%A0%B8%E6%80%81-%E7%94%A8%E6%88%B7%E6%80%81/</link>
+      <link>https://hzren.github.io/blog/blog/2020-08-21-linux-%E5%86%85%E6%A0%B8-%E5%86%85%E6%A0%B8%E6%80%81-%E7%94%A8%E6%88%B7%E6%80%81/</link>
       <pubDate>Fri, 21 Aug 2020 11:22:52 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-08-21-linux-%E5%86%85%E6%A0%B8-%E5%86%85%E6%A0%B8%E6%80%81-%E7%94%A8%E6%88%B7%E6%80%81/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-08-21-linux-%E5%86%85%E6%A0%B8-%E5%86%85%E6%A0%B8%E6%80%81-%E7%94%A8%E6%88%B7%E6%80%81/</guid>
       <description>概念 时间片 时间片是分时操作系统分配给每个正在运行的进程微观上的一段CPU时间（在抢占内核中是：从进程开始运行直到被抢占的时间）。现代操作系统（如：Windows、Linux、Mac OS X等）允许同时运行多个进程。例如，在打开音乐播放器的同时用浏览器浏览网页并下载文件。由于一台计算机通常只有一个CPU，所以不可能真正地同时运行多个任务。这些进程“看起来像”同时运行，实则是轮番运行，由于时间片通常很短（在Linux上为5ms－800ms），用户不会感觉到。
 时间片由操作系统内核的调度程序分配给每个进程。首先，内核会给每个进程分配相等的初始时间片，然后每个进程轮番地执行相应时间，当所有进程都处于时间片耗尽的状态时，内核会重新为每个进程计算并分配时间片，如此往复。
 时间片分配 通常状况下，一个系统中所有的进程被分配到的时间片长短并不是相等的，尽管初始时间片基本相等（在Linux系统中，初始时间片也不相等，而是各自父进程的一半），系统通过测量进程处于“睡眠”和“正在运行”状态的时间长短来计算每个进程的交互性，交互性和每个进程预设的静态优先级（Nice值）的叠加即是动态优先级，动态优先级按比例缩放就是要分配给那个进程时间片的长短。一般地，为了获得较快的响应速度，交互性强的进程（即趋向于IO消耗型）被分配到的时间片要长于交互性弱的（趋向于处理器消耗型）进程。
@@ -569,10 +569,10 @@ CPU 寄存器里原来用户态的指令位置，需要先保存起来。接着�
     
     <item>
       <title>TCP / UDP 总结</title>
-      <link>https://hzren.github.io/blog/2020-08-19-tcp-udp-%E6%80%BB%E7%BB%93/</link>
+      <link>https://hzren.github.io/blog/blog/2020-08-19-tcp-udp-%E6%80%BB%E7%BB%93/</link>
       <pubDate>Wed, 19 Aug 2020 15:04:38 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-08-19-tcp-udp-%E6%80%BB%E7%BB%93/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-08-19-tcp-udp-%E6%80%BB%E7%BB%93/</guid>
       <description>send()最大可以接受多少字节的数据？ 函数层面无限制，超过缓冲区大小函数会block
 TCP接到send()发送的字节，会立马保持原封不动发送吗？ 不确定！
 TCP会先将这些数据放在自己的仓库（发送缓冲区），至于什么时候发，每次发多少，已经不是应用层所能左右的了。什么时候发，一次发多少取决于不同算法，有RCP_NODELAY配置，有MSS限制TCP分组最大长度。
@@ -596,10 +596,10 @@ TCP丢包 路由器或交换机，一旦TCP流量暴力来袭时，会尽最大�
     
     <item>
       <title>ICMP Ping traceroute</title>
-      <link>https://hzren.github.io/blog/2020-08-18-icmp-ping-traceroute/</link>
+      <link>https://hzren.github.io/blog/blog/2020-08-18-icmp-ping-traceroute/</link>
       <pubDate>Tue, 18 Aug 2020 16:52:07 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-08-18-icmp-ping-traceroute/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-08-18-icmp-ping-traceroute/</guid>
       <description>Ping和traceroute都基于ICMP协议工作。
 ICMP 互联网控制消息协议（英语：Internet Control Message Protocol，缩写：ICMP）是互联网的核心协议之一，用于在网际协议（IP）中发送控制消息，提供可能发生在通信环境中的各种问题的反馈。通过这些信息，可以对所发生的问题作出诊断，然后采取适当的措施解决。
 ICMP基于IP协议，通常不由网络程序直接使用，除了 ping 和 traceroute 这两个特别的例子。 IPv4中的ICMP被称作ICMPv4，IPv6中的ICMP则被称作ICMPv6。
@@ -614,10 +614,10 @@ Type - ICMP的类型,标识生成的错误报文Code - 进一步划分ICMP的�
     
     <item>
       <title>Linux IP地址 DHCP</title>
-      <link>https://hzren.github.io/blog/2020-08-18-linux-ip%E5%9C%B0%E5%9D%80-dhcp/</link>
+      <link>https://hzren.github.io/blog/blog/2020-08-18-linux-ip%E5%9C%B0%E5%9D%80-dhcp/</link>
       <pubDate>Tue, 18 Aug 2020 15:06:02 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-08-18-linux-ip%E5%9C%B0%E5%9D%80-dhcp/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-08-18-linux-ip%E5%9C%B0%E5%9D%80-dhcp/</guid>
       <description>配置 IP 地址 可以使用ifconfig，也可以使用 ip addr。设置好以后，将网卡 up 一下，就可以开始工作了。 使用 net-tools：
 $ sudo ifconfig eth1 10.0.0.1/24 $ sudo ifconfig eth1 up 使用 iproute2：
 $ sudo ip addr add 10.0.0.1/24 dev eth1 $ sudo ip link set up eth1 如果配置一个和谁都不搭边的地址呢？例如，旁边的机器都是 192.168.1.x，我非得配置一个 16.158.23.6，会出现什么现象呢？
@@ -628,10 +628,10 @@ $ sudo ip addr add 10.0.0.1/24 dev eth1 $ sudo ip link set up eth1 如果配置�
     
     <item>
       <title>专用网络（内网 / 私有网络）</title>
-      <link>https://hzren.github.io/blog/2020-08-17-%E4%B8%93%E7%94%A8%E7%BD%91%E7%BB%9C%E5%86%85%E7%BD%91-%E7%A7%81%E6%9C%89%E7%BD%91%E7%BB%9C/</link>
+      <link>https://hzren.github.io/blog/blog/2020-08-17-%E4%B8%93%E7%94%A8%E7%BD%91%E7%BB%9C%E5%86%85%E7%BD%91-%E7%A7%81%E6%9C%89%E7%BD%91%E7%BB%9C/</link>
       <pubDate>Mon, 17 Aug 2020 17:34:48 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-08-17-%E4%B8%93%E7%94%A8%E7%BD%91%E7%BB%9C%E5%86%85%E7%BD%91-%E7%A7%81%E6%9C%89%E7%BD%91%E7%BB%9C/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-08-17-%E4%B8%93%E7%94%A8%E7%BD%91%E7%BB%9C%E5%86%85%E7%BD%91-%E7%A7%81%E6%9C%89%E7%BD%91%E7%BB%9C/</guid>
       <description>概念 在互联网的地址架构中，专用网络是指遵守RFC 1918（IPV4）和RFC 4193（IPV6）规范，使用专用IP地址空间的网络。私有IP无法直接连接互联网，需要使用网络地址转换（Network Address Translator，NAT）或者代理服务器 （proxy server）来实现。与公网IP相比，私有IP是免费的，同时节省了IP地址资源，适合在局域网使用。
 用途 私有IP无法直接被互联网所访问，因此，相对于公网IP地址，它更加安全。私有IP常被用于家庭，学校和企业的局域网。IPv4私有地址 共享地址 Shared Address Space（RFC 6598），IANA于2012年将100.64.0.0/10定义用于电信级NAT场景。这些地址与RFC1918中定义的私有IP是不同的，只能用于运营商的内部网络，虽然在某些特性中与私有IP相同，但在定义上不能划为私有地址（更不是公用地址）。
 IPv6私有地址 IPv6的私有IP定义在RFC 4193， 地址块fc00 :: / 7已保留。这些地址称为唯一本地地址（Unique Local Addresses，ULA）。 它们被定义为单播地址，并在路由前缀中包含一个40位的随机数，以防止在两个私有网络互连时发生冲突。 尽管在本地使用，但唯一本地地址的IPv6地址范围是全局的。</description>
@@ -639,10 +639,10 @@ IPv6私有地址 IPv6的私有IP定义在RFC 4193， 地址块fc00 :: / 7已保�
     
     <item>
       <title>子网 子网掩码 无类别域间路由</title>
-      <link>https://hzren.github.io/blog/2020-08-17-%E5%AD%90%E7%BD%91-%E5%AD%90%E7%BD%91%E6%8E%A9%E7%A0%81-%E6%97%A0%E7%B1%BB%E5%88%AB%E5%9F%9F%E9%97%B4%E8%B7%AF%E7%94%B1/</link>
+      <link>https://hzren.github.io/blog/blog/2020-08-17-%E5%AD%90%E7%BD%91-%E5%AD%90%E7%BD%91%E6%8E%A9%E7%A0%81-%E6%97%A0%E7%B1%BB%E5%88%AB%E5%9F%9F%E9%97%B4%E8%B7%AF%E7%94%B1/</link>
       <pubDate>Mon, 17 Aug 2020 16:54:10 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-08-17-%E5%AD%90%E7%BD%91-%E5%AD%90%E7%BD%91%E6%8E%A9%E7%A0%81-%E6%97%A0%E7%B1%BB%E5%88%AB%E5%9F%9F%E9%97%B4%E8%B7%AF%E7%94%B1/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-08-17-%E5%AD%90%E7%BD%91-%E5%AD%90%E7%BD%91%E6%8E%A9%E7%A0%81-%E6%97%A0%E7%B1%BB%E5%88%AB%E5%9F%9F%E9%97%B4%E8%B7%AF%E7%94%B1/</guid>
       <description>子网 在因特网协议（Internet Protocol，IP）中，子网指的是从分类网络中划分出来的一部分。
 具有相同的前半部分地址的一组IP地址，可以利用地址的前半部分划分组。在一个IP网络中划分子网使我们能将一个单一的大型网络分成若干个较小的网络。在最初引入这个概念的时候，IPv4还未引入分类网络这个概念。引入划分子网这个概念的目的是为了允许一个单一的站点能拥有多个局域网。在引入了分类网络号之后，这个概念仍然有它的用处，因为它减少了因特网路由表中的表项数量（通过隐藏一个站点内部所有独立子网的相关信息）。此外它还带来了一个好处，那就是减少了网络开销，因为它将接收IP广播的区域划分成了若干部分。
 子网掩码 子网掩码是用来划分IP地址中哪一部分是网络号，哪一部分是机器号。
@@ -663,10 +663,10 @@ IPv6私有地址 IPv6的私有IP定义在RFC 4193， 地址块fc00 :: / 7已保�
     
     <item>
       <title>TCP协议</title>
-      <link>https://hzren.github.io/blog/2020-08-14-tcp%E5%8D%8F%E8%AE%AE/</link>
+      <link>https://hzren.github.io/blog/blog/2020-08-14-tcp%E5%8D%8F%E8%AE%AE/</link>
       <pubDate>Fri, 14 Aug 2020 14:46:06 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-08-14-tcp%E5%8D%8F%E8%AE%AE/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-08-14-tcp%E5%8D%8F%E8%AE%AE/</guid>
       <description>传输控制协议（缩写：TCP）是一种面向连接的、可靠的、基于字节流的传输层通信协议，由IETF的RFC 793定义。在计算机网络OSI模型中，它处于第四层传输层，同用户数据报协议（UDP）位于同一层。
 应用层向TCP层发送用于网络间传输的、用8位字节表示的数据流，然后TCP把数据流分割成适当长度的报文段（通常受链接数据链路层的最大传输单元（MTU）限制）。之后TCP把结果包传给IP层，由它来透过网络将包传送给接收端实体的TCP层。
 TCP为了保证不发生丢包，就给每个包一个序号，同时序号也保证了传送到接收端实体的包的按序接收。然后接收端实体对已成功收到的包发回一个相应的确认信息（ACK）；如果发送端实体在合理的往返时延（RTT）内未收到确认，那么对应的数据包就被假设为已丢失并进行重传。TCP用一个校验和函数来检验数据是否有错误，在发送和接收时都要计算校验和。
@@ -684,10 +684,10 @@ TCP_FASTOPEN_CONNECT 控制socket发起链接。
     
     <item>
       <title>IPv4 与 IPv6 区别</title>
-      <link>https://hzren.github.io/blog/2020-08-13-ipv4-%E4%B8%8E-ipv6-%E5%8C%BA%E5%88%AB/</link>
+      <link>https://hzren.github.io/blog/blog/2020-08-13-ipv4-%E4%B8%8E-ipv6-%E5%8C%BA%E5%88%AB/</link>
       <pubDate>Thu, 13 Aug 2020 11:17:22 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-08-13-ipv4-%E4%B8%8E-ipv6-%E5%8C%BA%E5%88%AB/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-08-13-ipv4-%E4%B8%8E-ipv6-%E5%8C%BA%E5%88%AB/</guid>
       <description> 两者报文的前四位都是版本号字段， 通过该报文的前四位即可判断出这是一个IPv4报文还是一个IPv6报文，因此，在同一线路，路由器同时支持IPv4和IPv6就不存在问题。
 IPv4和IPv6是Internet协议版本4和Internet协议版本6，IP版本6是Internet协议的新版本，就复杂性和效率而言，它比IP版本4更好。
 IPv4和IPv6之间的区别：
@@ -696,10 +696,10 @@ IPV4 IPV6 IPv4具有32位地址长度 IPv6具有128位地址长度 支持手动�
     
     <item>
       <title>IPv6 协议</title>
-      <link>https://hzren.github.io/blog/2020-08-13-ipv6-%E5%8D%8F%E8%AE%AE/</link>
+      <link>https://hzren.github.io/blog/blog/2020-08-13-ipv6-%E5%8D%8F%E8%AE%AE/</link>
       <pubDate>Thu, 13 Aug 2020 11:15:34 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-08-13-ipv6-%E5%8D%8F%E8%AE%AE/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-08-13-ipv6-%E5%8D%8F%E8%AE%AE/</guid>
       <description>概念 IPv6是网际协议的最新版本，用作互联网的协议。用它来取代IPv4主要是为了解决IPv4地址枯竭问题，同时它也在其他方面对于IPv4有许多改进。IPv6的设计目的是取代IPv4，然而长期以来IPv4在互联网流量中仍占据主要地位，IPv6的使用增长缓慢。
 与IPv4比较 在Internet上，数据以分组的形式传输。IPv6定义了一种新的分组格式，目的是为了最小化路由器处理的消息标头。由于IPv4消息和IPv6消息标头有很大不同，因此这两种协议无法互操作。但是在大多数情况下，IPv6仅仅是对IPv4的一种保守扩展。除了嵌入了互联网地址的那些应用协议（如FTP和NTPv3，新地址格式可能会与当前协议的语法冲突）以外，大多数传输层和应用层协议几乎不怎么需要修改就可以在IPv6上运行。
 无状态地址自动配置（SLAAC） 当连接到IPv6网络上时，IPv6主机可以使用邻居发现协议对自身进行自动配置。当第一次连接到网络上时，主机发送一个链路本地路由器请求（solicitation）多播请求来获取配置参数。路由器使用包含Internet层配置参数的路由器宣告（advertisement）报文进行回应。在不适合使用IPv6无状态地址自动配置的场景下，网络可以使用有状态配置（DHCPv6），或者使用静态方法手动配置。
@@ -712,10 +712,10 @@ IPv4位址可以很容易的转化为IPv6格式。举例来说，如果IPv4的�
     
     <item>
       <title>IPv4 协议</title>
-      <link>https://hzren.github.io/blog/2020-08-13-ipv4-%E5%8D%8F%E8%AE%AE/</link>
+      <link>https://hzren.github.io/blog/blog/2020-08-13-ipv4-%E5%8D%8F%E8%AE%AE/</link>
       <pubDate>Thu, 13 Aug 2020 11:15:06 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-08-13-ipv4-%E5%8D%8F%E8%AE%AE/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-08-13-ipv4-%E5%8D%8F%E8%AE%AE/</guid>
       <description>概念 IPv4是一种无连接的协议，操作在使用分组交换的链路层（如以太网）上，位于网络层。协议会尽最大努力交付数据包，它不保证任何数据包均能送达目的地，也不保证所有数据包均按照正确的顺序无重复地到达。这些功能由上层的传输协议（如传输控制协议 / TCP）来保证。
 地址 IPv4使用32位（4字节）地址，因此地址空间中只有4,294,967,296（232）个地址。不过，一些地址是为特殊用途所保留的，如专用网络（约1800万个地址）和多播地址（约2.7亿个地址），这减少了可在互联网上路由的地址数量。随着地址不断被分配给最终用户，IPv4地址枯竭问题也在随之产生。基于分类网络、无类别域间路由和网络地址转换的地址结构重构显著地减少了地址枯竭的速度。但在2011年2月3日，在最后5个地址块被分配给5个区域互联网注册管理机构之后，IANA的主要地址池已经用尽。
 常规分类 分配 最初，一个IP地址被分成两部分：网络识别码在地址的高位字节中，主机识别码在剩下的部分中。
@@ -739,10 +739,10 @@ CIDR被设计为可以重新划分地址空间，因此小的或大的地址块�
     
     <item>
       <title>IP 协议</title>
-      <link>https://hzren.github.io/blog/2020-08-13-ip-%E5%8D%8F%E8%AE%AE/</link>
+      <link>https://hzren.github.io/blog/blog/2020-08-13-ip-%E5%8D%8F%E8%AE%AE/</link>
       <pubDate>Thu, 13 Aug 2020 00:00:00 +0000</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-08-13-ip-%E5%8D%8F%E8%AE%AE/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-08-13-ip-%E5%8D%8F%E8%AE%AE/</guid>
       <description>前言 IP协议，又称网际协议，是整个互联网事实的基石。
 IP地址最核心的概念之一就是IP地址，IP地址用来标识网络上的一台设备；为什么有了MAC地址还需要IP地址呢，因为MAC地址是和硬件绑定在一起的，硬件设备是可以人为位置转移的，一台设备，它可以用在这个世界上的任何地方。
 如果只有MAC地址没有IP地址，一个ISP(电信运营商)下面所链接的设备MAC地址将是无法确定的，毫无规律可言，当一个数据包从一台网络设备发出之后，我们无法确定这个数据包的目标是在哪个国家的哪个地方。所以需要在MAC地址之上虚拟新的一层，IP层，当数据夸网络传输时，我们根据数据包的目的IP地址确定其所在国家的ISP，将其发送过去，目标ISP收到该报文后通过其IP地址分配确定目标设备，将该数据包转发过去。
@@ -772,10 +772,10 @@ IGP / 内部网关协议 内部网关协议可分为三类：1) 距离矢量路�
     
     <item>
       <title>计算机网络 - 网络层</title>
-      <link>https://hzren.github.io/blog/2020-08-11-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%BD%91%E7%BB%9C%E5%B1%82/</link>
+      <link>https://hzren.github.io/blog/blog/2020-08-11-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%BD%91%E7%BB%9C%E5%B1%82/</link>
       <pubDate>Tue, 11 Aug 2020 15:21:57 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-08-11-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%BD%91%E7%BB%9C%E5%B1%82/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-08-11-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%BD%91%E7%BB%9C%E5%B1%82/</guid>
       <description>概念 网络层（Network Layer）是OSI模型中的第三层（TCP/IP模型中的网际层），提供路由和寻址的功能，使两終端系統能够互连且決定最佳路径，並具有一定的拥塞控制和流量控制的能力。相当于传送邮件时需要地址一般重要。由于TCP/IP协议体系中的网络层功能由IP协议规定和实现，故又称IP层。
 功能 寻址 对网络层而言使用IP地址来唯一标识互联网上的设备，网络层依靠IP地址进行相互通信（类似于数据链路层的MAC地址），详细的编址方案参见IPv4和IPv6。
 路由 在同一个网络中的内部通信并不需要网络层设备，仅仅靠数据链路层就可以完成相互通信，对于不同的网络之间相互通信则必须借助路由器等三层设备。
@@ -784,10 +784,10 @@ IGP / 内部网关协议 内部网关协议可分为三类：1) 距离矢量路�
     
     <item>
       <title>计算机网络 - 物理层</title>
-      <link>https://hzren.github.io/blog/2020-08-10-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%89%A9%E7%90%86%E5%B1%82/</link>
+      <link>https://hzren.github.io/blog/blog/2020-08-10-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%89%A9%E7%90%86%E5%B1%82/</link>
       <pubDate>Mon, 10 Aug 2020 18:59:45 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-08-10-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%89%A9%E7%90%86%E5%B1%82/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-08-10-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%89%A9%E7%90%86%E5%B1%82/</guid>
       <description>物理层的基本概念 物理层的主要任务描述为确定与传输媒体的接口的一些特性 机械特性 指明接口所用接线器的形状和尺寸、引线数目和排列、固定和锁定装置等等。 电气特性 指明在接口电缆的各条线上出现的电压的范围。 功能特性 指明某条线上出现的某一电平的电压表示何种意义。 过程特性 指明对于不同功能的各种可能事件的出现顺序。 物理层基本工作内容 物理层利用传输介质为通信的两端建立、管理和释放物理链接，实现比特流的透明传输，保证比特流正确的传输到对端。物理层中承载的是比特流单位是比特（bit）。
 物理层都有那些协议 电话网络modems-V.92 EIARS-232，EIA-422，EIA-423，RS-449，RS-485 Ethernet physical layerIncluding10BASE-T，10BASE2，10BASE5，100BASE-TX，100BASE-FX。100BASE-T，1000BASE-T，1000BASE-SX还有其他类型 Varieties of 802.11Wi-Fi物理层 DSL ISDN T1 and otherT-carrierlinks， and E1 and otherE-carrierlinks SONET/SDH Optical Transport Network（OTN） GSMUm air interface物理层 Bluetooth物理层 IEEE 1394 interface TransferJet物理层 Etherloop ARINC 818航空电子数字视频总线 G.hn/G.9960物理层 N bus（controller area network）物理层 理层协议就分为两类，点对点通信线路物理层协议和广播通信线路物理层协议，其中广播通信线路又分为有线通信线路和无线通信线路，有线通信线路就是咱们常说的网线形式的网络，无线通信线路就是WIFI。有线通讯不容易窃听,无线通讯的数据很容易被窃听到，以无线通讯的报文基本上都是需要在底层链路做加密的。
 数据通信的基础知识 数据通信系统的模型 据传输按照使用的信道数量可以分为串行通信和并行通信
@@ -798,10 +798,10 @@ IGP / 内部网关协议 内部网关协议可分为三类：1) 距离矢量路�
     
     <item>
       <title>Markdown 语法</title>
-      <link>https://hzren.github.io/blog/2020-08-07-markdown-%E8%AF%AD%E6%B3%95/</link>
+      <link>https://hzren.github.io/blog/blog/2020-08-07-markdown-%E8%AF%AD%E6%B3%95/</link>
       <pubDate>Fri, 07 Aug 2020 17:17:52 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-08-07-markdown-%E8%AF%AD%E6%B3%95/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-08-07-markdown-%E8%AF%AD%E6%B3%95/</guid>
       <description>标题 使用 # 号可表示 1-6 级标题，一级标题对应一个 # 号，二级标题对应两个 # 号，以此类推。
 # 一级标题 ## 二级标题 ### 三级标题 #### 四级标题 ##### 五级标题 ###### 六级标题 显示效果如下图：
 段落 Markdown 段落没有特殊的格式，直接编写文字就好，段落的换行是使用两个以上空格加上回车。
@@ -819,10 +819,10 @@ IGP / 内部网关协议 内部网关协议可分为三类：1) 距离矢量路�
     
     <item>
       <title>计算机网络中常见中间设备名称及功能</title>
-      <link>https://hzren.github.io/blog/2020-08-06-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E4%B8%AD%E5%B8%B8%E8%A7%81%E4%B8%AD%E9%97%B4%E8%AE%BE%E5%A4%87%E5%90%8D%E7%A7%B0%E5%8F%8A%E5%8A%9F%E8%83%BD/</link>
+      <link>https://hzren.github.io/blog/blog/2020-08-06-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E4%B8%AD%E5%B8%B8%E8%A7%81%E4%B8%AD%E9%97%B4%E8%AE%BE%E5%A4%87%E5%90%8D%E7%A7%B0%E5%8F%8A%E5%8A%9F%E8%83%BD/</link>
       <pubDate>Thu, 06 Aug 2020 17:12:51 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-08-06-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E4%B8%AD%E5%B8%B8%E8%A7%81%E4%B8%AD%E9%97%B4%E8%AE%BE%E5%A4%87%E5%90%8D%E7%A7%B0%E5%8F%8A%E5%8A%9F%E8%83%BD/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-08-06-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E4%B8%AD%E5%B8%B8%E8%A7%81%E4%B8%AD%E9%97%B4%E8%AE%BE%E5%A4%87%E5%90%8D%E7%A7%B0%E5%8F%8A%E5%8A%9F%E8%83%BD/</guid>
       <description>集线器/HUB: 集线器（Ethernet hub）是指将多条以太网双绞线或光纤集合连接在同一段物理介质下的装置。集线器是运作在OSI模型中的实体层，可以让其连结的设备工作在同一网段。集线器上有多个I/O端口，信号从任意一个端口进入后，会从其他端口出现。中继器（Repeater hub，集线器的一种）也会参与冲突检测（collision detection），在检测到冲突时向所有端口转发拥塞信号。
 集线器相比于交换机更为简单，它可以被视作有多个端口的中继器，从一个端口接受比特位（或符号），再从其他端口送出。它对物理层数据包有所感知，可以检测到其开始、挂起及冲突。在检测到冲突时会发送拥塞信号以传播这一事件。集线器不能对经过它的网络流量做更进一步地检查与管理：任何进入的数据包都会被广播到其他端口。集线器/中继器无法储存数据——数据包必须在接收时被发送，一旦发生冲突，就会丢包（发送端应当能够侦测到，并重新发送）。基于此，集线器只能以半双工模式工作。因此，由于冲突域更广，相比于使用更复杂的网络设备，使用集线器的数据网络更容易出现数据包冲突。
 以太网设计目标：电脑使用一个网络接口，可以同时与多台电脑通信，将电脑连接起来的黑盒子最先面世，称之为集线器，但我们更喜欢叫它Hub。 这种集线器，通常有多个端口，可以接入多台电脑，这种黑盒子使电脑连接在一起成为一种可能，其内部工作原理，就是信号放大器。
@@ -854,10 +854,10 @@ HUB内部采用广播的形式传播其收到的每一个网络包.因为其采�
     
     <item>
       <title>Redis哨兵模式概要</title>
-      <link>https://hzren.github.io/blog/2020-08-06-redis%E5%93%A8%E5%85%B5%E6%A8%A1%E5%BC%8F%E6%A6%82%E8%A6%81/</link>
+      <link>https://hzren.github.io/blog/blog/2020-08-06-redis%E5%93%A8%E5%85%B5%E6%A8%A1%E5%BC%8F%E6%A6%82%E8%A6%81/</link>
       <pubDate>Thu, 06 Aug 2020 15:10:38 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-08-06-redis%E5%93%A8%E5%85%B5%E6%A8%A1%E5%BC%8F%E6%A6%82%E8%A6%81/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-08-06-redis%E5%93%A8%E5%85%B5%E6%A8%A1%E5%BC%8F%E6%A6%82%E8%A6%81/</guid>
       <description>哨兵模式的官方说明 Redis 的 Sentinel 系统用于管理多个 Redis 服务器（instance）， 该系统执行以下三个任务： . 监控（Monitoring）： Sentinel 会不断地检查你的主服务器和从服务器是否运作正常。 . 提醒（Notification）： 当被监控的某个 Redis 服务器出现问题时， Sentinel 可以通过 API 向管理员或者其他应用程序发送通知。 . 自动故障迁移（Automatic failover）： 当一个主服务器不能正常工作时， Sentinel 会开始一次自动故障迁移操作， 它会将失效主服务器的其中一个从服务器升级为新的主服务器， 并让失效主服务器的其他从服务器改为复制新的主服务器； 当客户端试图连接失效的主服务器时， 集群也会向客户端返回新主服务器的地址， 使得集群可以使用新主服务器代替失效服务器。
 获取 Sentinel 现在Sentinel就包含在redis发行版中，sentinel是redis发行版的一部分。
 启动 Sentinel 对于 redis-sentinel 程序， 可以用以下命令来启动 Sentinel 系统：
@@ -867,10 +867,10 @@ redis-server /path/to/sentinel.conf --sentinel 两种方法都可以启动一个
     
     <item>
       <title>一次HttpHeaders setContentDispositionFormData 引发的服务端链接异常记录</title>
-      <link>https://hzren.github.io/blog/2020-08-04-%E4%B8%80%E6%AC%A1httpheaders-setcontentdispositionformdata-%E5%BC%95%E5%8F%91%E7%9A%84%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%93%BE%E6%8E%A5%E5%BC%82%E5%B8%B8%E8%AE%B0%E5%BD%95/</link>
+      <link>https://hzren.github.io/blog/blog/2020-08-04-%E4%B8%80%E6%AC%A1httpheaders-setcontentdispositionformdata-%E5%BC%95%E5%8F%91%E7%9A%84%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%93%BE%E6%8E%A5%E5%BC%82%E5%B8%B8%E8%AE%B0%E5%BD%95/</link>
       <pubDate>Tue, 04 Aug 2020 14:20:42 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-08-04-%E4%B8%80%E6%AC%A1httpheaders-setcontentdispositionformdata-%E5%BC%95%E5%8F%91%E7%9A%84%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%93%BE%E6%8E%A5%E5%BC%82%E5%B8%B8%E8%AE%B0%E5%BD%95/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-08-04-%E4%B8%80%E6%AC%A1httpheaders-setcontentdispositionformdata-%E5%BC%95%E5%8F%91%E7%9A%84%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%93%BE%E6%8E%A5%E5%BC%82%E5%B8%B8%E8%AE%B0%E5%BD%95/</guid>
       <description>正常情况下，告诉浏览器当前请求的响应是下载一个文件，对应的http header应该是这样的 ：
 HTTP/1.1 200 OK Server: Apache-Coyote/1.1 Content-Disposition: attachment;fileName=CMClient.apk Content-Type: application/octet-stream;charset=UTF-8 Content-Length: 3501505 Date: Wed, 26 Feb 2014 06:06:53 GMT 该头信息的关键就在于这两个字段：
 Content-Disposition: attachment;fileName=CMClient.apk Content-Type: application/octet-stream;charset=UTF-8 Content-Disposition: attachment;fileName=CMClient.apk 告诉浏览器当前的响应是下载文件， 文件以CMClient.apk这个名字进行存储。 Content-Type: application/octet-stream;charset=UTF-8 告诉浏览器响应的内容是以流的形式传输。
@@ -881,10 +881,10 @@ HTTP/1.1 200 OK Server: Apache-Coyote/1.1 Content-Disposition: form-data; name=&
     
     <item>
       <title>统一资源定位器（URL）</title>
-      <link>https://hzren.github.io/blog/2020-08-03-%E7%BB%9F%E4%B8%80%E8%B5%84%E6%BA%90%E5%AE%9A%E4%BD%8D%E5%99%A8url/</link>
+      <link>https://hzren.github.io/blog/blog/2020-08-03-%E7%BB%9F%E4%B8%80%E8%B5%84%E6%BA%90%E5%AE%9A%E4%BD%8D%E5%99%A8url/</link>
       <pubDate>Mon, 03 Aug 2020 18:30:39 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-08-03-%E7%BB%9F%E4%B8%80%E8%B5%84%E6%BA%90%E5%AE%9A%E4%BD%8D%E5%99%A8url/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-08-03-%E7%BB%9F%E4%B8%80%E8%B5%84%E6%BA%90%E5%AE%9A%E4%BD%8D%E5%99%A8url/</guid>
       <description>目录
 1．绪论... 2
 2．常规URL语法... 2
@@ -915,10 +915,10 @@ HTTP/1.1 200 OK Server: Apache-Coyote/1.1 Content-Disposition: form-data; name=&
     
     <item>
       <title>电商网站高并发场景下的库存加减思路思考</title>
-      <link>https://hzren.github.io/blog/2020-08-01-%E7%94%B5%E5%95%86%E7%BD%91%E7%AB%99%E9%AB%98%E5%B9%B6%E5%8F%91%E5%9C%BA%E6%99%AF%E4%B8%8B%E7%9A%84%E5%BA%93%E5%AD%98%E5%8A%A0%E5%87%8F%E6%80%9D%E8%B7%AF%E6%80%9D%E8%80%83/</link>
+      <link>https://hzren.github.io/blog/blog/2020-08-01-%E7%94%B5%E5%95%86%E7%BD%91%E7%AB%99%E9%AB%98%E5%B9%B6%E5%8F%91%E5%9C%BA%E6%99%AF%E4%B8%8B%E7%9A%84%E5%BA%93%E5%AD%98%E5%8A%A0%E5%87%8F%E6%80%9D%E8%B7%AF%E6%80%9D%E8%80%83/</link>
       <pubDate>Sat, 01 Aug 2020 15:11:11 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-08-01-%E7%94%B5%E5%95%86%E7%BD%91%E7%AB%99%E9%AB%98%E5%B9%B6%E5%8F%91%E5%9C%BA%E6%99%AF%E4%B8%8B%E7%9A%84%E5%BA%93%E5%AD%98%E5%8A%A0%E5%87%8F%E6%80%9D%E8%B7%AF%E6%80%9D%E8%80%83/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-08-01-%E7%94%B5%E5%95%86%E7%BD%91%E7%AB%99%E9%AB%98%E5%B9%B6%E5%8F%91%E5%9C%BA%E6%99%AF%E4%B8%8B%E7%9A%84%E5%BA%93%E5%AD%98%E5%8A%A0%E5%87%8F%E6%80%9D%E8%B7%AF%E6%80%9D%E8%80%83/</guid>
       <description>前言 每当电子商务平台搞活动，“秒杀”经常是提升网站活跃度的利器之一。比如活动日早上10点1元爱疯7秒杀7台，谁看到了估计都想去秒一把，万一秒中了呢。秒杀的典型特征就是在特定的短时间突然涌入大量请求，对系统造成洪峰冲击，如果系统设计得不好，很容易被直接打垮掉。现在因为疫情原因，秒杀场景也变得更泛化，很多时候会出现商品被瞬间抢完的情况，如果时通过数据库直接扣库存的话， 会给数据库带来了很大压力。很有可能整个数据库会HANG在那里，导致整个系统被拖垮。
 问题 为什么高并发场景下直接数据库扣库存会搞垮整个数据库呢？
 数据库事务特性： 对于一条记录，数据库在该事务修改的时候加锁，在整个事务提交完才释放锁。 这样就导致一个问题，当同时有多个请求对同一条记录(库存记录)进行修改时，会在该记录上造成锁排队现象，流程大概时这样的：
@@ -932,10 +932,10 @@ local num = redis.call(&amp;#39;get&amp;#39;, KEYS[1]) local minus = tonumber(KE
     
     <item>
       <title>第三方网站数据爬取经验总结</title>
-      <link>https://hzren.github.io/blog/2020-07-31-%E7%AC%AC%E4%B8%89%E6%96%B9%E7%BD%91%E7%AB%99%E6%95%B0%E6%8D%AE%E7%88%AC%E5%8F%96%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93/</link>
+      <link>https://hzren.github.io/blog/blog/2020-07-31-%E7%AC%AC%E4%B8%89%E6%96%B9%E7%BD%91%E7%AB%99%E6%95%B0%E6%8D%AE%E7%88%AC%E5%8F%96%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93/</link>
       <pubDate>Fri, 31 Jul 2020 15:11:23 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-07-31-%E7%AC%AC%E4%B8%89%E6%96%B9%E7%BD%91%E7%AB%99%E6%95%B0%E6%8D%AE%E7%88%AC%E5%8F%96%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-07-31-%E7%AC%AC%E4%B8%89%E6%96%B9%E7%BD%91%E7%AB%99%E6%95%B0%E6%8D%AE%E7%88%AC%E5%8F%96%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93/</guid>
       <description>尝试爬取过大大小小很多网站，有些许体会心得。根据个人难易成度感觉排序，开发语言主要是Java。
 主要工具 Chrome DevTools 用来查看页面请求流程，请求头信息，响应信息，cookie Fiddler 有些页面有重定向，对于此类页面Chrome DevTools 不太好看到请求流程，可以使用Fiddler抓包，另外Fiddler也可以抓一些移动端APP的报文 Jsoup Java HTML解析器 httpclient-fluent Java HTTP请求库 selenium Java库 用来控制selenium 各浏览器对应webdriver 用来控制浏览器，和selenium搭配使用 常见问题 有用户名密码验证 登录有图形验证码 登录有滑动验证码 登录有控件 请求过程中存在数据加密，登录过程中存在多个页面重定向，多次重定向过程中生成cookie 请求响应的数据有加密，或者存在于JS或者HTML代码中 解决办法 1. 有用户名密码验证 对于有用户名密码验证的网站，有两种方式
 手工在浏览器登录，复制cookie至代码中，在代码中使用该cookie登录 分析登录接口，使用代码，登陆后获得cookie，然后爬取数据 2. 登录有图形验证码 手工登录，登陆后复制cookie 在代码登录前，先调用获取验证码接口获得新验证码，存储至本地，对于简单的验证码，可以用ocr软件训练识别，对于负责验证码，调用第三方打码网站识别(12306刷票就是接的第三方打码) 3. 登录有滑动验证码 接入滑动验证码是有成本的，有用户使用成本和费用成本
@@ -946,10 +946,10 @@ local num = redis.call(&amp;#39;get&amp;#39;, KEYS[1]) local minus = tonumber(KE
     
     <item>
       <title>Docker使用nexus作为镜像仓库</title>
-      <link>https://hzren.github.io/blog/2020-07-30-docker%E4%BD%BF%E7%94%A8nexus%E4%BD%9C%E4%B8%BA%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93/</link>
+      <link>https://hzren.github.io/blog/blog/2020-07-30-docker%E4%BD%BF%E7%94%A8nexus%E4%BD%9C%E4%B8%BA%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93/</link>
       <pubDate>Thu, 30 Jul 2020 15:52:56 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-07-30-docker%E4%BD%BF%E7%94%A8nexus%E4%BD%9C%E4%B8%BA%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-07-30-docker%E4%BD%BF%E7%94%A8nexus%E4%BD%9C%E4%B8%BA%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93/</guid>
       <description>登录docker repo
 docker login -u admin -p admin123 192.168.135.73:8082 给镜像打tag:
 docker tag jdk:jre8 192.168.135.73:8082/jdk:jre8 上传镜像:
@@ -958,10 +958,10 @@ docker push 192.168.135.73:8082/jdk:jre8 下载镜像: nexus中镜像: </descrip
     
     <item>
       <title>2PC - 分布式场景下的两阶段提交算法</title>
-      <link>https://hzren.github.io/blog/2020-07-30-2pc-%E5%88%86%E5%B8%83%E5%BC%8F%E5%9C%BA%E6%99%AF%E4%B8%8B%E7%9A%84%E4%B8%A4%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4%E7%AE%97%E6%B3%95/</link>
+      <link>https://hzren.github.io/blog/blog/2020-07-30-2pc-%E5%88%86%E5%B8%83%E5%BC%8F%E5%9C%BA%E6%99%AF%E4%B8%8B%E7%9A%84%E4%B8%A4%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4%E7%AE%97%E6%B3%95/</link>
       <pubDate>Thu, 30 Jul 2020 15:11:37 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-07-30-2pc-%E5%88%86%E5%B8%83%E5%BC%8F%E5%9C%BA%E6%99%AF%E4%B8%8B%E7%9A%84%E4%B8%A4%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4%E7%AE%97%E6%B3%95/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-07-30-2pc-%E5%88%86%E5%B8%83%E5%BC%8F%E5%9C%BA%E6%99%AF%E4%B8%8B%E7%9A%84%E4%B8%A4%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4%E7%AE%97%E6%B3%95/</guid>
       <description>概念 二阶段提交(Two-phaseCommit)是指，在计算机网络以及数据库领域内，为了使基于分布式系统架构下的所有节点在进行事务提交时保持一致性而设计的一种算法(Algorithm)。通常，二阶段提交也被称为是一种协议(Protocol))。在分布式系统中，每个节点虽然可以知晓自己的操作时成功或者失败，却无法知道其他节点的操作的成功或失败。当一个事务跨越多个节点时，为了保持事务的ACID特性，需要引入一个作为协调者的组件来统一掌控所有节点(称作参与者)的操作结果并最终指示这些节点是否要把操作结果进行真正的提交(比如将更新后的数据写入磁盘等等)。因此，二阶段提交的算法思路可以概括为：参与者将操作成败通知协调者，再由协调者根据所有参与者的反馈情报决定各参与者是否要提交操作还是中止操作。
 两个角色: 协调者，参与者。
 所谓的两个阶段是指：第一阶段：准备阶段(投票阶段)和第二阶段：提交阶段（执行阶段）。
@@ -973,19 +973,19 @@ docker push 192.168.135.73:8082/jdk:jre8 下载镜像: nexus中镜像: </descrip
     
     <item>
       <title>docker 创建Oracle Server Jre 镜像</title>
-      <link>https://hzren.github.io/blog/2020-07-29-docker-%E5%88%9B%E5%BB%BAoracle-server-jre-%E9%95%9C%E5%83%8F/</link>
+      <link>https://hzren.github.io/blog/blog/2020-07-29-docker-%E5%88%9B%E5%BB%BAoracle-server-jre-%E9%95%9C%E5%83%8F/</link>
       <pubDate>Wed, 29 Jul 2020 15:38:13 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-07-29-docker-%E5%88%9B%E5%BB%BAoracle-server-jre-%E9%95%9C%E5%83%8F/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-07-29-docker-%E5%88%9B%E5%BB%BAoracle-server-jre-%E9%95%9C%E5%83%8F/</guid>
       <description>先上Dockerfile配置: FROM centos:7 # 维护者 MAINTAINER your-name # 将jdk压缩包添加到容器的 /root 目录，解压后目录名称为jdk1.8.0_211 #ADD server-jre-8u251-linux-x64.tar.gz /root COPY jre /jre # 配置JAVA_HOME环境变量 ENV JAVA_HOME /jre/ # 将JAVA_HOME/bin 添加至PATH环境变量 ENV PATH $JAVA_HOME/bin:$PATH # 启动容器执行的命令，仅用于验证安装配置是否正确，生产环境使用需注释后再build #CMD java -version #ENTRYPOINT [&amp;#34;/jre/bin/java&amp;#34;, &amp;#34;-version&amp;#34;] 步骤: 下载oracle server jre, 我当前下载下来是8u251版本 上传到centos, Dockfile同层目录下 解压缩, 修改解压缩后文件夹名字为jre 在当前目录执行docker build: docker build -t jdk:jre8 . 执行完成后, 镜像被保存到本地仓库, jdk 为 image名称, jre为版本, -t 代表 tag 遇到的坑: 不能FROM scratch, 继承自空白镜像连sh命令都没有, Dockerfile 中的CMD和ENTRYPOINT命令是以sh -c xxxxx 执行的, 没sh命令根本执行不了 不能FROM busybox:latest , 也是一样找不到sh命令, docker本身是去找bash, 但是busybox 不包含bash 不能FROM alpine:latest, 理由同上, 也是找不到bash 最后FROM centos:7 好了</description>
     </item>
     
     <item>
       <title>Spring component-sacn 扫描加载全流程分析</title>
-      <link>https://hzren.github.io/blog/2020-07-29-spring-component-sacn-%E6%89%AB%E6%8F%8F%E5%8A%A0%E8%BD%BD%E5%85%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90/</link>
+      <link>https://hzren.github.io/blog/blog/2020-07-29-spring-component-sacn-%E6%89%AB%E6%8F%8F%E5%8A%A0%E8%BD%BD%E5%85%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90/</link>
       <pubDate>Wed, 29 Jul 2020 15:11:56 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-07-29-spring-component-sacn-%E6%89%AB%E6%8F%8F%E5%8A%A0%E8%BD%BD%E5%85%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-07-29-spring-component-sacn-%E6%89%AB%E6%8F%8F%E5%8A%A0%E8%BD%BD%E5%85%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90/</guid>
       <description>@ComponentScan 如果你理解了ComponentScan， 你就理解了Spring。 Spring是一个依赖注入(dependency injection)框架。所有的内容都是关于bean的定义及其依赖关系。 定义Spring Beans的第一步是使用正确的注解-@Component或@Service或@Repository或@Controller等等。 在Spring容器启动过程中，Spring并不知道你定义了哪个bean，除非它知道从哪里可以找到这个bean。
 Spring 找到Bean的集中方式 XML文件定义Bean Configuration类通过Java 风格定义Bean元素 ComponentScan 自动扫描加载Bean 通过XML定义加载Bean Spring 解析XML元素，根据元素内配置的Bean定义，找到Bean的package和className，通过constructor配置直接反射生成Bean对象
 Configuration类通过Java 风格定义Bean元素 Spring容器找到@Configuration注解所在类，通过反射获取其所有方法，依次调用标有@Bean注解的方法，生成对应Bean对象
@@ -996,10 +996,10 @@ Configuration类通过Java 风格定义Bean元素 Spring容器找到@Configurati
     
     <item>
       <title>docker容器内进程的启动</title>
-      <link>https://hzren.github.io/blog/2020-07-27-docker%E5%AE%B9%E5%99%A8%E5%86%85%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%90%AF%E5%8A%A8/</link>
+      <link>https://hzren.github.io/blog/blog/2020-07-27-docker%E5%AE%B9%E5%99%A8%E5%86%85%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%90%AF%E5%8A%A8/</link>
       <pubDate>Mon, 27 Jul 2020 15:30:26 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-07-27-docker%E5%AE%B9%E5%99%A8%E5%86%85%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%90%AF%E5%8A%A8/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-07-27-docker%E5%AE%B9%E5%99%A8%E5%86%85%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%90%AF%E5%8A%A8/</guid>
       <description>CMD 容器启动命令 CMD 指令的格式和 RUN 相似，也是两种格式：
 shell 格式：CMD &amp;lt;命令&amp;gt; exec 格式：CMD [&amp;quot;可执行文件&amp;quot;, &amp;quot;参数1&amp;quot;, &amp;quot;参数2&amp;quot;...] 参数列表格式：CMD [&amp;quot;参数1&amp;quot;, &amp;quot;参数2&amp;quot;...]。在指定了 ENTRYPOINT 指令后，用 CMD 指定具体的参数。 之前介绍容器的时候曾经说过，Docker 不是虚拟机，容器就是进程。既然是进程，那么在启动容器的时候，需要指定所运行的程序及参数。CMD 指令就是用于指定默认的容器主进程的启动命令的。
 在运行时可以指定新的命令来替代镜像设置中的这个默认命令，比如，ubuntu 镜像默认的 CMD 是 /bin/bash，如果我们直接 docker run -it ubuntu 的话，会直接进入 bash。我们也可以在运行时指定运行别的命令，如 docker run -it ubuntu cat /etc/os-release。这就是用 cat /etc/os-release 命令替换了默认的 /bin/bash 命令了，输出了系统版本信息。
@@ -1011,10 +1011,10 @@ CMD [ &amp;#34;sh&amp;#34;, &amp;#34;-c&amp;#34;, &amp;#34;echo $HOME&amp;#34; ]
     
     <item>
       <title>计算机网络 - 数据链路层</title>
-      <link>https://hzren.github.io/blog/2020-07-23-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/</link>
+      <link>https://hzren.github.io/blog/blog/2020-07-23-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/</link>
       <pubDate>Thu, 23 Jul 2020 16:01:00 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-07-23-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-07-23-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/</guid>
       <description>概念 数据链路层（Data Link Layer）是OSI参考模型第二层，位于物理层与网络层之间。在广播式多路访问链路中（局域网），由于可能存在介质争用，它还可以细分成介质访问控制（MAC）子层和逻辑链路控制（LLC）子层，介质访问控制（MAC）子层专职处理介质访问的争用与冲突问题。
 只提供导线的一端到另一端的数据传输。
 一个IP数据包的传输要经过多个数据链路层的链接，数据链路层存在于两个物理链接(有线/无线)设备之间。代表设备： 普通交换机, 网卡, 桥接器
@@ -1046,10 +1046,10 @@ IEEE 802.1Q协议帧结构，相比802.3以太网帧多了 802.1Q标签
     
     <item>
       <title>Maven依赖选择原理及解决办法</title>
-      <link>https://hzren.github.io/blog/2019-09-02-maven%E4%BE%9D%E8%B5%96%E9%80%89%E6%8B%A9%E5%8E%9F%E7%90%86%E5%8F%8A%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/</link>
+      <link>https://hzren.github.io/blog/blog/2019-09-02-maven%E4%BE%9D%E8%B5%96%E9%80%89%E6%8B%A9%E5%8E%9F%E7%90%86%E5%8F%8A%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/</link>
       <pubDate>Mon, 02 Sep 2019 11:42:02 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2019-09-02-maven%E4%BE%9D%E8%B5%96%E9%80%89%E6%8B%A9%E5%8E%9F%E7%90%86%E5%8F%8A%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/</guid>
+      <guid>https://hzren.github.io/blog/blog/2019-09-02-maven%E4%BE%9D%E8%B5%96%E9%80%89%E6%8B%A9%E5%8E%9F%E7%90%86%E5%8F%8A%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/</guid>
       <description>Maven Maven 是 Apache 下的一个纯 Java 开发的开源项目。基于项目对象模型（缩写：POM）概念，Maven利用一个中央信息片断能管理一个项目的构建、报告和文档等步骤。Maven 是一个项目管理工具，可以对 Java 项目进行构建、依赖管理。Maven 曾是 Jakarta 项目的子项目，现为由 Apache 软件基金会主持的独立 Apache 项目。
 依赖冲突 当我们使用 Maven 来构建我们的程序时，我们可以用几句配置来代替大量的 Jar 包（一个依赖会引入其依赖的其他依赖，而那些依赖也会引入其依赖的依赖，所以有依赖树这种说法），同时因为这种配置在我们交流代码时可以不用自己引入 Jar 包（避免了版本不一致而出错），只要更新 Maven，它就会在后台帮我们解决这一切。但是在我们享受这种方便的同时，我们也在为这种方便付出代价。
 首先我们先来看一个例子： &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.hibernate&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;hibernate-validator&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;5.1.3.Final&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.hibernate&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;hibernate-core&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;${hibernate.version}&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt; 其依赖树如下: POM中引入的依赖库越多，遇到依赖冲突的可能性就越大。 maven默认是如何选择依赖呢? 不同Jar包可能会依赖不同版本的其它Jar包。在实际当中maven的依赖是以树的形式展现的 从上面的树形方案中可以明显看出， 即使我们没有在POM中明确指定它们，我们的项目 X也会使用所有库（Y，Z和G）。实际上，在这种情况下， 即使我们不知道库Z存在，库 Z也会作为Maven的接建依赖库导入到项目中。这种依赖关系称为 传递依赖关系。 由于 Y 和 G 依赖于Z的不同版本 ，因此我们这两个依赖关系就产生了冲突。在项目 的实际运行时只能使用Z库的一个版本 （1.0或2.0）, 不是两者都包含。如果我们使用的Z的版本与另一个库不兼容；系统最终可能会产生错误并崩溃。假设库 Z 是导致项目错误的元凶。我们就需要知道哪个版本的 Z 会产生错误。
@@ -1059,10 +1059,10 @@ IEEE 802.1Q协议帧结构，相比802.3以太网帧多了 802.1Q标签
     
     <item>
       <title>Photoswipe Gallery Sample</title>
-      <link>https://hzren.github.io/post/2017-03-20-photoswipe-gallery-sample/</link>
+      <link>https://hzren.github.io/blog/post/2017-03-20-photoswipe-gallery-sample/</link>
       <pubDate>Mon, 20 Mar 2017 00:00:00 +0000</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/post/2017-03-20-photoswipe-gallery-sample/</guid>
+      <guid>https://hzren.github.io/blog/post/2017-03-20-photoswipe-gallery-sample/</guid>
       <description>&lt;p&gt;Beautiful Hugo adds a few custom shortcodes created by &lt;a href=&#34;https://www.liwen.id.au/heg/&#34;&gt;Li-Wen Yip&lt;/a&gt; and &lt;a href=&#34;https://github.com/GjjvdBurg/HugoPhotoSwipe&#34;&gt;Gert-Jan van den Berg&lt;/a&gt; for making galleries with &lt;a href=&#34;http://photoswipe.com&#34;&gt;PhotoSwipe&lt;/a&gt; .&lt;/p&gt;
 
 
@@ -1070,13 +1070,13 @@ IEEE 802.1Q协议帧结构，相比802.3以太网帧多了 802.1Q标签
 &lt;div class=&#34;gallery caption-position-bottom caption-effect-fade hover-effect-zoom hover-transition&#34; itemscope itemtype=&#34;http://schema.org/ImageGallery&#34;&gt;
 	  
   
-  &lt;link rel=&#34;stylesheet&#34; href=&#34;https://hzren.github.io/css/hugo-easy-gallery.css&#34; /&gt;
+  &lt;link rel=&#34;stylesheet&#34; href=&#34;https://hzren.github.io/blog/css/hugo-easy-gallery.css&#34; /&gt;
   &lt;div class=&#34;box&#34; &gt;
     &lt;figure  itemprop=&#34;associatedMedia&#34; itemscope itemtype=&#34;http://schema.org/ImageObject&#34;&gt;
-      &lt;div class=&#34;img&#34; style=&#34;background-image: url(&#39;https://hzren.github.io/img/hexagon-thumb.jpg&#39;);&#34;&gt;
-        &lt;img itemprop=&#34;thumbnail&#34; src=&#34;https://hzren.github.io/img/hexagon-thumb.jpg&#34; alt=&#34;/img/hexagon-thumb.jpg&#34;/&gt;
+      &lt;div class=&#34;img&#34; style=&#34;background-image: url(&#39;https://hzren.github.io/blog//img/hexagon-thumb.jpg&#39;);&#34;&gt;
+        &lt;img itemprop=&#34;thumbnail&#34; src=&#34;https://hzren.github.io/blog/img/hexagon-thumb.jpg&#34; alt=&#34;/img/hexagon-thumb.jpg&#34;/&gt;
       &lt;/div&gt;
-      &lt;a href=&#34;https://hzren.github.io/img/hexagon.jpg&#34; itemprop=&#34;contentUrl&#34;&gt;&lt;/a&gt;
+      &lt;a href=&#34;https://hzren.github.io/blog/img/hexagon.jpg&#34; itemprop=&#34;contentUrl&#34;&gt;&lt;/a&gt;
     &lt;/figure&gt;
   &lt;/div&gt;
 
@@ -1084,10 +1084,10 @@ IEEE 802.1Q协议帧结构，相比802.3以太网帧多了 802.1Q标签
   
   &lt;div class=&#34;box&#34; &gt;
     &lt;figure  itemprop=&#34;associatedMedia&#34; itemscope itemtype=&#34;http://schema.org/ImageObject&#34;&gt;
-      &lt;div class=&#34;img&#34; style=&#34;background-image: url(&#39;https://hzren.github.io/img/sphere-thumb.jpg&#39;);&#34;&gt;
-        &lt;img itemprop=&#34;thumbnail&#34; src=&#34;https://hzren.github.io/img/sphere-thumb.jpg&#34; alt=&#34;Sphere&#34;/&gt;
+      &lt;div class=&#34;img&#34; style=&#34;background-image: url(&#39;https://hzren.github.io/blog//img/sphere-thumb.jpg&#39;);&#34;&gt;
+        &lt;img itemprop=&#34;thumbnail&#34; src=&#34;https://hzren.github.io/blog/img/sphere-thumb.jpg&#34; alt=&#34;Sphere&#34;/&gt;
       &lt;/div&gt;
-      &lt;a href=&#34;https://hzren.github.io/img/sphere.jpg&#34; itemprop=&#34;contentUrl&#34;&gt;&lt;/a&gt;
+      &lt;a href=&#34;https://hzren.github.io/blog/img/sphere.jpg&#34; itemprop=&#34;contentUrl&#34;&gt;&lt;/a&gt;
         &lt;figcaption&gt;
             &lt;p&gt;Sphere&lt;/p&gt;
         &lt;/figcaption&gt;
@@ -1098,10 +1098,10 @@ IEEE 802.1Q协议帧结构，相比802.3以太网帧多了 802.1Q标签
   
   &lt;div class=&#34;box&#34; &gt;
     &lt;figure  itemprop=&#34;associatedMedia&#34; itemscope itemtype=&#34;http://schema.org/ImageObject&#34;&gt;
-      &lt;div class=&#34;img&#34; style=&#34;background-image: url(&#39;https://hzren.github.io/img/triangle-thumb.jpg&#39;);&#34;&gt;
-        &lt;img itemprop=&#34;thumbnail&#34; src=&#34;https://hzren.github.io/img/triangle-thumb.jpg&#34; alt=&#34;This is a long comment about a triangle&#34;/&gt;
+      &lt;div class=&#34;img&#34; style=&#34;background-image: url(&#39;https://hzren.github.io/blog//img/triangle-thumb.jpg&#39;);&#34;&gt;
+        &lt;img itemprop=&#34;thumbnail&#34; src=&#34;https://hzren.github.io/blog/img/triangle-thumb.jpg&#34; alt=&#34;This is a long comment about a triangle&#34;/&gt;
       &lt;/div&gt;
-      &lt;a href=&#34;https://hzren.github.io/img/triangle.jpg&#34; itemprop=&#34;contentUrl&#34;&gt;&lt;/a&gt;
+      &lt;a href=&#34;https://hzren.github.io/blog/img/triangle.jpg&#34; itemprop=&#34;contentUrl&#34;&gt;&lt;/a&gt;
         &lt;figcaption&gt;
             &lt;p&gt;Triangle&lt;/p&gt;
         &lt;/figcaption&gt;
@@ -1114,19 +1114,19 @@ IEEE 802.1Q协议帧结构，相比802.3以太网帧多了 802.1Q标签
     
     <item>
       <title>Big Image Sample</title>
-      <link>https://hzren.github.io/post/2017-03-07-bigimg-sample/</link>
+      <link>https://hzren.github.io/blog/post/2017-03-07-bigimg-sample/</link>
       <pubDate>Tue, 07 Mar 2017 00:00:00 +0000</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/post/2017-03-07-bigimg-sample/</guid>
+      <guid>https://hzren.github.io/blog/post/2017-03-07-bigimg-sample/</guid>
       <description>&lt;p&gt;The image banners at the top of the page are refered to as &amp;ldquo;bigimg&amp;rdquo; in this theme. They are optional, and one more more can be specified. If more than one is specified, the images rotate every 10 seconds. In the front matter, bigimgs are specified using an array of hashes.&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>Math Sample</title>
-      <link>https://hzren.github.io/post/2017-03-05-math-sample/</link>
+      <link>https://hzren.github.io/blog/post/2017-03-05-math-sample/</link>
       <pubDate>Sun, 05 Mar 2017 00:00:00 +0000</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/post/2017-03-05-math-sample/</guid>
+      <guid>https://hzren.github.io/blog/post/2017-03-05-math-sample/</guid>
       <description>&lt;p&gt;KaTeX can be used to generate complex math formulas server-side.&lt;/p&gt;
 &lt;p&gt;$$
 \phi = \frac{(1+\sqrt{5})}{2} = 1.6180339887\cdots
@@ -1136,19 +1136,19 @@ $$&lt;/p&gt;
     
     <item>
       <title>Code Sample</title>
-      <link>https://hzren.github.io/post/2016-03-08-code-sample/</link>
+      <link>https://hzren.github.io/blog/post/2016-03-08-code-sample/</link>
       <pubDate>Tue, 08 Mar 2016 00:00:00 +0000</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/post/2016-03-08-code-sample/</guid>
+      <guid>https://hzren.github.io/blog/post/2016-03-08-code-sample/</guid>
       <description>&lt;p&gt;The following are two code samples using syntax highlighting.&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>译文：使用子查询计算非重复数目以提高速度</title>
-      <link>https://hzren.github.io/blog/2016-01-07-%E8%AF%91%E6%96%87%E4%BD%BF%E7%94%A8%E5%AD%90%E6%9F%A5%E8%AF%A2%E8%AE%A1%E7%AE%97%E9%9D%9E%E9%87%8D%E5%A4%8D%E6%95%B0%E7%9B%AE%E4%BB%A5%E6%8F%90%E9%AB%98%E9%80%9F%E5%BA%A6/</link>
+      <link>https://hzren.github.io/blog/blog/2016-01-07-%E8%AF%91%E6%96%87%E4%BD%BF%E7%94%A8%E5%AD%90%E6%9F%A5%E8%AF%A2%E8%AE%A1%E7%AE%97%E9%9D%9E%E9%87%8D%E5%A4%8D%E6%95%B0%E7%9B%AE%E4%BB%A5%E6%8F%90%E9%AB%98%E9%80%9F%E5%BA%A6/</link>
       <pubDate>Thu, 07 Jan 2016 16:56:57 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2016-01-07-%E8%AF%91%E6%96%87%E4%BD%BF%E7%94%A8%E5%AD%90%E6%9F%A5%E8%AF%A2%E8%AE%A1%E7%AE%97%E9%9D%9E%E9%87%8D%E5%A4%8D%E6%95%B0%E7%9B%AE%E4%BB%A5%E6%8F%90%E9%AB%98%E9%80%9F%E5%BA%A6/</guid>
+      <guid>https://hzren.github.io/blog/blog/2016-01-07-%E8%AF%91%E6%96%87%E4%BD%BF%E7%94%A8%E5%AD%90%E6%9F%A5%E8%AF%A2%E8%AE%A1%E7%AE%97%E9%9D%9E%E9%87%8D%E5%A4%8D%E6%95%B0%E7%9B%AE%E4%BB%A5%E6%8F%90%E9%AB%98%E9%80%9F%E5%BA%A6/</guid>
       <description>本文说的这个技术是通用的，但为了解释说明，我们选用了 PostgreSQL。感谢 pgAdminIII 提供的解释性插图，这些插图有很大帮助。 很有用，但是却很慢 计算非重复的数目是SQL分析的一个灾难。
 首先一点：我们如果有一个很大的数据集而且可以容忍它不精确。一个像 HyperLogLog的概率统计器可能是你的首选（我们在以后的博客中会讲到HyperLogLog ），但是要追求快速精准的结果，子查询的方法会节省你很多时间。
 让我们从一个简单的查询语句开始吧：哪一个dashboard用户访问的最频繁。
@@ -1164,19 +1164,19 @@ SELECT dashboards.name, log_counts.ct FROM dashboards JOIN (SELECT dashboard_id,
     
     <item>
       <title>Flake it till you make it</title>
-      <link>https://hzren.github.io/post/2015-02-26-flake-it-till-you-make-it/</link>
+      <link>https://hzren.github.io/blog/post/2015-02-26-flake-it-till-you-make-it/</link>
       <pubDate>Thu, 26 Feb 2015 00:00:00 +0000</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/post/2015-02-26-flake-it-till-you-make-it/</guid>
+      <guid>https://hzren.github.io/blog/post/2015-02-26-flake-it-till-you-make-it/</guid>
       <description>Under what circumstances should we step off a path? When is it essential that we finish what we start? If I bought a bag of peanuts and had an allergic reaction, no one would fault me if I threw it out. If I ended a relationship with a woman who hit me, no one would say that I had a commitment problem. But if I walk away from a seemingly secure route because my soul has other ideas, I am a flake?</description>
     </item>
     
     <item>
       <title>Test markdown</title>
-      <link>https://hzren.github.io/post/2015-02-20-test-markdown/</link>
+      <link>https://hzren.github.io/blog/post/2015-02-20-test-markdown/</link>
       <pubDate>Fri, 20 Feb 2015 00:00:00 +0000</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/post/2015-02-20-test-markdown/</guid>
+      <guid>https://hzren.github.io/blog/post/2015-02-20-test-markdown/</guid>
       <description>You can write regular markdown here and Hugo will automatically convert it to a nice webpage. I strongly encourage you to take 5 minutes to learn how to write in markdown - it&amp;rsquo;ll teach you how to transform regular text into bold/italics/headings/tables/etc.
 Here is some bold text
 Here is a secondary heading Here&amp;rsquo;s a useless table:
@@ -1185,56 +1185,56 @@ Number Next number Previous number Five Six Four Ten Eleven Nine Seven Eight Six
     
     <item>
       <title>To be</title>
-      <link>https://hzren.github.io/post/2015-02-13-hamlet-monologue/</link>
+      <link>https://hzren.github.io/blog/post/2015-02-13-hamlet-monologue/</link>
       <pubDate>Fri, 13 Feb 2015 00:00:00 +0000</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/post/2015-02-13-hamlet-monologue/</guid>
+      <guid>https://hzren.github.io/blog/post/2015-02-13-hamlet-monologue/</guid>
       <description>To be, or not to be&amp;ndash;that is the question: Whether &amp;rsquo;tis nobler in the mind to suffer The slings and arrows of outrageous fortune Or to take arms against a sea of troubles And by opposing end them. To die, to sleep&amp;ndash; No more&amp;ndash;and by a sleep to say we end The heartache, and the thousand natural shocks That flesh is heir to. &amp;lsquo;Tis a consummation Devoutly to be wished. To die, to sleep&amp;ndash; To sleep&amp;ndash;perchance to dream: ay, there&amp;rsquo;s the rub, For in that sleep of death what dreams may come When we have shuffled off this mortal coil, Must give us pause.</description>
     </item>
     
     <item>
       <title>Dear diary</title>
-      <link>https://hzren.github.io/post/2015-01-27-dear-diary/</link>
+      <link>https://hzren.github.io/blog/post/2015-01-27-dear-diary/</link>
       <pubDate>Tue, 27 Jan 2015 00:00:00 +0000</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/post/2015-01-27-dear-diary/</guid>
+      <guid>https://hzren.github.io/blog/post/2015-01-27-dear-diary/</guid>
       <description>What is it with that Mary girl? Dragging me to school every day. As if I had a choice. What you don&amp;rsquo;t hear in those nursery rhymes is that she starves me if I don&amp;rsquo;t go to school with her; it&amp;rsquo;s the only way I can stay alive! I&amp;rsquo;m thinking about being adopted by Little Bo Peep, sure I may get lost, but anything is better than being with Mary and those little brats at school (shudder, shudder).</description>
     </item>
     
     <item>
       <title>Soccer</title>
-      <link>https://hzren.github.io/post/2015-01-19-soccer/</link>
+      <link>https://hzren.github.io/blog/post/2015-01-19-soccer/</link>
       <pubDate>Mon, 19 Jan 2015 00:00:00 +0000</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/post/2015-01-19-soccer/</guid>
+      <guid>https://hzren.github.io/blog/post/2015-01-19-soccer/</guid>
       <description>From Wikipedia:
 Association football, more commonly known as football or soccer,[2] is a sport played between two teams of eleven players with a spherical ball. It is played by 250 million players in over 200 countries, making it the world&amp;rsquo;s most popular sport.[3][4][5][6] The game is played on a rectangular field with a goal at each end. The object of the game is to score by getting the ball into the opposing goal.</description>
     </item>
     
     <item>
       <title>Pirates arrrr</title>
-      <link>https://hzren.github.io/post/2015-01-15-pirates/</link>
+      <link>https://hzren.github.io/blog/post/2015-01-15-pirates/</link>
       <pubDate>Thu, 15 Jan 2015 00:00:00 +0000</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/post/2015-01-15-pirates/</guid>
+      <guid>https://hzren.github.io/blog/post/2015-01-15-pirates/</guid>
       <description>Piracy is typically an act of robbery or criminal violence at sea. The term can include acts committed on land, in the air, or in other major bodies of water or on a shore. It does not normally include crimes committed against persons traveling on the same vessel as the perpetrator (e.g. one passenger stealing from others on the same vessel). The term has been used throughout history to refer to raids across land borders by non-state agents.</description>
     </item>
     
     <item>
       <title>First post!</title>
-      <link>https://hzren.github.io/post/2015-01-04-first-post/</link>
+      <link>https://hzren.github.io/blog/post/2015-01-04-first-post/</link>
       <pubDate>Mon, 05 Jan 2015 00:00:00 +0000</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/post/2015-01-04-first-post/</guid>
+      <guid>https://hzren.github.io/blog/post/2015-01-04-first-post/</guid>
       <description>This is my first post, how exciting!</description>
     </item>
     
     <item>
       <title>About me</title>
-      <link>https://hzren.github.io/page/about/</link>
+      <link>https://hzren.github.io/blog/page/about/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/page/about/</guid>
+      <guid>https://hzren.github.io/blog/page/about/</guid>
       <description>开发语言 Java Rust Python
 擅长 爬虫，网络通信
 胡言乱语 想去放羊养鱼的程序员，多路复用，大Buffer！</description>

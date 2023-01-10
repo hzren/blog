@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>IP on Code Mark</title>
-    <link>https://hzren.github.io/tags/ip/</link>
+    <link>https://hzren.github.io/blog/tags/ip/</link>
     <description>Recent content in IP on Code Mark</description>
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>hzren@outlook.com (renhongzhen)</managingEditor>
     <webMaster>hzren@outlook.com (renhongzhen)</webMaster>
-    <lastBuildDate>Thu, 13 Aug 2020 11:17:22 +0800</lastBuildDate><atom:link href="https://hzren.github.io/tags/ip/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 13 Aug 2020 11:17:22 +0800</lastBuildDate><atom:link href="https://hzren.github.io/blog/tags/ip/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>IPv4 与 IPv6 区别</title>
-      <link>https://hzren.github.io/blog/2020-08-13-ipv4-%E4%B8%8E-ipv6-%E5%8C%BA%E5%88%AB/</link>
+      <link>https://hzren.github.io/blog/blog/2020-08-13-ipv4-%E4%B8%8E-ipv6-%E5%8C%BA%E5%88%AB/</link>
       <pubDate>Thu, 13 Aug 2020 11:17:22 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-08-13-ipv4-%E4%B8%8E-ipv6-%E5%8C%BA%E5%88%AB/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-08-13-ipv4-%E4%B8%8E-ipv6-%E5%8C%BA%E5%88%AB/</guid>
       <description> 两者报文的前四位都是版本号字段， 通过该报文的前四位即可判断出这是一个IPv4报文还是一个IPv6报文，因此，在同一线路，路由器同时支持IPv4和IPv6就不存在问题。
 IPv4和IPv6是Internet协议版本4和Internet协议版本6，IP版本6是Internet协议的新版本，就复杂性和效率而言，它比IP版本4更好。
 IPv4和IPv6之间的区别：
@@ -22,10 +22,10 @@ IPV4 IPV6 IPv4具有32位地址长度 IPv6具有128位地址长度 支持手动�
     
     <item>
       <title>IPv6 协议</title>
-      <link>https://hzren.github.io/blog/2020-08-13-ipv6-%E5%8D%8F%E8%AE%AE/</link>
+      <link>https://hzren.github.io/blog/blog/2020-08-13-ipv6-%E5%8D%8F%E8%AE%AE/</link>
       <pubDate>Thu, 13 Aug 2020 11:15:34 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-08-13-ipv6-%E5%8D%8F%E8%AE%AE/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-08-13-ipv6-%E5%8D%8F%E8%AE%AE/</guid>
       <description>概念 IPv6是网际协议的最新版本，用作互联网的协议。用它来取代IPv4主要是为了解决IPv4地址枯竭问题，同时它也在其他方面对于IPv4有许多改进。IPv6的设计目的是取代IPv4，然而长期以来IPv4在互联网流量中仍占据主要地位，IPv6的使用增长缓慢。
 与IPv4比较 在Internet上，数据以分组的形式传输。IPv6定义了一种新的分组格式，目的是为了最小化路由器处理的消息标头。由于IPv4消息和IPv6消息标头有很大不同，因此这两种协议无法互操作。但是在大多数情况下，IPv6仅仅是对IPv4的一种保守扩展。除了嵌入了互联网地址的那些应用协议（如FTP和NTPv3，新地址格式可能会与当前协议的语法冲突）以外，大多数传输层和应用层协议几乎不怎么需要修改就可以在IPv6上运行。
 无状态地址自动配置（SLAAC） 当连接到IPv6网络上时，IPv6主机可以使用邻居发现协议对自身进行自动配置。当第一次连接到网络上时，主机发送一个链路本地路由器请求（solicitation）多播请求来获取配置参数。路由器使用包含Internet层配置参数的路由器宣告（advertisement）报文进行回应。在不适合使用IPv6无状态地址自动配置的场景下，网络可以使用有状态配置（DHCPv6），或者使用静态方法手动配置。
@@ -38,10 +38,10 @@ IPv4位址可以很容易的转化为IPv6格式。举例来说，如果IPv4的�
     
     <item>
       <title>IPv4 协议</title>
-      <link>https://hzren.github.io/blog/2020-08-13-ipv4-%E5%8D%8F%E8%AE%AE/</link>
+      <link>https://hzren.github.io/blog/blog/2020-08-13-ipv4-%E5%8D%8F%E8%AE%AE/</link>
       <pubDate>Thu, 13 Aug 2020 11:15:06 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-08-13-ipv4-%E5%8D%8F%E8%AE%AE/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-08-13-ipv4-%E5%8D%8F%E8%AE%AE/</guid>
       <description>概念 IPv4是一种无连接的协议，操作在使用分组交换的链路层（如以太网）上，位于网络层。协议会尽最大努力交付数据包，它不保证任何数据包均能送达目的地，也不保证所有数据包均按照正确的顺序无重复地到达。这些功能由上层的传输协议（如传输控制协议 / TCP）来保证。
 地址 IPv4使用32位（4字节）地址，因此地址空间中只有4,294,967,296（232）个地址。不过，一些地址是为特殊用途所保留的，如专用网络（约1800万个地址）和多播地址（约2.7亿个地址），这减少了可在互联网上路由的地址数量。随着地址不断被分配给最终用户，IPv4地址枯竭问题也在随之产生。基于分类网络、无类别域间路由和网络地址转换的地址结构重构显著地减少了地址枯竭的速度。但在2011年2月3日，在最后5个地址块被分配给5个区域互联网注册管理机构之后，IANA的主要地址池已经用尽。
 常规分类 分配 最初，一个IP地址被分成两部分：网络识别码在地址的高位字节中，主机识别码在剩下的部分中。
@@ -65,10 +65,10 @@ CIDR被设计为可以重新划分地址空间，因此小的或大的地址块�
     
     <item>
       <title>IP 协议</title>
-      <link>https://hzren.github.io/blog/2020-08-13-ip-%E5%8D%8F%E8%AE%AE/</link>
+      <link>https://hzren.github.io/blog/blog/2020-08-13-ip-%E5%8D%8F%E8%AE%AE/</link>
       <pubDate>Thu, 13 Aug 2020 00:00:00 +0000</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-08-13-ip-%E5%8D%8F%E8%AE%AE/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-08-13-ip-%E5%8D%8F%E8%AE%AE/</guid>
       <description>前言 IP协议，又称网际协议，是整个互联网事实的基石。
 IP地址最核心的概念之一就是IP地址，IP地址用来标识网络上的一台设备；为什么有了MAC地址还需要IP地址呢，因为MAC地址是和硬件绑定在一起的，硬件设备是可以人为位置转移的，一台设备，它可以用在这个世界上的任何地方。
 如果只有MAC地址没有IP地址，一个ISP(电信运营商)下面所链接的设备MAC地址将是无法确定的，毫无规律可言，当一个数据包从一台网络设备发出之后，我们无法确定这个数据包的目标是在哪个国家的哪个地方。所以需要在MAC地址之上虚拟新的一层，IP层，当数据夸网络传输时，我们根据数据包的目的IP地址确定其所在国家的ISP，将其发送过去，目标ISP收到该报文后通过其IP地址分配确定目标设备，将该数据包转发过去。

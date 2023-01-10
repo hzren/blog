@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Java on Code Mark</title>
-    <link>https://hzren.github.io/tags/java/</link>
+    <link>https://hzren.github.io/blog/tags/java/</link>
     <description>Recent content in Java on Code Mark</description>
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>hzren@outlook.com (renhongzhen)</managingEditor>
     <webMaster>hzren@outlook.com (renhongzhen)</webMaster>
-    <lastBuildDate>Wed, 03 Aug 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://hzren.github.io/tags/java/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 03 Aug 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://hzren.github.io/blog/tags/java/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Spring唯一约束异常统一处理</title>
-      <link>https://hzren.github.io/blog/2022-08-03-spring%E5%94%AF%E4%B8%80%E7%BA%A6%E6%9D%9F%E5%BC%82%E5%B8%B8%E7%BB%9F%E4%B8%80%E5%A4%84%E7%90%86/</link>
+      <link>https://hzren.github.io/blog/blog/2022-08-03-spring%E5%94%AF%E4%B8%80%E7%BA%A6%E6%9D%9F%E5%BC%82%E5%B8%B8%E7%BB%9F%E4%B8%80%E5%A4%84%E7%90%86/</link>
       <pubDate>Wed, 03 Aug 2022 00:00:00 +0000</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2022-08-03-spring%E5%94%AF%E4%B8%80%E7%BA%A6%E6%9D%9F%E5%BC%82%E5%B8%B8%E7%BB%9F%E4%B8%80%E5%A4%84%E7%90%86/</guid>
+      <guid>https://hzren.github.io/blog/blog/2022-08-03-spring%E5%94%AF%E4%B8%80%E7%BA%A6%E6%9D%9F%E5%BC%82%E5%B8%B8%E7%BB%9F%E4%B8%80%E5%A4%84%E7%90%86/</guid>
       <description>背景：在数据库唯一约束冲突时，需要根据冲突的唯一约束自动生成错误信息然后返回给前端。
 前提 Spring会将数据库层错误统一转化为DataAccessException ，DataAccessException知只是针对数据库层错误的抽象，根据错误类型不同，Spring实现了不同DataAccessException子类，本篇文章我们只处理DataIntegrityViolationException(唯一约束冲突)。
 在WEB层做统一异常处理 Controller类上添加@ControllerAdvice注解来统一所有WEB接口异常处理。
@@ -23,10 +23,10 @@ private static Response parseAndReturn(DataIntegrityViolationException dive) thr
     
     <item>
       <title>Arthas使用</title>
-      <link>https://hzren.github.io/blog/2021-01-27-arthas%E4%BD%BF%E7%94%A8/</link>
+      <link>https://hzren.github.io/blog/blog/2021-01-27-arthas%E4%BD%BF%E7%94%A8/</link>
       <pubDate>Wed, 27 Jan 2021 15:11:16 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-01-27-arthas%E4%BD%BF%E7%94%A8/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-01-27-arthas%E4%BD%BF%E7%94%A8/</guid>
       <description>官方教程
 文档
 下载 下载全量zip包：从Github Releases页下载
@@ -41,10 +41,10 @@ $ $ java -jar arthas-boot.jar * [1]: 35542 [2]: 71560 arthas-demo.jar Demo进程
     
     <item>
       <title>JVM</title>
-      <link>https://hzren.github.io/blog/2021-01-25-jvm/</link>
+      <link>https://hzren.github.io/blog/blog/2021-01-25-jvm/</link>
       <pubDate>Mon, 25 Jan 2021 15:48:02 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-01-25-jvm/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-01-25-jvm/</guid>
       <description>在 Java 虚拟机规范中，局部变量区等价于一个数组，并且可以用正整数来索引。除了 long、double 值需要用两个数组单元来存储之外，其他基本类型以及引用类型的值均占用一个数组单元。
 也就是说，boolean、byte、char、short 这四种类型，在栈上占用的空间和 int 是一样的，和引用类型也是一样的。因此，在 32 位的 HotSpot 中，这些类型在栈上将占用 4 个字节；而在 64 位的 HotSpot 中，他们将占 8 个字节。
 当然，这种情况仅存在于局部变量，而并不会出现在存储于堆中的字段或者数组元素上。对于 byte、char 以及 short 这三种类型的字段或者数组单元，它们在堆上占用的空间分别为一字节、两字节，以及两字节，也就是说，跟这些类型的值域相吻合。
@@ -58,10 +58,10 @@ JVM 的静态绑定和动态绑定 Java 虚拟机中关于方法重写的判定�
     
     <item>
       <title>Java语言</title>
-      <link>https://hzren.github.io/blog/2021-01-22-java%E8%AF%AD%E8%A8%80/</link>
+      <link>https://hzren.github.io/blog/blog/2021-01-22-java%E8%AF%AD%E8%A8%80/</link>
       <pubDate>Fri, 22 Jan 2021 10:55:31 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-01-22-java%E8%AF%AD%E8%A8%80/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-01-22-java%E8%AF%AD%E8%A8%80/</guid>
       <description>引用类型 不同的引用类型，主要体现的是对象不同的可达性（reachable）状态和对垃圾收集的影响
 强引用（&amp;ldquo;Strong&amp;rdquo; Reference），就是我们最常见的普通对象引用，只要还有强引用指向一个对象，就能表明对象还“活着”，垃圾收集器不会碰这种对象。对于一个普通的对象，如果没有其他的引用关系，只要超过了引用的作用域或者显式地将相应（强）引用赋值为null，就是可以被垃圾收集的了，当然具体回收时机还是要看垃圾收集策略。
 软引用（SoftReference），是一种相对强引用弱化一些的引用，可以让对象豁免一些垃圾收集，只有当JVM认为内存不足时，才会去试图回收软引用指向的对象。JVM会确保在抛出OutOfMemoryError之前，清理软引用指向的对象。软引用通常用来实现内存敏感的缓存，如果还有空闲内存，就可以暂时保留缓存，当内存不足时清理掉，这样就保证了使用缓存的同时，不会耗尽内存。
@@ -89,10 +89,10 @@ AtomicLongFieldUpdater中代码：
     
     <item>
       <title>Java使用Protocol Buffers</title>
-      <link>https://hzren.github.io/blog/2020-09-29-java%E4%BD%BF%E7%94%A8protocol-buffers/</link>
+      <link>https://hzren.github.io/blog/blog/2020-09-29-java%E4%BD%BF%E7%94%A8protocol-buffers/</link>
       <pubDate>Tue, 29 Sep 2020 16:00:09 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-09-29-java%E4%BD%BF%E7%94%A8protocol-buffers/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-09-29-java%E4%BD%BF%E7%94%A8protocol-buffers/</guid>
       <description>简介 Protocol Buffers，是Google公司开发的一种数据描述语言，类似于XML能够将结构化数据序列化，可用于数据存储、通信协议等方面。
 准备工作 下载protoc代码生成器 编写.proto文件 编译.proto文件 下载protoc代码生成器 protoc可以从Google Protocol Buffers官网下载, 也可以从github ProtocBuffer仓库下载. 仓库地址
 下载文成后, 编译器位于bin文件夹下面.
@@ -113,10 +113,10 @@ Java集成 添加依赖 添加maven插件 生成代码 编写测试代码 添加
     
     <item>
       <title>Spring component-sacn 扫描加载全流程分析</title>
-      <link>https://hzren.github.io/blog/2020-07-29-spring-component-sacn-%E6%89%AB%E6%8F%8F%E5%8A%A0%E8%BD%BD%E5%85%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90/</link>
+      <link>https://hzren.github.io/blog/blog/2020-07-29-spring-component-sacn-%E6%89%AB%E6%8F%8F%E5%8A%A0%E8%BD%BD%E5%85%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90/</link>
       <pubDate>Wed, 29 Jul 2020 15:11:56 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-07-29-spring-component-sacn-%E6%89%AB%E6%8F%8F%E5%8A%A0%E8%BD%BD%E5%85%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-07-29-spring-component-sacn-%E6%89%AB%E6%8F%8F%E5%8A%A0%E8%BD%BD%E5%85%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90/</guid>
       <description>@ComponentScan 如果你理解了ComponentScan， 你就理解了Spring。 Spring是一个依赖注入(dependency injection)框架。所有的内容都是关于bean的定义及其依赖关系。 定义Spring Beans的第一步是使用正确的注解-@Component或@Service或@Repository或@Controller等等。 在Spring容器启动过程中，Spring并不知道你定义了哪个bean，除非它知道从哪里可以找到这个bean。
 Spring 找到Bean的集中方式 XML文件定义Bean Configuration类通过Java 风格定义Bean元素 ComponentScan 自动扫描加载Bean 通过XML定义加载Bean Spring 解析XML元素，根据元素内配置的Bean定义，找到Bean的package和className，通过constructor配置直接反射生成Bean对象
 Configuration类通过Java 风格定义Bean元素 Spring容器找到@Configuration注解所在类，通过反射获取其所有方法，依次调用标有@Bean注解的方法，生成对应Bean对象

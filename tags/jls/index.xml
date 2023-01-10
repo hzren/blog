@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>JLS on Code Mark</title>
-    <link>https://hzren.github.io/tags/jls/</link>
+    <link>https://hzren.github.io/blog/tags/jls/</link>
     <description>Recent content in JLS on Code Mark</description>
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>hzren@outlook.com (renhongzhen)</managingEditor>
     <webMaster>hzren@outlook.com (renhongzhen)</webMaster>
-    <lastBuildDate>Fri, 22 Jan 2021 10:55:31 +0800</lastBuildDate><atom:link href="https://hzren.github.io/tags/jls/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 22 Jan 2021 10:55:31 +0800</lastBuildDate><atom:link href="https://hzren.github.io/blog/tags/jls/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Java语言</title>
-      <link>https://hzren.github.io/blog/2021-01-22-java%E8%AF%AD%E8%A8%80/</link>
+      <link>https://hzren.github.io/blog/blog/2021-01-22-java%E8%AF%AD%E8%A8%80/</link>
       <pubDate>Fri, 22 Jan 2021 10:55:31 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-01-22-java%E8%AF%AD%E8%A8%80/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-01-22-java%E8%AF%AD%E8%A8%80/</guid>
       <description>引用类型 不同的引用类型，主要体现的是对象不同的可达性（reachable）状态和对垃圾收集的影响
 强引用（&amp;ldquo;Strong&amp;rdquo; Reference），就是我们最常见的普通对象引用，只要还有强引用指向一个对象，就能表明对象还“活着”，垃圾收集器不会碰这种对象。对于一个普通的对象，如果没有其他的引用关系，只要超过了引用的作用域或者显式地将相应（强）引用赋值为null，就是可以被垃圾收集的了，当然具体回收时机还是要看垃圾收集策略。
 软引用（SoftReference），是一种相对强引用弱化一些的引用，可以让对象豁免一些垃圾收集，只有当JVM认为内存不足时，才会去试图回收软引用指向的对象。JVM会确保在抛出OutOfMemoryError之前，清理软引用指向的对象。软引用通常用来实现内存敏感的缓存，如果还有空闲内存，就可以暂时保留缓存，当内存不足时清理掉，这样就保证了使用缓存的同时，不会耗尽内存。

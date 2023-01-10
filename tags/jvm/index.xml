@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>JVM on Code Mark</title>
-    <link>https://hzren.github.io/tags/jvm/</link>
+    <link>https://hzren.github.io/blog/tags/jvm/</link>
     <description>Recent content in JVM on Code Mark</description>
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>hzren@outlook.com (renhongzhen)</managingEditor>
     <webMaster>hzren@outlook.com (renhongzhen)</webMaster>
-    <lastBuildDate>Mon, 25 Jan 2021 15:48:02 +0800</lastBuildDate><atom:link href="https://hzren.github.io/tags/jvm/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 25 Jan 2021 15:48:02 +0800</lastBuildDate><atom:link href="https://hzren.github.io/blog/tags/jvm/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>JVM</title>
-      <link>https://hzren.github.io/blog/2021-01-25-jvm/</link>
+      <link>https://hzren.github.io/blog/blog/2021-01-25-jvm/</link>
       <pubDate>Mon, 25 Jan 2021 15:48:02 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-01-25-jvm/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-01-25-jvm/</guid>
       <description>在 Java 虚拟机规范中，局部变量区等价于一个数组，并且可以用正整数来索引。除了 long、double 值需要用两个数组单元来存储之外，其他基本类型以及引用类型的值均占用一个数组单元。
 也就是说，boolean、byte、char、short 这四种类型，在栈上占用的空间和 int 是一样的，和引用类型也是一样的。因此，在 32 位的 HotSpot 中，这些类型在栈上将占用 4 个字节；而在 64 位的 HotSpot 中，他们将占 8 个字节。
 当然，这种情况仅存在于局部变量，而并不会出现在存储于堆中的字段或者数组元素上。对于 byte、char 以及 short 这三种类型的字段或者数组单元，它们在堆上占用的空间分别为一字节、两字节，以及两字节，也就是说，跟这些类型的值域相吻合。

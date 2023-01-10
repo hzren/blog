@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>File on Code Mark</title>
-    <link>https://hzren.github.io/tags/file/</link>
+    <link>https://hzren.github.io/blog/tags/file/</link>
     <description>Recent content in File on Code Mark</description>
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>hzren@outlook.com (renhongzhen)</managingEditor>
     <webMaster>hzren@outlook.com (renhongzhen)</webMaster>
-    <lastBuildDate>Fri, 15 Jan 2021 17:28:36 +0800</lastBuildDate><atom:link href="https://hzren.github.io/tags/file/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 15 Jan 2021 17:28:36 +0800</lastBuildDate><atom:link href="https://hzren.github.io/blog/tags/file/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>文件系统</title>
-      <link>https://hzren.github.io/blog/2021-01-15-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/</link>
+      <link>https://hzren.github.io/blog/blog/2021-01-15-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/</link>
       <pubDate>Fri, 15 Jan 2021 17:28:36 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-01-15-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-01-15-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/</guid>
       <description>摘自 倪朋飞-极客时间-Linux性能优化实战
 磁盘为系统提供了最基本的持久化存储。文件系统则在磁盘的基础上，提供了一个用来管理文件的树状结构。
 索引节点和目录项 文件系统，本身是对存储设备上的文件，进行组织管理的机制。组织方式不同，就会形成不同的文件系统。你要记住最重要的一点，在 Linux 中一切皆文件。不仅普通的文件和目录，就连块设备、套接字、管道等，也都要通过统一的文件系统来管理。为了方便管理，Linux 文件系统为每个文件都分配两个数据结构，索引节点（indexnode）和目录项（directory entry）。它们主要用来记录文件的元信息和目录结构。

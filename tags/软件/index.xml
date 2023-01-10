@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>软件 on Code Mark</title>
-    <link>https://hzren.github.io/tags/%E8%BD%AF%E4%BB%B6/</link>
+    <link>https://hzren.github.io/blog/tags/%E8%BD%AF%E4%BB%B6/</link>
     <description>Recent content in 软件 on Code Mark</description>
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>hzren@outlook.com (renhongzhen)</managingEditor>
     <webMaster>hzren@outlook.com (renhongzhen)</webMaster>
-    <lastBuildDate>Fri, 28 Aug 2020 17:00:38 +0800</lastBuildDate><atom:link href="https://hzren.github.io/tags/%E8%BD%AF%E4%BB%B6/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 28 Aug 2020 17:00:38 +0800</lastBuildDate><atom:link href="https://hzren.github.io/blog/tags/%E8%BD%AF%E4%BB%B6/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>centos 安装 hadoop</title>
-      <link>https://hzren.github.io/blog/2020-08-28-centos-%E5%AE%89%E8%A3%85-hadoop/</link>
+      <link>https://hzren.github.io/blog/blog/2020-08-28-centos-%E5%AE%89%E8%A3%85-hadoop/</link>
       <pubDate>Fri, 28 Aug 2020 17:00:38 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-08-28-centos-%E5%AE%89%E8%A3%85-hadoop/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-08-28-centos-%E5%AE%89%E8%A3%85-hadoop/</guid>
       <description>安装JDK 上传JDK包到centos.
 解压
 tar xvf server-jre-8u251-linux-x64.tar.gz 配置环境变量
@@ -34,10 +34,10 @@ tar xvf hadoop-2.10.0.tar.gz hadoop有三种部署模式:
     
     <item>
       <title>centos 安装 stress sysstat</title>
-      <link>https://hzren.github.io/blog/2020-08-25-centos-%E5%AE%89%E8%A3%85-stress-sysstat/</link>
+      <link>https://hzren.github.io/blog/blog/2020-08-25-centos-%E5%AE%89%E8%A3%85-stress-sysstat/</link>
       <pubDate>Tue, 25 Aug 2020 11:03:20 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-08-25-centos-%E5%AE%89%E8%A3%85-stress-sysstat/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-08-25-centos-%E5%AE%89%E8%A3%85-stress-sysstat/</guid>
       <description>检查安装的仓库列表
 yum repolist 仓库列表:
 Loaded plugins: fastestmirror Loading mirror speeds from cached hostfile * base: mirrors.163.com * epel: mirrors.bfsu.edu.cn * extras: mirrors.cn99.com * updates: mirrors.163.com repo id repo name status base/7/x86_64 CentOS-7 - Base 10,070 docker-ce-stable/x86_64 Docker CE Stable - x86_64 79 extras/7/x86_64 CentOS-7 - Extras 413 updates/7/x86_64 CentOS-7 - Updates 1,112 repolist: 25,100 先安装epel
@@ -48,10 +48,10 @@ Loaded plugins: fastestmirror Loading mirror speeds from cached hostfile * base:
     
     <item>
       <title>Docker使用nexus作为镜像仓库</title>
-      <link>https://hzren.github.io/blog/2020-07-30-docker%E4%BD%BF%E7%94%A8nexus%E4%BD%9C%E4%B8%BA%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93/</link>
+      <link>https://hzren.github.io/blog/blog/2020-07-30-docker%E4%BD%BF%E7%94%A8nexus%E4%BD%9C%E4%B8%BA%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93/</link>
       <pubDate>Thu, 30 Jul 2020 15:52:56 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-07-30-docker%E4%BD%BF%E7%94%A8nexus%E4%BD%9C%E4%B8%BA%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-07-30-docker%E4%BD%BF%E7%94%A8nexus%E4%BD%9C%E4%B8%BA%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93/</guid>
       <description>登录docker repo
 docker login -u admin -p admin123 192.168.135.73:8082 给镜像打tag:
 docker tag jdk:jre8 192.168.135.73:8082/jdk:jre8 上传镜像:
@@ -60,10 +60,10 @@ docker push 192.168.135.73:8082/jdk:jre8 下载镜像: nexus中镜像: </descrip
     
     <item>
       <title>docker 创建Oracle Server Jre 镜像</title>
-      <link>https://hzren.github.io/blog/2020-07-29-docker-%E5%88%9B%E5%BB%BAoracle-server-jre-%E9%95%9C%E5%83%8F/</link>
+      <link>https://hzren.github.io/blog/blog/2020-07-29-docker-%E5%88%9B%E5%BB%BAoracle-server-jre-%E9%95%9C%E5%83%8F/</link>
       <pubDate>Wed, 29 Jul 2020 15:38:13 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-07-29-docker-%E5%88%9B%E5%BB%BAoracle-server-jre-%E9%95%9C%E5%83%8F/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-07-29-docker-%E5%88%9B%E5%BB%BAoracle-server-jre-%E9%95%9C%E5%83%8F/</guid>
       <description>先上Dockerfile配置: FROM centos:7 # 维护者 MAINTAINER your-name # 将jdk压缩包添加到容器的 /root 目录，解压后目录名称为jdk1.8.0_211 #ADD server-jre-8u251-linux-x64.tar.gz /root COPY jre /jre # 配置JAVA_HOME环境变量 ENV JAVA_HOME /jre/ # 将JAVA_HOME/bin 添加至PATH环境变量 ENV PATH $JAVA_HOME/bin:$PATH # 启动容器执行的命令，仅用于验证安装配置是否正确，生产环境使用需注释后再build #CMD java -version #ENTRYPOINT [&amp;#34;/jre/bin/java&amp;#34;, &amp;#34;-version&amp;#34;] 步骤: 下载oracle server jre, 我当前下载下来是8u251版本 上传到centos, Dockfile同层目录下 解压缩, 修改解压缩后文件夹名字为jre 在当前目录执行docker build: docker build -t jdk:jre8 . 执行完成后, 镜像被保存到本地仓库, jdk 为 image名称, jre为版本, -t 代表 tag 遇到的坑: 不能FROM scratch, 继承自空白镜像连sh命令都没有, Dockerfile 中的CMD和ENTRYPOINT命令是以sh -c xxxxx 执行的, 没sh命令根本执行不了 不能FROM busybox:latest , 也是一样找不到sh命令, docker本身是去找bash, 但是busybox 不包含bash 不能FROM alpine:latest, 理由同上, 也是找不到bash 最后FROM centos:7 好了</description>
     </item>
     

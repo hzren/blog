@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>SQL on Code Mark</title>
-    <link>https://hzren.github.io/tags/sql/</link>
+    <link>https://hzren.github.io/blog/tags/sql/</link>
     <description>Recent content in SQL on Code Mark</description>
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>hzren@outlook.com (renhongzhen)</managingEditor>
     <webMaster>hzren@outlook.com (renhongzhen)</webMaster>
-    <lastBuildDate>Thu, 07 Jan 2016 16:56:57 +0800</lastBuildDate><atom:link href="https://hzren.github.io/tags/sql/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 07 Jan 2016 16:56:57 +0800</lastBuildDate><atom:link href="https://hzren.github.io/blog/tags/sql/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>译文：使用子查询计算非重复数目以提高速度</title>
-      <link>https://hzren.github.io/blog/2016-01-07-%E8%AF%91%E6%96%87%E4%BD%BF%E7%94%A8%E5%AD%90%E6%9F%A5%E8%AF%A2%E8%AE%A1%E7%AE%97%E9%9D%9E%E9%87%8D%E5%A4%8D%E6%95%B0%E7%9B%AE%E4%BB%A5%E6%8F%90%E9%AB%98%E9%80%9F%E5%BA%A6/</link>
+      <link>https://hzren.github.io/blog/blog/2016-01-07-%E8%AF%91%E6%96%87%E4%BD%BF%E7%94%A8%E5%AD%90%E6%9F%A5%E8%AF%A2%E8%AE%A1%E7%AE%97%E9%9D%9E%E9%87%8D%E5%A4%8D%E6%95%B0%E7%9B%AE%E4%BB%A5%E6%8F%90%E9%AB%98%E9%80%9F%E5%BA%A6/</link>
       <pubDate>Thu, 07 Jan 2016 16:56:57 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2016-01-07-%E8%AF%91%E6%96%87%E4%BD%BF%E7%94%A8%E5%AD%90%E6%9F%A5%E8%AF%A2%E8%AE%A1%E7%AE%97%E9%9D%9E%E9%87%8D%E5%A4%8D%E6%95%B0%E7%9B%AE%E4%BB%A5%E6%8F%90%E9%AB%98%E9%80%9F%E5%BA%A6/</guid>
+      <guid>https://hzren.github.io/blog/blog/2016-01-07-%E8%AF%91%E6%96%87%E4%BD%BF%E7%94%A8%E5%AD%90%E6%9F%A5%E8%AF%A2%E8%AE%A1%E7%AE%97%E9%9D%9E%E9%87%8D%E5%A4%8D%E6%95%B0%E7%9B%AE%E4%BB%A5%E6%8F%90%E9%AB%98%E9%80%9F%E5%BA%A6/</guid>
       <description>本文说的这个技术是通用的，但为了解释说明，我们选用了 PostgreSQL。感谢 pgAdminIII 提供的解释性插图，这些插图有很大帮助。 很有用，但是却很慢 计算非重复的数目是SQL分析的一个灾难。
 首先一点：我们如果有一个很大的数据集而且可以容忍它不精确。一个像 HyperLogLog的概率统计器可能是你的首选（我们在以后的博客中会讲到HyperLogLog ），但是要追求快速精准的结果，子查询的方法会节省你很多时间。
 让我们从一个简单的查询语句开始吧：哪一个dashboard用户访问的最频繁。

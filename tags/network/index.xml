@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Network on Code Mark</title>
-    <link>https://hzren.github.io/tags/network/</link>
+    <link>https://hzren.github.io/blog/tags/network/</link>
     <description>Recent content in Network on Code Mark</description>
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>hzren@outlook.com (renhongzhen)</managingEditor>
     <webMaster>hzren@outlook.com (renhongzhen)</webMaster>
-    <lastBuildDate>Tue, 19 Jan 2021 18:30:32 +0800</lastBuildDate><atom:link href="https://hzren.github.io/tags/network/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 19 Jan 2021 18:30:32 +0800</lastBuildDate><atom:link href="https://hzren.github.io/blog/tags/network/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Linux网络</title>
-      <link>https://hzren.github.io/blog/2021-01-19-linux%E7%BD%91%E7%BB%9C/</link>
+      <link>https://hzren.github.io/blog/blog/2021-01-19-linux%E7%BD%91%E7%BB%9C/</link>
       <pubDate>Tue, 19 Jan 2021 18:30:32 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-01-19-linux%E7%BD%91%E7%BB%9C/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-01-19-linux%E7%BD%91%E7%BB%9C/</guid>
       <description>摘自 倪朋飞-极客时间-Linux性能优化实战
 Linux 通用 IP 网络栈的示意图：
 网卡是发送和接收网络包的基本设备。在系统启动过程中，网卡通过内核中的网卡驱动程序注册到系统中。而在网络收发过程中，内核通过中断跟网卡进行交互。再结合前面提到的 Linux 网络栈，可以看出，网络包的处理非常复杂。所以，网卡硬中断只处理最核心的网卡数据读取或发送，而协议栈中的大部分逻辑，都会放到软中断中处理。
@@ -29,10 +29,10 @@ Linux 通用 IP 网络栈的示意图：
     
     <item>
       <title>路由条目</title>
-      <link>https://hzren.github.io/blog/2021-01-13-%E8%B7%AF%E7%94%B1%E6%9D%A1%E7%9B%AE/</link>
+      <link>https://hzren.github.io/blog/blog/2021-01-13-%E8%B7%AF%E7%94%B1%E6%9D%A1%E7%9B%AE/</link>
       <pubDate>Wed, 13 Jan 2021 10:13:06 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-01-13-%E8%B7%AF%E7%94%B1%E6%9D%A1%E7%9B%AE/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-01-13-%E8%B7%AF%E7%94%B1%E6%9D%A1%E7%9B%AE/</guid>
       <description>ip route命令的输出解释。
 获取工具 ip命令包含在net-tools包中，可以通过安装net-tools包获得该命令。
 常见用法 执行man ip route
@@ -41,10 +41,10 @@ IP-ROUTE(8) Linux IP-ROUTE(8) NAME ip-route - routing table management SYNOPSIS 
     
     <item>
       <title>容器网络</title>
-      <link>https://hzren.github.io/blog/2021-01-12-%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C/</link>
+      <link>https://hzren.github.io/blog/blog/2021-01-12-%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C/</link>
       <pubDate>Tue, 12 Jan 2021 10:43:21 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-01-12-%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-01-12-%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C/</guid>
       <description>容器网络的核心是和物理网络实现网络隔离，物理网络对于容器来说为虚拟的，不可见的。
 概念 Overlay / 覆盖网络
 覆盖网络（Overlay network）是一种建立在另一网络之上的计算机网络。
@@ -63,10 +63,10 @@ admin@ip-172-20-33-102:~$ ip route default via 172.20.32.1 dev eth0 100.96.0.0/1
     
     <item>
       <title>一次内网到公网_公网导内网的数据链路过程</title>
-      <link>https://hzren.github.io/blog/2021-01-06-%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E5%88%B0%E5%85%AC%E7%BD%91_%E5%85%AC%E7%BD%91%E5%AF%BC%E5%86%85%E7%BD%91%E7%9A%84%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E8%BF%87%E7%A8%8B/</link>
+      <link>https://hzren.github.io/blog/blog/2021-01-06-%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E5%88%B0%E5%85%AC%E7%BD%91_%E5%85%AC%E7%BD%91%E5%AF%BC%E5%86%85%E7%BD%91%E7%9A%84%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E8%BF%87%E7%A8%8B/</link>
       <pubDate>Wed, 06 Jan 2021 10:32:30 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-01-06-%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E5%88%B0%E5%85%AC%E7%BD%91_%E5%85%AC%E7%BD%91%E5%AF%BC%E5%86%85%E7%BD%91%E7%9A%84%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E8%BF%87%E7%A8%8B/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-01-06-%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E5%88%B0%E5%85%AC%E7%BD%91_%E5%85%AC%E7%BD%91%E5%AF%BC%E5%86%85%E7%BD%91%E7%9A%84%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E8%BF%87%E7%A8%8B/</guid>
       <description>以一次从内网到公网，公网到内网的数据交互过程来梳理整个网络链路。
 网络拓扑图 MAC地址是一个局域网内才有效的地址。因而，MAC地址只要过网关，就必定会改变，因为已经换了局域网。两者主要的区别在于IP地址是否改变。不改变IP地址的网关，我们称为转发网关；改变IP地址的网关，我们称为NAT网关。
 每到一个新的局域网，MAC都是要变的，但是IP地址都不变。在IP头里面，不会保存任何网关的IP地址。所谓的下一跳是，某个IP要将这个IP地址转换为MAC放入MAC头
@@ -84,10 +84,10 @@ TCP/UDP请求 根据NAT映射关系，修改数据包数据 修改三层数据�
     
     <item>
       <title>TCP / UDP 总结</title>
-      <link>https://hzren.github.io/blog/2020-08-19-tcp-udp-%E6%80%BB%E7%BB%93/</link>
+      <link>https://hzren.github.io/blog/blog/2020-08-19-tcp-udp-%E6%80%BB%E7%BB%93/</link>
       <pubDate>Wed, 19 Aug 2020 15:04:38 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-08-19-tcp-udp-%E6%80%BB%E7%BB%93/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-08-19-tcp-udp-%E6%80%BB%E7%BB%93/</guid>
       <description>send()最大可以接受多少字节的数据？ 函数层面无限制，超过缓冲区大小函数会block
 TCP接到send()发送的字节，会立马保持原封不动发送吗？ 不确定！
 TCP会先将这些数据放在自己的仓库（发送缓冲区），至于什么时候发，每次发多少，已经不是应用层所能左右的了。什么时候发，一次发多少取决于不同算法，有RCP_NODELAY配置，有MSS限制TCP分组最大长度。
@@ -111,10 +111,10 @@ TCP丢包 路由器或交换机，一旦TCP流量暴力来袭时，会尽最大�
     
     <item>
       <title>ICMP Ping traceroute</title>
-      <link>https://hzren.github.io/blog/2020-08-18-icmp-ping-traceroute/</link>
+      <link>https://hzren.github.io/blog/blog/2020-08-18-icmp-ping-traceroute/</link>
       <pubDate>Tue, 18 Aug 2020 16:52:07 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-08-18-icmp-ping-traceroute/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-08-18-icmp-ping-traceroute/</guid>
       <description>Ping和traceroute都基于ICMP协议工作。
 ICMP 互联网控制消息协议（英语：Internet Control Message Protocol，缩写：ICMP）是互联网的核心协议之一，用于在网际协议（IP）中发送控制消息，提供可能发生在通信环境中的各种问题的反馈。通过这些信息，可以对所发生的问题作出诊断，然后采取适当的措施解决。
 ICMP基于IP协议，通常不由网络程序直接使用，除了 ping 和 traceroute 这两个特别的例子。 IPv4中的ICMP被称作ICMPv4，IPv6中的ICMP则被称作ICMPv6。
@@ -129,10 +129,10 @@ Type - ICMP的类型,标识生成的错误报文Code - 进一步划分ICMP的�
     
     <item>
       <title>Linux IP地址 DHCP</title>
-      <link>https://hzren.github.io/blog/2020-08-18-linux-ip%E5%9C%B0%E5%9D%80-dhcp/</link>
+      <link>https://hzren.github.io/blog/blog/2020-08-18-linux-ip%E5%9C%B0%E5%9D%80-dhcp/</link>
       <pubDate>Tue, 18 Aug 2020 15:06:02 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-08-18-linux-ip%E5%9C%B0%E5%9D%80-dhcp/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-08-18-linux-ip%E5%9C%B0%E5%9D%80-dhcp/</guid>
       <description>配置 IP 地址 可以使用ifconfig，也可以使用 ip addr。设置好以后，将网卡 up 一下，就可以开始工作了。 使用 net-tools：
 $ sudo ifconfig eth1 10.0.0.1/24 $ sudo ifconfig eth1 up 使用 iproute2：
 $ sudo ip addr add 10.0.0.1/24 dev eth1 $ sudo ip link set up eth1 如果配置一个和谁都不搭边的地址呢？例如，旁边的机器都是 192.168.1.x，我非得配置一个 16.158.23.6，会出现什么现象呢？
@@ -143,10 +143,10 @@ $ sudo ip addr add 10.0.0.1/24 dev eth1 $ sudo ip link set up eth1 如果配置�
     
     <item>
       <title>专用网络（内网 / 私有网络）</title>
-      <link>https://hzren.github.io/blog/2020-08-17-%E4%B8%93%E7%94%A8%E7%BD%91%E7%BB%9C%E5%86%85%E7%BD%91-%E7%A7%81%E6%9C%89%E7%BD%91%E7%BB%9C/</link>
+      <link>https://hzren.github.io/blog/blog/2020-08-17-%E4%B8%93%E7%94%A8%E7%BD%91%E7%BB%9C%E5%86%85%E7%BD%91-%E7%A7%81%E6%9C%89%E7%BD%91%E7%BB%9C/</link>
       <pubDate>Mon, 17 Aug 2020 17:34:48 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-08-17-%E4%B8%93%E7%94%A8%E7%BD%91%E7%BB%9C%E5%86%85%E7%BD%91-%E7%A7%81%E6%9C%89%E7%BD%91%E7%BB%9C/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-08-17-%E4%B8%93%E7%94%A8%E7%BD%91%E7%BB%9C%E5%86%85%E7%BD%91-%E7%A7%81%E6%9C%89%E7%BD%91%E7%BB%9C/</guid>
       <description>概念 在互联网的地址架构中，专用网络是指遵守RFC 1918（IPV4）和RFC 4193（IPV6）规范，使用专用IP地址空间的网络。私有IP无法直接连接互联网，需要使用网络地址转换（Network Address Translator，NAT）或者代理服务器 （proxy server）来实现。与公网IP相比，私有IP是免费的，同时节省了IP地址资源，适合在局域网使用。
 用途 私有IP无法直接被互联网所访问，因此，相对于公网IP地址，它更加安全。私有IP常被用于家庭，学校和企业的局域网。IPv4私有地址 共享地址 Shared Address Space（RFC 6598），IANA于2012年将100.64.0.0/10定义用于电信级NAT场景。这些地址与RFC1918中定义的私有IP是不同的，只能用于运营商的内部网络，虽然在某些特性中与私有IP相同，但在定义上不能划为私有地址（更不是公用地址）。
 IPv6私有地址 IPv6的私有IP定义在RFC 4193， 地址块fc00 :: / 7已保留。这些地址称为唯一本地地址（Unique Local Addresses，ULA）。 它们被定义为单播地址，并在路由前缀中包含一个40位的随机数，以防止在两个私有网络互连时发生冲突。 尽管在本地使用，但唯一本地地址的IPv6地址范围是全局的。</description>
@@ -154,10 +154,10 @@ IPv6私有地址 IPv6的私有IP定义在RFC 4193， 地址块fc00 :: / 7已保�
     
     <item>
       <title>子网 子网掩码 无类别域间路由</title>
-      <link>https://hzren.github.io/blog/2020-08-17-%E5%AD%90%E7%BD%91-%E5%AD%90%E7%BD%91%E6%8E%A9%E7%A0%81-%E6%97%A0%E7%B1%BB%E5%88%AB%E5%9F%9F%E9%97%B4%E8%B7%AF%E7%94%B1/</link>
+      <link>https://hzren.github.io/blog/blog/2020-08-17-%E5%AD%90%E7%BD%91-%E5%AD%90%E7%BD%91%E6%8E%A9%E7%A0%81-%E6%97%A0%E7%B1%BB%E5%88%AB%E5%9F%9F%E9%97%B4%E8%B7%AF%E7%94%B1/</link>
       <pubDate>Mon, 17 Aug 2020 16:54:10 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-08-17-%E5%AD%90%E7%BD%91-%E5%AD%90%E7%BD%91%E6%8E%A9%E7%A0%81-%E6%97%A0%E7%B1%BB%E5%88%AB%E5%9F%9F%E9%97%B4%E8%B7%AF%E7%94%B1/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-08-17-%E5%AD%90%E7%BD%91-%E5%AD%90%E7%BD%91%E6%8E%A9%E7%A0%81-%E6%97%A0%E7%B1%BB%E5%88%AB%E5%9F%9F%E9%97%B4%E8%B7%AF%E7%94%B1/</guid>
       <description>子网 在因特网协议（Internet Protocol，IP）中，子网指的是从分类网络中划分出来的一部分。
 具有相同的前半部分地址的一组IP地址，可以利用地址的前半部分划分组。在一个IP网络中划分子网使我们能将一个单一的大型网络分成若干个较小的网络。在最初引入这个概念的时候，IPv4还未引入分类网络这个概念。引入划分子网这个概念的目的是为了允许一个单一的站点能拥有多个局域网。在引入了分类网络号之后，这个概念仍然有它的用处，因为它减少了因特网路由表中的表项数量（通过隐藏一个站点内部所有独立子网的相关信息）。此外它还带来了一个好处，那就是减少了网络开销，因为它将接收IP广播的区域划分成了若干部分。
 子网掩码 子网掩码是用来划分IP地址中哪一部分是网络号，哪一部分是机器号。
@@ -178,10 +178,10 @@ IPv6私有地址 IPv6的私有IP定义在RFC 4193， 地址块fc00 :: / 7已保�
     
     <item>
       <title>TCP协议</title>
-      <link>https://hzren.github.io/blog/2020-08-14-tcp%E5%8D%8F%E8%AE%AE/</link>
+      <link>https://hzren.github.io/blog/blog/2020-08-14-tcp%E5%8D%8F%E8%AE%AE/</link>
       <pubDate>Fri, 14 Aug 2020 14:46:06 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-08-14-tcp%E5%8D%8F%E8%AE%AE/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-08-14-tcp%E5%8D%8F%E8%AE%AE/</guid>
       <description>传输控制协议（缩写：TCP）是一种面向连接的、可靠的、基于字节流的传输层通信协议，由IETF的RFC 793定义。在计算机网络OSI模型中，它处于第四层传输层，同用户数据报协议（UDP）位于同一层。
 应用层向TCP层发送用于网络间传输的、用8位字节表示的数据流，然后TCP把数据流分割成适当长度的报文段（通常受链接数据链路层的最大传输单元（MTU）限制）。之后TCP把结果包传给IP层，由它来透过网络将包传送给接收端实体的TCP层。
 TCP为了保证不发生丢包，就给每个包一个序号，同时序号也保证了传送到接收端实体的包的按序接收。然后接收端实体对已成功收到的包发回一个相应的确认信息（ACK）；如果发送端实体在合理的往返时延（RTT）内未收到确认，那么对应的数据包就被假设为已丢失并进行重传。TCP用一个校验和函数来检验数据是否有错误，在发送和接收时都要计算校验和。
@@ -199,10 +199,10 @@ TCP_FASTOPEN_CONNECT 控制socket发起链接。
     
     <item>
       <title>计算机网络 - 网络层</title>
-      <link>https://hzren.github.io/blog/2020-08-11-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%BD%91%E7%BB%9C%E5%B1%82/</link>
+      <link>https://hzren.github.io/blog/blog/2020-08-11-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%BD%91%E7%BB%9C%E5%B1%82/</link>
       <pubDate>Tue, 11 Aug 2020 15:21:57 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-08-11-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%BD%91%E7%BB%9C%E5%B1%82/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-08-11-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%BD%91%E7%BB%9C%E5%B1%82/</guid>
       <description>概念 网络层（Network Layer）是OSI模型中的第三层（TCP/IP模型中的网际层），提供路由和寻址的功能，使两終端系統能够互连且決定最佳路径，並具有一定的拥塞控制和流量控制的能力。相当于传送邮件时需要地址一般重要。由于TCP/IP协议体系中的网络层功能由IP协议规定和实现，故又称IP层。
 功能 寻址 对网络层而言使用IP地址来唯一标识互联网上的设备，网络层依靠IP地址进行相互通信（类似于数据链路层的MAC地址），详细的编址方案参见IPv4和IPv6。
 路由 在同一个网络中的内部通信并不需要网络层设备，仅仅靠数据链路层就可以完成相互通信，对于不同的网络之间相互通信则必须借助路由器等三层设备。
@@ -211,10 +211,10 @@ TCP_FASTOPEN_CONNECT 控制socket发起链接。
     
     <item>
       <title>计算机网络 - 物理层</title>
-      <link>https://hzren.github.io/blog/2020-08-10-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%89%A9%E7%90%86%E5%B1%82/</link>
+      <link>https://hzren.github.io/blog/blog/2020-08-10-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%89%A9%E7%90%86%E5%B1%82/</link>
       <pubDate>Mon, 10 Aug 2020 18:59:45 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-08-10-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%89%A9%E7%90%86%E5%B1%82/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-08-10-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%89%A9%E7%90%86%E5%B1%82/</guid>
       <description>物理层的基本概念 物理层的主要任务描述为确定与传输媒体的接口的一些特性 机械特性 指明接口所用接线器的形状和尺寸、引线数目和排列、固定和锁定装置等等。 电气特性 指明在接口电缆的各条线上出现的电压的范围。 功能特性 指明某条线上出现的某一电平的电压表示何种意义。 过程特性 指明对于不同功能的各种可能事件的出现顺序。 物理层基本工作内容 物理层利用传输介质为通信的两端建立、管理和释放物理链接，实现比特流的透明传输，保证比特流正确的传输到对端。物理层中承载的是比特流单位是比特（bit）。
 物理层都有那些协议 电话网络modems-V.92 EIARS-232，EIA-422，EIA-423，RS-449，RS-485 Ethernet physical layerIncluding10BASE-T，10BASE2，10BASE5，100BASE-TX，100BASE-FX。100BASE-T，1000BASE-T，1000BASE-SX还有其他类型 Varieties of 802.11Wi-Fi物理层 DSL ISDN T1 and otherT-carrierlinks， and E1 and otherE-carrierlinks SONET/SDH Optical Transport Network（OTN） GSMUm air interface物理层 Bluetooth物理层 IEEE 1394 interface TransferJet物理层 Etherloop ARINC 818航空电子数字视频总线 G.hn/G.9960物理层 N bus（controller area network）物理层 理层协议就分为两类，点对点通信线路物理层协议和广播通信线路物理层协议，其中广播通信线路又分为有线通信线路和无线通信线路，有线通信线路就是咱们常说的网线形式的网络，无线通信线路就是WIFI。有线通讯不容易窃听,无线通讯的数据很容易被窃听到，以无线通讯的报文基本上都是需要在底层链路做加密的。
 数据通信的基础知识 数据通信系统的模型 据传输按照使用的信道数量可以分为串行通信和并行通信
@@ -225,10 +225,10 @@ TCP_FASTOPEN_CONNECT 控制socket发起链接。
     
     <item>
       <title>计算机网络中常见中间设备名称及功能</title>
-      <link>https://hzren.github.io/blog/2020-08-06-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E4%B8%AD%E5%B8%B8%E8%A7%81%E4%B8%AD%E9%97%B4%E8%AE%BE%E5%A4%87%E5%90%8D%E7%A7%B0%E5%8F%8A%E5%8A%9F%E8%83%BD/</link>
+      <link>https://hzren.github.io/blog/blog/2020-08-06-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E4%B8%AD%E5%B8%B8%E8%A7%81%E4%B8%AD%E9%97%B4%E8%AE%BE%E5%A4%87%E5%90%8D%E7%A7%B0%E5%8F%8A%E5%8A%9F%E8%83%BD/</link>
       <pubDate>Thu, 06 Aug 2020 17:12:51 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-08-06-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E4%B8%AD%E5%B8%B8%E8%A7%81%E4%B8%AD%E9%97%B4%E8%AE%BE%E5%A4%87%E5%90%8D%E7%A7%B0%E5%8F%8A%E5%8A%9F%E8%83%BD/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-08-06-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E4%B8%AD%E5%B8%B8%E8%A7%81%E4%B8%AD%E9%97%B4%E8%AE%BE%E5%A4%87%E5%90%8D%E7%A7%B0%E5%8F%8A%E5%8A%9F%E8%83%BD/</guid>
       <description>集线器/HUB: 集线器（Ethernet hub）是指将多条以太网双绞线或光纤集合连接在同一段物理介质下的装置。集线器是运作在OSI模型中的实体层，可以让其连结的设备工作在同一网段。集线器上有多个I/O端口，信号从任意一个端口进入后，会从其他端口出现。中继器（Repeater hub，集线器的一种）也会参与冲突检测（collision detection），在检测到冲突时向所有端口转发拥塞信号。
 集线器相比于交换机更为简单，它可以被视作有多个端口的中继器，从一个端口接受比特位（或符号），再从其他端口送出。它对物理层数据包有所感知，可以检测到其开始、挂起及冲突。在检测到冲突时会发送拥塞信号以传播这一事件。集线器不能对经过它的网络流量做更进一步地检查与管理：任何进入的数据包都会被广播到其他端口。集线器/中继器无法储存数据——数据包必须在接收时被发送，一旦发生冲突，就会丢包（发送端应当能够侦测到，并重新发送）。基于此，集线器只能以半双工模式工作。因此，由于冲突域更广，相比于使用更复杂的网络设备，使用集线器的数据网络更容易出现数据包冲突。
 以太网设计目标：电脑使用一个网络接口，可以同时与多台电脑通信，将电脑连接起来的黑盒子最先面世，称之为集线器，但我们更喜欢叫它Hub。 这种集线器，通常有多个端口，可以接入多台电脑，这种黑盒子使电脑连接在一起成为一种可能，其内部工作原理，就是信号放大器。
@@ -260,10 +260,10 @@ HUB内部采用广播的形式传播其收到的每一个网络包.因为其采�
     
     <item>
       <title>计算机网络 - 数据链路层</title>
-      <link>https://hzren.github.io/blog/2020-07-23-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/</link>
+      <link>https://hzren.github.io/blog/blog/2020-07-23-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/</link>
       <pubDate>Thu, 23 Jul 2020 16:01:00 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-07-23-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-07-23-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/</guid>
       <description>概念 数据链路层（Data Link Layer）是OSI参考模型第二层，位于物理层与网络层之间。在广播式多路访问链路中（局域网），由于可能存在介质争用，它还可以细分成介质访问控制（MAC）子层和逻辑链路控制（LLC）子层，介质访问控制（MAC）子层专职处理介质访问的争用与冲突问题。
 只提供导线的一端到另一端的数据传输。
 一个IP数据包的传输要经过多个数据链路层的链接，数据链路层存在于两个物理链接(有线/无线)设备之间。代表设备： 普通交换机, 网卡, 桥接器

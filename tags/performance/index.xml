@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Performance on Code Mark</title>
-    <link>https://hzren.github.io/tags/performance/</link>
+    <link>https://hzren.github.io/blog/tags/performance/</link>
     <description>Recent content in Performance on Code Mark</description>
     <generator>Hugo -- gohugo.io</generator>
     <managingEditor>hzren@outlook.com (renhongzhen)</managingEditor>
     <webMaster>hzren@outlook.com (renhongzhen)</webMaster>
-    <lastBuildDate>Fri, 15 Jan 2021 15:07:33 +0800</lastBuildDate><atom:link href="https://hzren.github.io/tags/performance/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 15 Jan 2021 15:07:33 +0800</lastBuildDate><atom:link href="https://hzren.github.io/blog/tags/performance/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Linux内存管理</title>
-      <link>https://hzren.github.io/blog/2021-01-15-linux%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/</link>
+      <link>https://hzren.github.io/blog/blog/2021-01-15-linux%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/</link>
       <pubDate>Fri, 15 Jan 2021 15:07:33 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-01-15-linux%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-01-15-linux%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/</guid>
       <description>摘自 倪朋飞-极客时间-Linux性能优化实战
 内存映射 物理内存也称为主存，大多数计算机用的主存都是动态随机访问内存（DRAM）。只有内核才可以直接访问物理内存。
 Linux 内核给每个进程都提供了一个独立的虚拟地址空间，并且这个地址空间是连续的。这样，进程就可以很方便地访问内存，更确切地说是访问虚拟内存。
@@ -32,10 +32,10 @@ TLB 其实就是 MMU 中页表的高速缓存。由于进程的虚拟地址空�
     
     <item>
       <title>CPU优化</title>
-      <link>https://hzren.github.io/blog/2021-01-15-cpu%E4%BC%98%E5%8C%96/</link>
+      <link>https://hzren.github.io/blog/blog/2021-01-15-cpu%E4%BC%98%E5%8C%96/</link>
       <pubDate>Fri, 15 Jan 2021 14:06:46 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-01-15-cpu%E4%BC%98%E5%8C%96/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-01-15-cpu%E4%BC%98%E5%8C%96/</guid>
       <description>摘自 倪朋飞-极客时间-Linux性能优化实战
 应用程序优化 首先，从应用程序的角度来说，降低 CPU 使用率的最好方法当然是，排除所有不必要的工作，只保留最核心的逻辑。比如减少循环的层次、减少递归、减少动态内存分配等等。
 除此之外，应用程序的性能优化也包括很多种方法，我在这里列出了最常见的几种，你可以记下来。
@@ -47,10 +47,10 @@ CPU 绑定：把进程绑定到一个或者多个 CPU 上，可以提高 CPU 缓
     
     <item>
       <title>中断</title>
-      <link>https://hzren.github.io/blog/2021-01-15-%E4%B8%AD%E6%96%AD/</link>
+      <link>https://hzren.github.io/blog/blog/2021-01-15-%E4%B8%AD%E6%96%AD/</link>
       <pubDate>Fri, 15 Jan 2021 10:54:40 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2021-01-15-%E4%B8%AD%E6%96%AD/</guid>
+      <guid>https://hzren.github.io/blog/blog/2021-01-15-%E4%B8%AD%E6%96%AD/</guid>
       <description>摘自 倪朋飞-极客时间-Linux性能优化实战
 中断是一种异步的事件处理机制，可以提高系统的并发处理能力。
 由于中断处理程序会打断其他进程的运行，所以，为了减少对正常进程运行调度的影响，中断处理程序就需要尽可能快地运行。如果中断本身要做的事情不多，那么处理起来也不 会有太大问题；但如果中断要处理的事情很多，中断服务程序就有可能要运行很长时间。
@@ -68,10 +68,10 @@ CPU 绑定：把进程绑定到一个或者多个 CPU 上，可以提高 CPU 缓
     
     <item>
       <title>DMA 简介</title>
-      <link>https://hzren.github.io/blog/2020-12-31-direct-memory-access-dma-%E7%AE%80%E4%BB%8B/</link>
+      <link>https://hzren.github.io/blog/blog/2020-12-31-direct-memory-access-dma-%E7%AE%80%E4%BB%8B/</link>
       <pubDate>Thu, 31 Dec 2020 10:45:29 +0800</pubDate>
       <author>hzren@outlook.com (renhongzhen)</author>
-      <guid>https://hzren.github.io/blog/2020-12-31-direct-memory-access-dma-%E7%AE%80%E4%BB%8B/</guid>
+      <guid>https://hzren.github.io/blog/blog/2020-12-31-direct-memory-access-dma-%E7%AE%80%E4%BB%8B/</guid>
       <description>摘自 倪朋飞-极客时间-Linux性能优化实战
 概述 编程式I/O
 在编程I/O中，处理器不断扫描是否有任何设备准备好进行数据传输。如果一个I/O设备准备好了，处理器就会全力以赴地在I/O和内存之间传输数据。它以高速率传输数据，但在数据传输过程中不能参与任何其他活动。这是编程I/O的主要缺点。

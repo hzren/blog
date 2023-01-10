@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="zh-cn" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+ 
+
+
+      <title>DMA 简介 - </title>
+
+  <meta name="description" content="摘自 倪朋飞-极客时间-Linux性能优化实战
+概述 编程式I/O
+在编程I/O中，处理器不断扫描是否有任何设备准备好进行数据传输。如果一个I/O设备准备好了，处理器就会全力以赴地在I/O和内存之间传输数据。它以高速率传输数据，但在数据传输过程中不能参与任何其他活动。这是编程I/O的主要缺点。
+中断式 I/O
+在中断式 I/O 中，每当设备准备好进行数据传输时，就会向处理器发出一个中断。处理器完成正在执行的指令并保存其当前状态。然后它切换到数据传输，这会导致延迟。在这里，处理器不会一直扫描准备进行数据传输的外围设备。但是，它完全参与了数据传输过程。因此，这也不是一种有效的数据传输方式。
+DMA
+与编程式 I/O 和中断式 I/O 不同，Direct Memory Access 是一种在不通过 CPU 就可以在内存和外部设备之间（外部设备和外部设备之间也是）传输数据的技术。DMA通过DMA控制器实现。
+DMA通过接管 CPU 传输数据的任务来提高 CPU 的使用效率和 I/O 的传输速度，在接管期间，CPU 可以空闲出来去做别的任务。该技术克服了其它两种 I/O 技术在发出数据传输命令时耗时、数据传输时占用处理器而导致数据处理功能被浪费的缺点。
+当需要传输大量数据时，使用DMA方法更有效。为了实现DMA，处理器必须与DMA模块共享其系统总线。因此，DMA模块只能在处理器不需要总线时才能使用总线，否则必须强制处理器暂时挂起，让出系统铜线。在实际当中，后一种技术更为常用，称为 cycle stealing.
+下图展示了指令周期中的附加DMA模块周期:
+DMA 基本操作 当处理器希望读取或发送数据块时，它通过向DMA模块发送一些信息来向DMA模块发出命令。这些信息包括：
+读或写命令，通过读写控制线发送 要读取或写入的字数，在数据线上进行通信并存储在数据计数寄存器中 在存储器中读写的起始位置，通过数据线进行通信并存储在地址寄存器中 所涉及的I/O设备的地址，通过数据线进行通信 在信息发送后，处理器將继续进行其他工作。DMA模块随后将整个数据块直接传输至内存或直接从内存中传输出来，而无需经过处理器。在传输完成时，DMA模块会向处理器发送一个中断信号，通知它 DMA 已完成使用系统总线。
+DMA 基本配置 DMA 可以通过以下几种方式进行实现，包括：
+单总线，分离式 DMA 单总线，集成式 DMA-I/O I/O 总线 模式 单总线，分离式 DMA 所有模块共享同一个系统总线。DMA模块充当代理处理器，它使用编程式 I/O 的方式在内存和 I/O 设备之间通过 DMA 模块进行交换数据。这种配置虽然便宜，但效率很低。这是因为一个字的每次传输都需要消耗两个总线周期。
+单总线，集成式 DMA-I/O 在此模式中，DMA 模块和一个或多个不包括系统总线在内的 I/O 模块之间存在一条路径。DMA逻辑可以是 I/O 模块的一部分，也可以是控制一个或多个I/O模块的单独模块。因此，所需的总线周期的数量可以大幅度减少。DMA 模块与处理器和内存共享的系统总线仅用于与内存交换数据。DMA和I/O模块之间的数据交换通过系统总线进行。">
+  <meta name="author" content="renhongzhen"/><script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "Code Mark",
+    
+    "url": "https:\/\/hzren.github.io"
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "",
+  "url": "https:\/\/hzren.github.io"
+  
+  
+  
+  
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https:\/\/hzren.github.io",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https:\/\/hzren.github.io\/blog\/2020-12-31-direct-memory-access-dma-%E7%AE%80%E4%BB%8B\/",
+          "name": "Dma 简介"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : "renhongzhen"
+  },
+  "headline": "DMA 简介",
+  "description" : "摘自 倪朋飞-极客时间-Linux性能优化实战\n概述 编程式I\/O\n在编程I\/O中，处理器不断扫描是否有任何设备准备好进行数据传输。如果一个I\/O设备准备好了，处理器就会全力以赴地在I\/O和内存之间传输数据。它以高速率传输数据，但在数据传输过程中不能参与任何其他活动。这是编程I\/O的主要缺点。\n中断式 I\/O\n在中断式 I\/O 中，每当设备准备好进行数据传输时，就会向处理器发出一个中断。处理器完成正在执行的指令并保存其当前状态。然后它切换到数据传输，这会导致延迟。在这里，处理器不会一直扫描准备进行数据传输的外围设备。但是，它完全参与了数据传输过程。因此，这也不是一种有效的数据传输方式。\nDMA\n与编程式 I\/O 和中断式 I\/O 不同，Direct Memory Access 是一种在不通过 CPU 就可以在内存和外部设备之间（外部设备和外部设备之间也是）传输数据的技术。DMA通过DMA控制器实现。\nDMA通过接管 CPU 传输数据的任务来提高 CPU 的使用效率和 I\/O 的传输速度，在接管期间，CPU 可以空闲出来去做别的任务。该技术克服了其它两种 I\/O 技术在发出数据传输命令时耗时、数据传输时占用处理器而导致数据处理功能被浪费的缺点。\n当需要传输大量数据时，使用DMA方法更有效。为了实现DMA，处理器必须与DMA模块共享其系统总线。因此，DMA模块只能在处理器不需要总线时才能使用总线，否则必须强制处理器暂时挂起，让出系统铜线。在实际当中，后一种技术更为常用，称为 cycle stealing.\n下图展示了指令周期中的附加DMA模块周期:\nDMA 基本操作 当处理器希望读取或发送数据块时，它通过向DMA模块发送一些信息来向DMA模块发出命令。这些信息包括：\n读或写命令，通过读写控制线发送 要读取或写入的字数，在数据线上进行通信并存储在数据计数寄存器中 在存储器中读写的起始位置，通过数据线进行通信并存储在地址寄存器中 所涉及的I\/O设备的地址，通过数据线进行通信 在信息发送后，处理器將继续进行其他工作。DMA模块随后将整个数据块直接传输至内存或直接从内存中传输出来，而无需经过处理器。在传输完成时，DMA模块会向处理器发送一个中断信号，通知它 DMA 已完成使用系统总线。\nDMA 基本配置 DMA 可以通过以下几种方式进行实现，包括：\n单总线，分离式 DMA 单总线，集成式 DMA-I\/O I\/O 总线 模式 单总线，分离式 DMA 所有模块共享同一个系统总线。DMA模块充当代理处理器，它使用编程式 I\/O 的方式在内存和 I\/O 设备之间通过 DMA 模块进行交换数据。这种配置虽然便宜，但效率很低。这是因为一个字的每次传输都需要消耗两个总线周期。\n单总线，集成式 DMA-I\/O 在此模式中，DMA 模块和一个或多个不包括系统总线在内的 I\/O 模块之间存在一条路径。DMA逻辑可以是 I\/O 模块的一部分，也可以是控制一个或多个I\/O模块的单独模块。因此，所需的总线周期的数量可以大幅度减少。DMA 模块与处理器和内存共享的系统总线仅用于与内存交换数据。DMA和I\/O模块之间的数据交换通过系统总线进行。",
+  "inLanguage" : "zh-cn",
+  "wordCount":  127 ,
+  "datePublished" : "2020-12-31T10:45:29",
+  "dateModified" : "2020-12-31T10:45:29",
+  "image" : "https:\/\/hzren.github.io\/img\/avatar-icon.png",
+  "keywords" : [ "Performance" ],
+  "mainEntityOfPage" : "https:\/\/hzren.github.io\/blog\/2020-12-31-direct-memory-access-dma-%E7%AE%80%E4%BB%8B\/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https:\/\/hzren.github.io",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https:\/\/hzren.github.io\/img\/avatar-icon.png",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
+
+<meta property="og:title" content="DMA 简介" />
+<meta property="og:description" content="摘自 倪朋飞-极客时间-Linux性能优化实战
+概述 编程式I/O
+在编程I/O中，处理器不断扫描是否有任何设备准备好进行数据传输。如果一个I/O设备准备好了，处理器就会全力以赴地在I/O和内存之间传输数据。它以高速率传输数据，但在数据传输过程中不能参与任何其他活动。这是编程I/O的主要缺点。
+中断式 I/O
+在中断式 I/O 中，每当设备准备好进行数据传输时，就会向处理器发出一个中断。处理器完成正在执行的指令并保存其当前状态。然后它切换到数据传输，这会导致延迟。在这里，处理器不会一直扫描准备进行数据传输的外围设备。但是，它完全参与了数据传输过程。因此，这也不是一种有效的数据传输方式。
+DMA
+与编程式 I/O 和中断式 I/O 不同，Direct Memory Access 是一种在不通过 CPU 就可以在内存和外部设备之间（外部设备和外部设备之间也是）传输数据的技术。DMA通过DMA控制器实现。
+DMA通过接管 CPU 传输数据的任务来提高 CPU 的使用效率和 I/O 的传输速度，在接管期间，CPU 可以空闲出来去做别的任务。该技术克服了其它两种 I/O 技术在发出数据传输命令时耗时、数据传输时占用处理器而导致数据处理功能被浪费的缺点。
+当需要传输大量数据时，使用DMA方法更有效。为了实现DMA，处理器必须与DMA模块共享其系统总线。因此，DMA模块只能在处理器不需要总线时才能使用总线，否则必须强制处理器暂时挂起，让出系统铜线。在实际当中，后一种技术更为常用，称为 cycle stealing.
+下图展示了指令周期中的附加DMA模块周期:
+DMA 基本操作 当处理器希望读取或发送数据块时，它通过向DMA模块发送一些信息来向DMA模块发出命令。这些信息包括：
+读或写命令，通过读写控制线发送 要读取或写入的字数，在数据线上进行通信并存储在数据计数寄存器中 在存储器中读写的起始位置，通过数据线进行通信并存储在地址寄存器中 所涉及的I/O设备的地址，通过数据线进行通信 在信息发送后，处理器將继续进行其他工作。DMA模块随后将整个数据块直接传输至内存或直接从内存中传输出来，而无需经过处理器。在传输完成时，DMA模块会向处理器发送一个中断信号，通知它 DMA 已完成使用系统总线。
+DMA 基本配置 DMA 可以通过以下几种方式进行实现，包括：
+单总线，分离式 DMA 单总线，集成式 DMA-I/O I/O 总线 模式 单总线，分离式 DMA 所有模块共享同一个系统总线。DMA模块充当代理处理器，它使用编程式 I/O 的方式在内存和 I/O 设备之间通过 DMA 模块进行交换数据。这种配置虽然便宜，但效率很低。这是因为一个字的每次传输都需要消耗两个总线周期。
+单总线，集成式 DMA-I/O 在此模式中，DMA 模块和一个或多个不包括系统总线在内的 I/O 模块之间存在一条路径。DMA逻辑可以是 I/O 模块的一部分，也可以是控制一个或多个I/O模块的单独模块。因此，所需的总线周期的数量可以大幅度减少。DMA 模块与处理器和内存共享的系统总线仅用于与内存交换数据。DMA和I/O模块之间的数据交换通过系统总线进行。">
+<meta property="og:image" content="https://hzren.github.io/img/avatar-icon.png" />
+<meta property="og:url" content="https://hzren.github.io/blog/2020-12-31-direct-memory-access-dma-%E7%AE%80%E4%BB%8B/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Code Mark" />
+
+  <meta name="twitter:title" content="DMA 简介" />
+  <meta name="twitter:description" content="摘自 倪朋飞-极客时间-Linux性能优化实战
+概述 编程式I/O
+在编程I/O中，处理器不断扫描是否有任何设备准备好进行数据传输。如果一个I/O设备准备好了，处理器就会全力以赴地在I/O和内存之间传输数据。它以高速率传输数据，但在数据传输过程中不能参与任何其他活动。这是编程I/O的主要缺点。
+中断式 I/O
+在中断式 I/O 中，每当设备准备好进行数据传输时，就会向处理器发出一个中断。处理器完成 …">
+  <meta name="twitter:image" content="https://hzren.github.io/img/avatar-icon.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@username" />
+  <meta name="twitter:creator" content="@username" />
+  <link href='https://hzren.github.io/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <meta name="generator" content="Hugo 0.109.0">
+  <link rel="alternate" href="https://hzren.github.io/index.xml" type="application/rss+xml" title="Code Mark"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://hzren.github.io/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="https://hzren.github.io/css/highlight.min.css" /><link rel="stylesheet" href="https://hzren.github.io/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">切换导航</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://hzren.github.io">Code Mark</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="文章" href="/">文章</a>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent">代码</a>
+              <div class="navlinks-children">
+                
+                  <a href="/post/2017-03-07-bigimg-sample">Big Image Sample</a>
+                
+                  <a href="/post/2017-03-05-math-sample">Math Sample</a>
+                
+                  <a href="/post/2016-03-08-code-sample">Code Sample</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li>
+              <a title="关于我" href="/page/about/">关于我</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="分类" href="/tags">分类</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    
+      <div class="avatar-container">
+        <div class="avatar-img-border">
+          <a title="Code Mark" href="https://hzren.github.io">
+            <img class="avatar-img" src="https://hzren.github.io/img/avatar-icon.png" alt="Code Mark" />
+          </a>
+        </div>
+      </div>
+    
+
+  </div>
+</nav>
+
+
+
+
+    
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+
+  
+  
+  
+
+
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    
+    <div class="intro-header no-img">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="blog-heading">
+              
+                <h1>DMA 简介</h1>
+              
+              
+                <hr class="small">
+              
+              
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <p><strong>摘自 倪朋飞-极客时间-Linux性能优化实战</strong></p>
+<h2 id="概述">概述</h2>
+<p><strong>编程式I/O</strong></p>
+<blockquote>
+<p>在编程I/O中，处理器不断扫描是否有任何设备准备好进行数据传输。如果一个I/O设备准备好了，处理器就会全力以赴地在I/O和内存之间传输数据。它以高速率传输数据，但在数据传输过程中不能参与任何其他活动。这是编程I/O的主要缺点。</p>
+</blockquote>
+<p><strong>中断式 I/O</strong></p>
+<blockquote>
+<p>在中断式 I/O 中，每当设备准备好进行数据传输时，就会向处理器发出一个中断。处理器完成正在执行的指令并保存其当前状态。然后它切换到数据传输，这会导致延迟。在这里，处理器不会一直扫描准备进行数据传输的外围设备。但是，它完全参与了数据传输过程。因此，这也不是一种有效的数据传输方式。</p>
+</blockquote>
+<p><strong>DMA</strong></p>
+<blockquote>
+<p>与编程式 I/O 和中断式 I/O 不同，Direct Memory Access 是一种在不通过 CPU 就可以在内存和外部设备之间（外部设备和外部设备之间也是）传输数据的技术。DMA通过DMA控制器实现。</p>
+</blockquote>
+<p>DMA通过接管 CPU 传输数据的任务来提高 CPU 的使用效率和 I/O 的传输速度，在接管期间，CPU 可以空闲出来去做别的任务。该技术克服了其它两种 I/O 技术在发出数据传输命令时耗时、数据传输时占用处理器而导致数据处理功能被浪费的缺点。</p>
+<p>当需要传输大量数据时，使用DMA方法更有效。为了实现DMA，处理器必须与DMA模块共享其系统总线。因此，DMA模块只能在处理器不需要总线时才能使用总线，否则必须强制处理器暂时挂起，让出系统铜线。在实际当中，后一种技术更为常用，称为 <strong>cycle stealing</strong>.</p>
+<p>下图展示了指令周期中的附加DMA模块周期:</p>
+<p><img src="/static/attachment/20201231/dma1.jpg" alt="指令周期中的 DMA 和中断断点"></p>
+<h2 id="dma-基本操作">DMA 基本操作</h2>
+<p>当处理器希望读取或发送数据块时，它通过向DMA模块发送一些信息来向DMA模块发出命令。这些信息包括：</p>
+<ul>
+<li>读或写命令，通过读写控制线发送</li>
+<li>要读取或写入的字数，在数据线上进行通信并存储在数据计数寄存器中</li>
+<li>在存储器中读写的起始位置，通过数据线进行通信并存储在地址寄存器中</li>
+<li>所涉及的I/O设备的地址，通过数据线进行通信</li>
+</ul>
+<p><img src="/static/attachment/20201231/dma2.jpg" alt="典型的 DMA 块图 "></p>
+<p>在信息发送后，处理器將继续进行其他工作。DMA模块随后将整个数据块直接传输至内存或直接从内存中传输出来，而无需经过处理器。在传输完成时，DMA模块会向处理器发送一个中断信号，通知它 DMA 已完成使用系统总线。</p>
+<h2 id="dma-基本配置">DMA 基本配置</h2>
+<p>DMA 可以通过以下几种方式进行实现，包括：</p>
+<ul>
+<li>单总线，分离式 DMA</li>
+<li>单总线，集成式 DMA-I/O</li>
+<li>I/O 总线 模式</li>
+</ul>
+<h3 id="单总线分离式-dma">单总线，分离式 DMA</h3>
+<p>所有模块共享同一个系统总线。DMA模块充当代理处理器，它使用编程式 I/O 的方式在内存和 I/O 设备之间通过 DMA 模块进行交换数据。这种配置虽然便宜，但效率很低。这是因为一个字的每次传输都需要消耗两个总线周期。</p>
+<p><img src="/static/attachment/20201231/dma3.jpg" alt="单总线，分离式 DMA"></p>
+<h3 id="单总线集成式-dma-io">单总线，集成式 DMA-I/O</h3>
+<p>在此模式中，DMA 模块和一个或多个不包括系统总线在内的 I/O 模块之间存在一条路径。DMA逻辑可以是 I/O 模块的一部分，也可以是控制一个或多个I/O模块的单独模块。因此，所需的总线周期的数量可以大幅度减少。DMA 模块与处理器和内存共享的系统总线仅用于与内存交换数据。DMA和I/O模块之间的数据交换通过系统总线进行。</p>
+<p><img src="/static/attachment/20201231/dma4.jpg" alt="单总线，集成式 DMA-I/O"></p>
+<h3 id="io-总线-模式">I/O 总线 模式</h3>
+<p>在该模式中，该模式是对前面模式的（单总线集成式 DMA）的进一步改进。I/O 模块通过 I/O 总线连接到 DMA 模块。这可以将 DMA 模块中的I/O接口的数量减少到一个，并提供易于扩展的配置。DMA 模块与处理器和内存共享的系统总线仅用于与内存交换数据。DMA 和 I/O 模块之间的数据交换不需要通过系统总线进行。</p>
+<h3 id="处理器使用dma流程总结">处理器使用DMA流程总结</h3>
+<p><img src="/static/attachment/20201231/dma5.jpg" alt="I/O 总线 模式"></p>
+<h2 id="处理器使用-dma-流程汇总">处理器使用 DMA 流程汇总</h2>
+<ol>
+<li>通过向DMA模块发送必要的信息，向DMA模块发出命令。</li>
+<li>处理器做其他工作。</li>
+<li>DMA获取对系统的控制，并在内存和外部设备之间传输数据。</li>
+<li>DMA发送一个信号给处理器，当传输完成时，系统控制返回给处理器。</li>
+</ol>
+<p><img src="/static/attachment/20201231/dma6.jpg" alt=""></p>
+<h2 id="dma-优点缺点">DMA 优点/缺点</h2>
+<h3 id="优点">优点</h3>
+<ol>
+<li>允许外围设备在不经过CPU的情况下读/写内存</li>
+<li>允许更快的处理，因为处理器可以处理其他事情，而外围设备可以填充内存</li>
+<li>在大块数据传输时，DMA相对于CPU复制更有优势</li>
+</ol>
+<h3 id="缺点">缺点</h3>
+<ol>
+<li>需要一个DMA控制器来执行操作，这增加了系统的成本</li>
+<li>存在缓存一致性问题，代码需手动清空处理器缓存</li>
+<li>CPU出让系统总线，DMA使用完成时通知CPU，都是占用时间的，在单次数据传输量很少（例如一次一个字节），DMA调用频率很高时，吞吐量可能还不如直接复制</li>
+</ol>
+<h2 id="总结">总结</h2>
+<p>DMA 控制器的整体思想是与处理器并行工作。因此，处理器可以将长时间的 IO 操作排队到DMA控制器，然后愉快地继续运行代码。尽管 DMA 控制器速度比较慢，但它只会影响IO操作，不会影响整体性能。当与速度慢的设备接口工作时，如果处理器直接与它们一起工作，处理器将浪费大量的时间在等待上， 它无法进行任何其他处理。在DMA中，把减慢的IO操作放到DMA上，这样就可以并行完成。</p>
+<p>如果是CPU密集型任务，如果 DMA 操作长时间占据了系统总线，可能会降低系统的整体计算能力，因为处理器无法从内存中获取后面运行的指令，所以使用的 DMA 模式很重要，最好不要占据系统总线。</p>
+<p><strong>DMA控制器是自主工作的，不会在它补充的CPU上产生开销（至少不会自己产生开销）</strong></p>
+<p><strong>但是</strong></p>
+<blockquote>
+<p>CPU/软件必须执行一些指令来配置DMA并触发它，或者由一些外围设备触发它。为此，它需要占用CPU 时间和程序内存空间（通常是ROM）。此外，在 DMA 软件中，需要一些额外的RAM来记录DMA运行时的变量外。</p>
+</blockquote>
+
+
+        
+          <div class="blog-tags">
+            
+              <a href="https://hzren.github.io/tags/performance/">Performance</a>&nbsp;
+            
+          </div>
+        
+
+        
+            <hr/>
+            <section id="social-share">
+              <div class="list-inline footer-links">
+                
+
+<div class="share-box" aria-hidden="true">
+    <ul class="share">
+      
+      <li>
+        <a href="//twitter.com/share?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-12-31-direct-memory-access-dma-%25E7%25AE%2580%25E4%25BB%258B%2f&amp;text=DMA%20%e7%ae%80%e4%bb%8b&amp;via=username" target="_blank" title="Share on Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fhzren.github.io%2fblog%2f2020-12-31-direct-memory-access-dma-%25E7%25AE%2580%25E4%25BB%258B%2f" target="_blank" title="Share on Facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//reddit.com/submit?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-12-31-direct-memory-access-dma-%25E7%25AE%2580%25E4%25BB%258B%2f&amp;title=DMA%20%e7%ae%80%e4%bb%8b" target="_blank" title="Share on Reddit">
+          <i class="fab fa-reddit"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-12-31-direct-memory-access-dma-%25E7%25AE%2580%25E4%25BB%258B%2f&amp;title=DMA%20%e7%ae%80%e4%bb%8b" target="_blank" title="Share on LinkedIn">
+          <i class="fab fa-linkedin"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-12-31-direct-memory-access-dma-%25E7%25AE%2580%25E4%25BB%258B%2f&amp;title=DMA%20%e7%ae%80%e4%bb%8b" target="_blank" title="Share on StumbleUpon">
+          <i class="fab fa-stumbleupon"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-12-31-direct-memory-access-dma-%25E7%25AE%2580%25E4%25BB%258B%2f&amp;description=DMA%20%e7%ae%80%e4%bb%8b" target="_blank" title="Share on Pinterest">
+          <i class="fab fa-pinterest"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+  
+
+              </div>
+            </section>
+        
+
+        
+          
+            
+          
+
+          
+                  <h4 class="see-also">也可以看看</h4>
+                  <ul>
+                
+                
+                    <li><a href="/blog/2021-01-15-linux%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">Linux内存管理</a></li>
+                
+                    <li><a href="/blog/2021-01-15-cpu%E4%BC%98%E5%8C%96/">CPU优化</a></li>
+                
+                    <li><a href="/blog/2021-01-15-%E4%B8%AD%E6%96%AD/">中断</a></li>
+                
+              </ul>
+
+          
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="https://hzren.github.io/blog/2020-09-29-java%E4%BD%BF%E7%94%A8protocol-buffers/" data-toggle="tooltip" data-placement="top" title="Java使用Protocol Buffers">&larr; 前一篇</a>
+            </li>
+          
+          
+            <li class="next">
+              <a href="https://hzren.github.io/blog/2021-01-04-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BC%96%E7%A8%8B%E4%BD%93%E7%B3%BB/" data-toggle="tooltip" data-placement="top" title="计算机编程体系">后一篇 &rarr;</a>
+            </li>
+          
+        </ul>
+      
+
+
+      
+        
+        
+      
+
+    </div>
+  </div>
+</div>
+
+      
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+              <li>
+		
+		  <a href="mailto:hzren@outlook.com" title="Email me">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.facebook.com/username" title="Facebook">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-facebook fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://github.com/username" title="GitHub">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://gitlab.com/username" title="GitLab">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-gitlab fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://bitbucket.org/username" title="Bitbucket">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-bitbucket fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://twitter.com/username" title="Twitter">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://username.slack.com/" title="Slack">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-slack fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://reddit.com/u/username" title="Reddit">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-reddit-alien fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://linkedin.com/in/username" title="LinkedIn">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.xing.com/profile/username" title="Xing">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-xing fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://stackoverflow.com/users/XXXXXXX/username" title="StackOverflow">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-stack-overflow fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.snapchat.com/add/username" title="Snapchat">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-snapchat-ghost fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.instagram.com/username" title="Instagram">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-instagram fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.youtube.com/user/username" title="Youtube">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-youtube fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://soundcloud.com/username" title="SoundCloud">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-soundcloud fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://open.spotify.com/user/username" title="Spotify">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-spotify fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://username.bandcamp.com/" title="Bandcamp">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-bandcamp fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://itch.io/profile/username" title="Itch.io">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fas fa-gamepad fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://vk.com/username" title="VK">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-vk fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://paypal.me/username" title="PayPal">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-paypal fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://telegram.me/username" title="Telegram">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-telegram fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://500px.com/username" title="500px">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-500px fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://codepen.io/username" title="CodePen">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-codepen fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.kaggle.com/username" title="kaggle">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-kaggle fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a rel="me"href="https://url" title="Mastodon">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-mastodon fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://weibo.com/username" title="Weibo">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-weibo fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://discord.gg/invite%20code%20%28https://discord.gg/XXXXXXX%29" title="Discord">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-discord fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.strava.com/athletes/userid" title="Strava">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-strava fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+          
+          <li>
+            <a href="" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              <a href="https://hyllo.gitee.io/">renhongzhen</a>
+            
+          
+
+          &nbsp;&bull;&nbsp;&copy;
+          
+            2022
+          
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://hzren.github.io">Code Mark</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          由 <a href="https://gohugo.io">Hugo v0.109.0</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="https://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer><script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script src="https://hzren.github.io/js/main.js"></script>
+<script src="https://hzren.github.io/js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script>
+<script> $(document).ready(function() {$("pre.chroma").css("padding","0");}); </script><script> renderMathInElement(document.body); </script><script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://hzren.github.io/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+
+
+
+    
+  </body>
+</html>
+

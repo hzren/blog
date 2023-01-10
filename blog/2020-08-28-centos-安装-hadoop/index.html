@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="zh-cn" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+ 
+
+
+      <title>centos 安装 hadoop - </title>
+
+  <meta name="description" content="安装JDK 上传JDK包到centos.
+解压
+tar xvf server-jre-8u251-linux-x64.tar.gz 配置环境变量
+vi /etc/profile 添加Java环境变量:
+export JAVA_HOME=/home/jdk1.8.0_251 export PATH=$PATH:$JAVA_HOME/bin 使环境变量生效
+source /etc/profile 检查Java安装
+java -version 正常输出:
+java version &#34;1.8.0_251&#34; Java(TM) SE Runtime Environment (build 1.8.0_251-b08) Java HotSpot(TM) 64-Bit Server VM (build 25.251-b08, mixed mode) 安装sshd, pdsh; sshd系统自带, 现在只安装pdsh.需要先安装epel
+yum install -y epel-release.noarch yum install -y pdsh.x86_64 下载最新稳定版hadoop, 当前是2.10.0
+wget https://mirrors.tuna.tsinghua.edu.cn/apache/hadoop/common/hadoop-2.10.0/hadoop-2.10.0.tar.gz 解压
+tar xvf hadoop-2.10.0.tar.gz hadoop有三种部署模式:
+单机模式 伪分布式模式 集群模式 我们以伪分布式模式安装.
+安装步骤:
+下面所有文件修改均针对hadoop目录下文件
+编辑etc/hadoop/core-site.xml:
+&lt;configuration&gt; &lt;property&gt; &lt;name&gt;fs.defaultFS&lt;/name&gt; &lt;value&gt;hdfs://localhost:9000&lt;/value&gt; &lt;/property&gt; &lt;/configuration&gt; 编辑etc/hadoop/hdfs-site.">
+  <meta name="author" content="renhongzhen"/><script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "Code Mark",
+    
+    "url": "https:\/\/hzren.github.io"
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "",
+  "url": "https:\/\/hzren.github.io"
+  
+  
+  
+  
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https:\/\/hzren.github.io",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https:\/\/hzren.github.io\/blog\/2020-08-28-centos-%E5%AE%89%E8%A3%85-hadoop\/",
+          "name": "Centos 安装 hadoop"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : "renhongzhen"
+  },
+  "headline": "centos 安装 hadoop",
+  "description" : "安装JDK 上传JDK包到centos.\n解压\ntar xvf server-jre-8u251-linux-x64.tar.gz 配置环境变量\nvi \/etc\/profile 添加Java环境变量:\nexport JAVA_HOME=\/home\/jdk1.8.0_251 export PATH=$PATH:$JAVA_HOME\/bin 使环境变量生效\nsource \/etc\/profile 检查Java安装\njava -version 正常输出:\njava version \u0026#34;1.8.0_251\u0026#34; Java(TM) SE Runtime Environment (build 1.8.0_251-b08) Java HotSpot(TM) 64-Bit Server VM (build 25.251-b08, mixed mode) 安装sshd, pdsh; sshd系统自带, 现在只安装pdsh.需要先安装epel\nyum install -y epel-release.noarch yum install -y pdsh.x86_64 下载最新稳定版hadoop, 当前是2.10.0\nwget https:\/\/mirrors.tuna.tsinghua.edu.cn\/apache\/hadoop\/common\/hadoop-2.10.0\/hadoop-2.10.0.tar.gz 解压\ntar xvf hadoop-2.10.0.tar.gz hadoop有三种部署模式:\n单机模式 伪分布式模式 集群模式 我们以伪分布式模式安装.\n安装步骤:\n下面所有文件修改均针对hadoop目录下文件\n编辑etc\/hadoop\/core-site.xml:\n\u0026lt;configuration\u0026gt; \u0026lt;property\u0026gt; \u0026lt;name\u0026gt;fs.defaultFS\u0026lt;\/name\u0026gt; \u0026lt;value\u0026gt;hdfs:\/\/localhost:9000\u0026lt;\/value\u0026gt; \u0026lt;\/property\u0026gt; \u0026lt;\/configuration\u0026gt; 编辑etc\/hadoop\/hdfs-site.",
+  "inLanguage" : "zh-cn",
+  "wordCount":  237 ,
+  "datePublished" : "2020-08-28T17:00:38",
+  "dateModified" : "2020-08-28T17:00:38",
+  "image" : "https:\/\/hzren.github.io\/img\/avatar-icon.png",
+  "keywords" : [ "软件" ],
+  "mainEntityOfPage" : "https:\/\/hzren.github.io\/blog\/2020-08-28-centos-%E5%AE%89%E8%A3%85-hadoop\/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https:\/\/hzren.github.io",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https:\/\/hzren.github.io\/img\/avatar-icon.png",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
+
+<meta property="og:title" content="centos 安装 hadoop" />
+<meta property="og:description" content="安装JDK 上传JDK包到centos.
+解压
+tar xvf server-jre-8u251-linux-x64.tar.gz 配置环境变量
+vi /etc/profile 添加Java环境变量:
+export JAVA_HOME=/home/jdk1.8.0_251 export PATH=$PATH:$JAVA_HOME/bin 使环境变量生效
+source /etc/profile 检查Java安装
+java -version 正常输出:
+java version &#34;1.8.0_251&#34; Java(TM) SE Runtime Environment (build 1.8.0_251-b08) Java HotSpot(TM) 64-Bit Server VM (build 25.251-b08, mixed mode) 安装sshd, pdsh; sshd系统自带, 现在只安装pdsh.需要先安装epel
+yum install -y epel-release.noarch yum install -y pdsh.x86_64 下载最新稳定版hadoop, 当前是2.10.0
+wget https://mirrors.tuna.tsinghua.edu.cn/apache/hadoop/common/hadoop-2.10.0/hadoop-2.10.0.tar.gz 解压
+tar xvf hadoop-2.10.0.tar.gz hadoop有三种部署模式:
+单机模式 伪分布式模式 集群模式 我们以伪分布式模式安装.
+安装步骤:
+下面所有文件修改均针对hadoop目录下文件
+编辑etc/hadoop/core-site.xml:
+&lt;configuration&gt; &lt;property&gt; &lt;name&gt;fs.defaultFS&lt;/name&gt; &lt;value&gt;hdfs://localhost:9000&lt;/value&gt; &lt;/property&gt; &lt;/configuration&gt; 编辑etc/hadoop/hdfs-site.">
+<meta property="og:image" content="https://hzren.github.io/img/avatar-icon.png" />
+<meta property="og:url" content="https://hzren.github.io/blog/2020-08-28-centos-%E5%AE%89%E8%A3%85-hadoop/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Code Mark" />
+
+  <meta name="twitter:title" content="centos 安装 hadoop" />
+  <meta name="twitter:description" content="安装JDK 上传JDK包到centos.
+解压
+tar xvf server-jre-8u251-linux-x64.tar.gz 配置环境变量
+vi /etc/profile 添加Java环境变量:
+export JAVA_HOME=/home/jdk1.8.0_251 export PATH=$PATH:$JAVA_HOME/bin 使环境变量生效
+source /etc/profile 检 …">
+  <meta name="twitter:image" content="https://hzren.github.io/img/avatar-icon.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@username" />
+  <meta name="twitter:creator" content="@username" />
+  <link href='https://hzren.github.io/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <meta name="generator" content="Hugo 0.109.0">
+  <link rel="alternate" href="https://hzren.github.io/index.xml" type="application/rss+xml" title="Code Mark"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://hzren.github.io/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="https://hzren.github.io/css/highlight.min.css" /><link rel="stylesheet" href="https://hzren.github.io/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">切换导航</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://hzren.github.io">Code Mark</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="文章" href="/">文章</a>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent">代码</a>
+              <div class="navlinks-children">
+                
+                  <a href="/post/2017-03-07-bigimg-sample">Big Image Sample</a>
+                
+                  <a href="/post/2017-03-05-math-sample">Math Sample</a>
+                
+                  <a href="/post/2016-03-08-code-sample">Code Sample</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li>
+              <a title="关于我" href="/page/about/">关于我</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="分类" href="/tags">分类</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    
+      <div class="avatar-container">
+        <div class="avatar-img-border">
+          <a title="Code Mark" href="https://hzren.github.io">
+            <img class="avatar-img" src="https://hzren.github.io/img/avatar-icon.png" alt="Code Mark" />
+          </a>
+        </div>
+      </div>
+    
+
+  </div>
+</nav>
+
+
+
+
+    
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+
+  
+  
+  
+
+
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    
+    <div class="intro-header no-img">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="blog-heading">
+              
+                <h1>centos 安装 hadoop</h1>
+              
+              
+                <hr class="small">
+              
+              
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <h3 id="安装jdk">安装JDK</h3>
+<p>上传JDK包到centos.</p>
+<p>解压</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">tar xvf server-jre-8u251-linux-x64.tar.gz 
+</span></span></code></pre></div><p>配置环境变量</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">vi /etc/profile
+</span></span></code></pre></div><p>添加Java环境变量:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">export JAVA_HOME=/home/jdk1.8.0_251
+</span></span><span class="line"><span class="cl">export PATH=$PATH:$JAVA_HOME/bin
+</span></span></code></pre></div><p>使环境变量生效</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">source /etc/profile
+</span></span></code></pre></div><p>检查Java安装</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">java -version
+</span></span></code></pre></div><p>正常输出:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">java version &#34;1.8.0_251&#34;
+</span></span><span class="line"><span class="cl">Java(TM) SE Runtime Environment (build 1.8.0_251-b08)
+</span></span><span class="line"><span class="cl">Java HotSpot(TM) 64-Bit Server VM (build 25.251-b08, mixed mode)
+</span></span></code></pre></div><p>安装sshd, pdsh; sshd系统自带, 现在只安装pdsh.需要先安装epel</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">yum install -y epel-release.noarch
+</span></span><span class="line"><span class="cl">yum install -y pdsh.x86_64
+</span></span></code></pre></div><p>下载最新稳定版hadoop, 当前是2.10.0</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">wget https://mirrors.tuna.tsinghua.edu.cn/apache/hadoop/common/hadoop-2.10.0/hadoop-2.10.0.tar.gz
+</span></span></code></pre></div><p>解压</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">tar xvf  hadoop-2.10.0.tar.gz
+</span></span></code></pre></div><p>hadoop有三种部署模式:</p>
+<ul>
+<li>单机模式</li>
+<li>伪分布式模式</li>
+<li>集群模式</li>
+</ul>
+<p>我们以伪分布式模式安装.</p>
+<p>安装步骤:</p>
+<p>下面所有文件修改均针对hadoop目录下文件</p>
+<p>编辑etc/hadoop/core-site.xml:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&lt;configuration&gt;
+</span></span><span class="line"><span class="cl">    &lt;property&gt;
+</span></span><span class="line"><span class="cl">        &lt;name&gt;fs.defaultFS&lt;/name&gt;
+</span></span><span class="line"><span class="cl">        &lt;value&gt;hdfs://localhost:9000&lt;/value&gt;
+</span></span><span class="line"><span class="cl">    &lt;/property&gt;
+</span></span><span class="line"><span class="cl">&lt;/configuration&gt;
+</span></span></code></pre></div><p>编辑etc/hadoop/hdfs-site.xml:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&lt;configuration&gt;
+</span></span><span class="line"><span class="cl">    &lt;property&gt;
+</span></span><span class="line"><span class="cl">        &lt;name&gt;dfs.replication&lt;/name&gt;
+</span></span><span class="line"><span class="cl">        &lt;value&gt;1&lt;/value&gt;
+</span></span><span class="line"><span class="cl">    &lt;/property&gt;
+</span></span><span class="line"><span class="cl">&lt;/configuration&gt;
+</span></span></code></pre></div><p>检查是否设置ssh免密码登录</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">ssh localhost
+</span></span></code></pre></div><p>如果不能免密登录, 设置ssh免密登录:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">ssh-keygen -t rsa -P &#39;&#39; -f ~/.ssh/id_rsa
+</span></span><span class="line"><span class="cl">cat ~/.ssh/id_rsa.pub &gt;&gt; ~/.ssh/authorized_keys
+</span></span><span class="line"><span class="cl">chmod 0600 ~/.ssh/authorized_keys
+</span></span></code></pre></div><h3 id="启动服务">启动服务</h3>
+<ol>
+<li>格式化文件系统</li>
+</ol>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">bin/hdfs namenode -format
+</span></span></code></pre></div><ol start="2">
+<li>启动 NameNode 服务 和 DataNode 服务:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sbin/start-dfs.sh
+</span></span></code></pre></div><p>发现启动报错</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">localhost: Error: JAVA_HOME is not set and could not be found.
+</span></span><span class="line"><span class="cl">localhost: Error: JAVA_HOME is not set and could not be found.
+</span></span><span class="line"><span class="cl">Starting secondary namenodes [0.0.0.0]
+</span></span><span class="line"><span class="cl">The authenticity of host &#39;0.0.0.0 (0.0.0.0)&#39; can&#39;t be established.
+</span></span><span class="line"><span class="cl">ECDSA key fingerprint is SHA256:v62FRQvEyLKc3YJSY50MixeSqmRiuRt0KqpoOArEOkY.
+</span></span><span class="line"><span class="cl">ECDSA key fingerprint is MD5:cf:74:7d:e2:66:17:8d:29:7d:5e:41:0c:25:94:88:7a.
+</span></span><span class="line"><span class="cl">Are you sure you want to continue connecting (yes/no)? yes
+</span></span><span class="line"><span class="cl">0.0.0.0: Warning: Permanently added &#39;0.0.0.0&#39; (ECDSA) to the list of known hosts.
+</span></span><span class="line"><span class="cl">0.0.0.0: Error: JAVA_HOME is not set and could not be found.
+</span></span></code></pre></div><p>应该是hadoop进程ssh到主机后session无JAVA_HOME环境变量, /etc/profile配置未起作用, 在~.bashrc下引用/etc/profile使其生效.</p>
+<blockquote>
+<p>bash有“交互”和“登陆”两种属性，而执行“profile”系列还是“rc”系列，就与shell的这两个属性有关。原理上讲，“登陆shell”启动时会加载“profile”系列的startup文件，而“交互式非登陆shell”启动时会加载“rc”系列的startup文件。</p>
+</blockquote>
+<p>执行:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"> vi /root/.bashrc 
+</span></span></code></pre></div><p>添加:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">source /etc/profile
+</span></span></code></pre></div><ol start="3">
+<li>重新启动 NameNode 服务 和 DataNode 服务:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sbin/start-dfs.sh
+</span></span></code></pre></div><p>控制台输出</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">Starting namenodes on [localhost]
+</span></span><span class="line"><span class="cl">localhost: starting namenode, logging to /home/hadoop-2.10.0/logs/hadoop-root-namenode-localhost.localdomain.out
+</span></span><span class="line"><span class="cl">localhost: starting datanode, logging to /home/hadoop-2.10.0/logs/hadoop-root-datanode-localhost.localdomain.out
+</span></span><span class="line"><span class="cl">Starting secondary namenodes [0.0.0.0]
+</span></span><span class="line"><span class="cl">0.0.0.0: starting secondarynamenode, logging to /home/hadoop-2.10.0/logs/hadoop-root-secondarynamenode-localhost.localdomain.out
+</span></span></code></pre></div><p>环境变量配置成功, 服务启动成功了.</p>
+<blockquote>
+<p>有些情况下datanode会启动失败,这时候需要根据日志确定数据目录,清空后格式化数据目录,重新启动</p>
+</blockquote>
+
+
+        
+          <div class="blog-tags">
+            
+              <a href="https://hzren.github.io/tags/%E8%BD%AF%E4%BB%B6/">软件</a>&nbsp;
+            
+          </div>
+        
+
+        
+            <hr/>
+            <section id="social-share">
+              <div class="list-inline footer-links">
+                
+
+<div class="share-box" aria-hidden="true">
+    <ul class="share">
+      
+      <li>
+        <a href="//twitter.com/share?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-08-28-centos-%25E5%25AE%2589%25E8%25A3%2585-hadoop%2f&amp;text=centos%20%e5%ae%89%e8%a3%85%20hadoop&amp;via=username" target="_blank" title="Share on Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fhzren.github.io%2fblog%2f2020-08-28-centos-%25E5%25AE%2589%25E8%25A3%2585-hadoop%2f" target="_blank" title="Share on Facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//reddit.com/submit?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-08-28-centos-%25E5%25AE%2589%25E8%25A3%2585-hadoop%2f&amp;title=centos%20%e5%ae%89%e8%a3%85%20hadoop" target="_blank" title="Share on Reddit">
+          <i class="fab fa-reddit"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-08-28-centos-%25E5%25AE%2589%25E8%25A3%2585-hadoop%2f&amp;title=centos%20%e5%ae%89%e8%a3%85%20hadoop" target="_blank" title="Share on LinkedIn">
+          <i class="fab fa-linkedin"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-08-28-centos-%25E5%25AE%2589%25E8%25A3%2585-hadoop%2f&amp;title=centos%20%e5%ae%89%e8%a3%85%20hadoop" target="_blank" title="Share on StumbleUpon">
+          <i class="fab fa-stumbleupon"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-08-28-centos-%25E5%25AE%2589%25E8%25A3%2585-hadoop%2f&amp;description=centos%20%e5%ae%89%e8%a3%85%20hadoop" target="_blank" title="Share on Pinterest">
+          <i class="fab fa-pinterest"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+  
+
+              </div>
+            </section>
+        
+
+        
+          
+            
+          
+
+          
+                  <h4 class="see-also">也可以看看</h4>
+                  <ul>
+                
+                
+                    <li><a href="/blog/2020-08-25-centos-%E5%AE%89%E8%A3%85-stress-sysstat/">centos 安装 stress sysstat</a></li>
+                
+                    <li><a href="/blog/2020-07-30-docker%E4%BD%BF%E7%94%A8nexus%E4%BD%9C%E4%B8%BA%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93/">Docker使用nexus作为镜像仓库</a></li>
+                
+                    <li><a href="/blog/2020-07-29-docker-%E5%88%9B%E5%BB%BAoracle-server-jre-%E9%95%9C%E5%83%8F/">docker 创建Oracle Server Jre 镜像</a></li>
+                
+              </ul>
+
+          
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="https://hzren.github.io/blog/2020-08-25-centos-%E5%AE%89%E8%A3%85-stress-sysstat/" data-toggle="tooltip" data-placement="top" title="centos 安装 stress sysstat">&larr; 前一篇</a>
+            </li>
+          
+          
+            <li class="next">
+              <a href="https://hzren.github.io/blog/2020-09-14-redis%E5%A4%87%E4%BB%BD/" data-toggle="tooltip" data-placement="top" title="Redis备份">后一篇 &rarr;</a>
+            </li>
+          
+        </ul>
+      
+
+
+      
+        
+        
+      
+
+    </div>
+  </div>
+</div>
+
+      
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+              <li>
+		
+		  <a href="mailto:hzren@outlook.com" title="Email me">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.facebook.com/username" title="Facebook">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-facebook fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://github.com/username" title="GitHub">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://gitlab.com/username" title="GitLab">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-gitlab fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://bitbucket.org/username" title="Bitbucket">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-bitbucket fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://twitter.com/username" title="Twitter">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://username.slack.com/" title="Slack">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-slack fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://reddit.com/u/username" title="Reddit">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-reddit-alien fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://linkedin.com/in/username" title="LinkedIn">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.xing.com/profile/username" title="Xing">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-xing fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://stackoverflow.com/users/XXXXXXX/username" title="StackOverflow">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-stack-overflow fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.snapchat.com/add/username" title="Snapchat">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-snapchat-ghost fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.instagram.com/username" title="Instagram">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-instagram fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.youtube.com/user/username" title="Youtube">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-youtube fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://soundcloud.com/username" title="SoundCloud">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-soundcloud fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://open.spotify.com/user/username" title="Spotify">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-spotify fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://username.bandcamp.com/" title="Bandcamp">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-bandcamp fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://itch.io/profile/username" title="Itch.io">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fas fa-gamepad fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://vk.com/username" title="VK">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-vk fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://paypal.me/username" title="PayPal">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-paypal fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://telegram.me/username" title="Telegram">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-telegram fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://500px.com/username" title="500px">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-500px fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://codepen.io/username" title="CodePen">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-codepen fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.kaggle.com/username" title="kaggle">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-kaggle fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a rel="me"href="https://url" title="Mastodon">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-mastodon fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://weibo.com/username" title="Weibo">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-weibo fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://discord.gg/invite%20code%20%28https://discord.gg/XXXXXXX%29" title="Discord">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-discord fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.strava.com/athletes/userid" title="Strava">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-strava fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+          
+          <li>
+            <a href="" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              <a href="https://hyllo.gitee.io/">renhongzhen</a>
+            
+          
+
+          &nbsp;&bull;&nbsp;&copy;
+          
+            2022
+          
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://hzren.github.io">Code Mark</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          由 <a href="https://gohugo.io">Hugo v0.109.0</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="https://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer><script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script src="https://hzren.github.io/js/main.js"></script>
+<script src="https://hzren.github.io/js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script>
+<script> $(document).ready(function() {$("pre.chroma").css("padding","0");}); </script><script> renderMathInElement(document.body); </script><script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://hzren.github.io/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+
+
+
+    
+  </body>
+</html>
+

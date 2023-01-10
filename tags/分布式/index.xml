@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>分布式 on Code Mark</title>
+    <link>https://hzren.github.io/tags/%E5%88%86%E5%B8%83%E5%BC%8F/</link>
+    <description>Recent content in 分布式 on Code Mark</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <managingEditor>hzren@outlook.com (renhongzhen)</managingEditor>
+    <webMaster>hzren@outlook.com (renhongzhen)</webMaster>
+    <lastBuildDate>Thu, 06 Aug 2020 15:10:38 +0800</lastBuildDate><atom:link href="https://hzren.github.io/tags/%E5%88%86%E5%B8%83%E5%BC%8F/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Redis哨兵模式概要</title>
+      <link>https://hzren.github.io/blog/2020-08-06-redis%E5%93%A8%E5%85%B5%E6%A8%A1%E5%BC%8F%E6%A6%82%E8%A6%81/</link>
+      <pubDate>Thu, 06 Aug 2020 15:10:38 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2020-08-06-redis%E5%93%A8%E5%85%B5%E6%A8%A1%E5%BC%8F%E6%A6%82%E8%A6%81/</guid>
+      <description>哨兵模式的官方说明 Redis 的 Sentinel 系统用于管理多个 Redis 服务器（instance）， 该系统执行以下三个任务： . 监控（Monitoring）： Sentinel 会不断地检查你的主服务器和从服务器是否运作正常。 . 提醒（Notification）： 当被监控的某个 Redis 服务器出现问题时， Sentinel 可以通过 API 向管理员或者其他应用程序发送通知。 . 自动故障迁移（Automatic failover）： 当一个主服务器不能正常工作时， Sentinel 会开始一次自动故障迁移操作， 它会将失效主服务器的其中一个从服务器升级为新的主服务器， 并让失效主服务器的其他从服务器改为复制新的主服务器； 当客户端试图连接失效的主服务器时， 集群也会向客户端返回新主服务器的地址， 使得集群可以使用新主服务器代替失效服务器。
+获取 Sentinel 现在Sentinel就包含在redis发行版中，sentinel是redis发行版的一部分。
+启动 Sentinel 对于 redis-sentinel 程序， 可以用以下命令来启动 Sentinel 系统：
+redis-sentinel /path/to/sentinel.conf 对于 redis-server 程序， 你可以用以下命令来启动一个运行在 Sentinel 模式下的 Redis 服务器：
+redis-server /path/to/sentinel.conf --sentinel 两种方法都可以启动一个 Sentinel 实例。 启动 Sentinel 实例必须指定相应的配置文件， 系统会使用配置文件来保存 Sentinel 的当前状态， 并在 Sentinel 重启时通过载入配置文件来进行状态还原。 如果启动 Sentinel 时没有指定相应的配置文件， 或者指定的配置文件不可写（not writable）， 那么 Sentinel 会拒绝启动。</description>
+    </item>
+    
+    <item>
+      <title>2PC - 分布式场景下的两阶段提交算法</title>
+      <link>https://hzren.github.io/blog/2020-07-30-2pc-%E5%88%86%E5%B8%83%E5%BC%8F%E5%9C%BA%E6%99%AF%E4%B8%8B%E7%9A%84%E4%B8%A4%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4%E7%AE%97%E6%B3%95/</link>
+      <pubDate>Thu, 30 Jul 2020 15:11:37 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2020-07-30-2pc-%E5%88%86%E5%B8%83%E5%BC%8F%E5%9C%BA%E6%99%AF%E4%B8%8B%E7%9A%84%E4%B8%A4%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4%E7%AE%97%E6%B3%95/</guid>
+      <description>概念 二阶段提交(Two-phaseCommit)是指，在计算机网络以及数据库领域内，为了使基于分布式系统架构下的所有节点在进行事务提交时保持一致性而设计的一种算法(Algorithm)。通常，二阶段提交也被称为是一种协议(Protocol))。在分布式系统中，每个节点虽然可以知晓自己的操作时成功或者失败，却无法知道其他节点的操作的成功或失败。当一个事务跨越多个节点时，为了保持事务的ACID特性，需要引入一个作为协调者的组件来统一掌控所有节点(称作参与者)的操作结果并最终指示这些节点是否要把操作结果进行真正的提交(比如将更新后的数据写入磁盘等等)。因此，二阶段提交的算法思路可以概括为：参与者将操作成败通知协调者，再由协调者根据所有参与者的反馈情报决定各参与者是否要提交操作还是中止操作。
+两个角色: 协调者，参与者。
+所谓的两个阶段是指：第一阶段：准备阶段(投票阶段)和第二阶段：提交阶段（执行阶段）。
+过程 第一阶段(提交请求阶段): 协调者询向所有参与者节点询问, 是否可以执行提交操作, 并开始等待参与者节点响应 参与者节点执行询问发起为止所有事务操作, 并将undo信息和redo信息写入日志. 各参与者节点响应协调者发起的询问, 如果参与者节点的事务操作执行成功, 就返回一个&amp;quot;同意&amp;quot;消息, 如果失败, 就返回一个&amp;quot;中止消息&amp;quot; 第二阶段(提交执行阶段): 当协调者获得所有节点的响应为&amp;quot;同意&amp;quot;时:
+协调者想所有节点发起&amp;quot;正式提交&amp;quot;请求 参与者节点正式完成操作, 并释放整个事务期间占用的资源 参与者节点向协调者节点发送&amp;quot;完成&amp;quot;消息 协调者节点收到所有参与者节点反馈的&amp;quot;完成&amp;quot;消息后, 完成事务. 回滚阶段 如果任一参与者节点在第一阶段返回了&amp;quot;中止&amp;quot;消息, 或者协调者节点在第一阶段询问时间超时之前无法获得所有节点的响应信息
+协调者向所有参与者节点发起&amp;quot;回滚操作&amp;quot; 的请求 参与者使用第一阶段的undo信息执行回滚操作, 并占用第一阶段锁定的资源 参与者节点向协调者发送&amp;quot;回滚完成&amp;quot; 消息 协调者收到所有节点发起的&amp;quot;回滚完成&amp;quot;消息后取消事务 两段提交最大的问题就是如果第一阶段完成后，参与者在第二阶没有收到决策，那么数据结点会进入“不知所措”的状态，这个状态会block住整个事务。也就是说，协调者Coordinator对于事务的完成非常重要，Coordinator的可用性是个关键点所在，因此在两阶段的基础上衍生出了三阶段提交算法，三阶段先询问，再锁资源，提交。
+两阶段流程图(来自维基百科) </description>
+    </item>
+    
+  </channel>
+</rss>

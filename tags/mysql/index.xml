@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>MySQL on Code Mark</title>
+    <link>https://hzren.github.io/tags/mysql/</link>
+    <description>Recent content in MySQL on Code Mark</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <managingEditor>hzren@outlook.com (renhongzhen)</managingEditor>
+    <webMaster>hzren@outlook.com (renhongzhen)</webMaster>
+    <lastBuildDate>Tue, 02 Aug 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://hzren.github.io/tags/mysql/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Mysql转义字符</title>
+      <link>https://hzren.github.io/blog/2022-08-02-mysql%E8%BD%AC%E4%B9%89%E5%AD%97%E7%AC%A6/</link>
+      <pubDate>Tue, 02 Aug 2022 00:00:00 +0000</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2022-08-02-mysql%E8%BD%AC%E4%B9%89%E5%AD%97%E7%AC%A6/</guid>
+      <description>如果在文本搜索实现LIKE查询，通常会这样做：
+SELECT * FROM T_Whatever WHERE SomeField LIKE CONCAT(&amp;#39;%&amp;#39;, @in_SearchText, &amp;#39;%&amp;#39;) 然而，（除非不使用like使用全文搜索）当有人输入“50%”或“a_b”之类的文本时，这会产生问题。这时候需要使用LIKE转义词来解决这个问题：
+SELECT * FROM T_Whatever WHERE SomeField LIKE CONCAT(&amp;#39;%&amp;#39;, @in_SearchText, &amp;#39;%&amp;#39;) ESCAPE &amp;#39;\&amp;#39; 这意味着\现在将被视为ESCAPE字符。这意味着，现在只需在搜索字符串中的每个字符前加上\，结果就会开始正确，即使用户输入了特殊字符，比如%或_。
+例如
+string stringToSearch = &amp;#34;abc_def 50%&amp;#34;; string newString = &amp;#34;&amp;#34;; foreach(char c in stringToSearch) newString += @&amp;#34;\&amp;#34; + c; sqlCmd.Parameters.Add(&amp;#34;@in_SearchText&amp;#34;, newString); // instead of sqlCmd.Parameters.Add(&amp;#34;@in_SearchText&amp;#34;, stringToSearch); 上述代码仅用于演示。如果一个字符由点码表示（比如utf-8），这将不起作用。 例如
+string stringToSearch=“Les Mise\u0301ables”； </description>
+    </item>
+    
+    <item>
+      <title>Mysql优化</title>
+      <link>https://hzren.github.io/blog/2021-12-15-mysql%E4%BC%98%E5%8C%96/</link>
+      <pubDate>Wed, 15 Dec 2021 10:54:03 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2021-12-15-mysql%E4%BC%98%E5%8C%96/</guid>
+      <description>硬件/参数配置 升级硬件/合适的mysql参数能最直接的带来数据库性能的提升。
+硬件 有些应用数据库合应用服务同时运行在同一台配置较好的物理机器上，在这种场景下，应用本身的磁盘操作.例如写日志，会极大的影响数据库性能，建议日志和数据库使用两块不同的硬盘。
+参数 合适的参数配置，可以提高数据库写脏页的速度，减少因刷新脏页引起的停顿。
+事务级别/大事务/锁 InnoDB在对有唯一性约束的地方进行更新的事务会对数据加锁，但是只能在数据库事务结束的时候才将锁释放，对于并发进行的操作，锁会造成其他线程等待，影响数据库可用线程数。
+应在程序语句中调整有锁的地方的SQL语句的执行顺序，尽量把这语句往后放，尽量减少冲突等待的可能。
+对于大事务，因为数据引擎是MVCC的，大事务会造成别的事务回溯之前的数据版本，造成执行效率低下。
+对于查询类的语句，应尽量避免事务，例如，设置:readonly=true。这会给数据库一个暗示，有了这个暗示数据库会避免这个SQL语句事务方面的资源分配。
+SQL语句 插入 对于B+树索引，乱序插入会导致整个树节点频繁的分裂合并，对于一条SQL插入语句，影响到的树节点越少越好，最好只影响到叶子节点，这样效率是最高的。
+UUID是无序的，使用UUID做主键会影响到二层，三层四层直到叶子节点，这种插入同上面相比，复合明显是不一样的，特别在引起了节点分裂合并的情况下，会造成更多的节点更新，引起更大的变动。
+更新 更新不应有主键的变动，那样就成了删除插入了，更新语句在聚镞索引上只会引起叶子节点的更新，问题不大。在二级索引上面，如果索引键包含了该字段，该字段在索引键中的位置越靠后对树结构的变动越小，当该字段是索引的最后一个字段时，对该字段的更新基本上只会影响到叶子节点，这样效率时最高的，索引在设计索引时应尽量把更新频率最高的字段放到最后。
+InnoDB存在change buffer， 里面存放了对数据库二级索引的变更记录， 起到了把多个细小变动合并成一个作用，减少了不必要的数据库读取；对于唯一索引，唯一索引的更新需要把原数据库取出来对比是否已存在，就没法使用change buffer，所以索引设计时应尽量避免唯一索引。
+唯一索引会产生锁，需要考虑好加锁的时机和顺序，尽量减少不必要的锁等待。
+删除 delete语句并不会直接物理删除，只是在数据上标记了删除，在数据库后台默默执行删除操作
+查找 </description>
+    </item>
+    
+  </channel>
+</rss>

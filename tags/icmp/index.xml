@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ICMP on Code Mark</title>
+    <link>https://hzren.github.io/tags/icmp/</link>
+    <description>Recent content in ICMP on Code Mark</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <managingEditor>hzren@outlook.com (renhongzhen)</managingEditor>
+    <webMaster>hzren@outlook.com (renhongzhen)</webMaster>
+    <lastBuildDate>Tue, 18 Aug 2020 16:52:07 +0800</lastBuildDate><atom:link href="https://hzren.github.io/tags/icmp/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>ICMP Ping traceroute</title>
+      <link>https://hzren.github.io/blog/2020-08-18-icmp-ping-traceroute/</link>
+      <pubDate>Tue, 18 Aug 2020 16:52:07 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2020-08-18-icmp-ping-traceroute/</guid>
+      <description>Ping和traceroute都基于ICMP协议工作。
+ICMP 互联网控制消息协议（英语：Internet Control Message Protocol，缩写：ICMP）是互联网的核心协议之一，用于在网际协议（IP）中发送控制消息，提供可能发生在通信环境中的各种问题的反馈。通过这些信息，可以对所发生的问题作出诊断，然后采取适当的措施解决。
+ICMP基于IP协议，通常不由网络程序直接使用，除了 ping 和 traceroute 这两个特别的例子。 IPv4中的ICMP被称作ICMPv4，IPv6中的ICMP则被称作ICMPv6。
+技术细节 ICMP通常用于返回的错误信息或是分析路由。ICMP错误消息总是包括了源数据并返回给发送者。 ICMP错误消息例子之一是TTL值过期。
+每个路由器在转发数据报的时候都会把IP包头中的TTL值减1。如果TTL值为0，“TTL在传输中过期”的消息将会回报给源地址。 每个ICMP消息都是直接封装在一个IP数据包中的，因此，和UDP一样，ICMP是不可靠的。
+很多常用的工具是基于ICMP消息的。traceroute 是通过发送包含有特殊的TTL的包，然后接收ICMP超时消息和目标不可达消息来实现的。 ping 则是用ICMP的&amp;quot;Echo request&amp;quot;（类别代码：8）和&amp;quot;Echo reply&amp;quot;（类别代码：0）消息来实现的。
+报文结构 ICMP报头从IP报头的第160位开始（IP首部20字节）（除非使用了IP报头的可选部分）。
+Type - ICMP的类型,标识生成的错误报文Code - 进一步划分ICMP的类型,该字段用来查找产生错误的原因.；例如，ICMP的目标不可达类型可以把这个位设为1至15等来表示不同的意思。Checksum - Internet校验和（RFC 1071），用于进行错误检查，该校验和是从ICMP头和以该字段替换为0的数据计算得出的。Rest of Header - 报头的其余部分，四字节字段，内容根据ICMP类型和代码而有所不同。报文类型 ICMP 报文有很多的类型，不同的类型有不同的代码。最常用的类型是主动请求为 8，主动请求的应答为 0。 ICMP有两大类报文类型: 查询报文类型, 差错报文类型
+查询报文类型 主动发起的，主动应答的，对应 ICMP 的查询报文类型就是查询报文类型。例如，常用的ping 就是查询报文，是一种主动请求，并且获得主动应答的 ICMP 协议。所以，ping 发的包也是符合 ICMP协议格式的，只不过它在后面增加了自己的格式。 对 ping 的主动请求，进行网络抓包，称为ICMP ECHO REQUEST。同理主动请求的回复，称为ICMP ECHO REPLY。比起原生的 ICMP，这里面多了两个字段，一个是标识符。在选项数据中，ping 还会存放发送请求的时间值，来计算往返时间，说明路程的长短。
+差错报文类型 异常情况引起的，对应 ICMP 的差错报文类型。</description>
+    </item>
+    
+  </channel>
+</rss>

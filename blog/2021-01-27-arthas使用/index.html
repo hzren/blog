@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="zh-cn" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+ 
+
+
+      <title>Arthas使用 - </title>
+
+  <meta name="description" content="官方教程
+文档
+下载 下载全量zip包：从Github Releases页下载
+wget https://github.com/alibaba/arthas/releases/download/arthas-all-3.4.6/arthas-bin.zip 下载完成之后解压：
+unzip arthas-bin.zip arthas 依赖JDK，如果只安装了JRE，是没法使用的。
+启动 可以通过as.sh脚本启动：
+./as.sh 也可以通过java命令启动：
+java -jar arthas-boot.jar 启动之后会显示当前操作系统上运行的Java进行，选择应用java进程：
+$ $ java -jar arthas-boot.jar * [1]: 35542 [2]: 71560 arthas-demo.jar Demo进程是第2个，则输入2，再输入回车/enter。Arthas会attach到目标进程上，并输出日志：
+[INFO] Try to attach process 71560 [INFO] Attach process 71560 success. [INFO] arthas-client connect 127.0.0.1 3658 ,---. ,------. ,--------.,--. ,--. ,---. ,---. / O \ | .--. &#39;&#39;--. .--&#39;| &#39;--&#39; | / O \ &#39; .-&#39; | .-. || &#39;--&#39;.">
+  <meta name="author" content="renhongzhen"/><script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "Code Mark",
+    
+    "url": "https:\/\/hzren.github.io"
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "",
+  "url": "https:\/\/hzren.github.io"
+  
+  
+  
+  
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https:\/\/hzren.github.io",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https:\/\/hzren.github.io\/blog\/2021-01-27-arthas%E4%BD%BF%E7%94%A8\/",
+          "name": "Arthas使用"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : "renhongzhen"
+  },
+  "headline": "Arthas使用",
+  "description" : "官方教程\n文档\n下载 下载全量zip包：从Github Releases页下载\nwget https:\/\/github.com\/alibaba\/arthas\/releases\/download\/arthas-all-3.4.6\/arthas-bin.zip 下载完成之后解压：\nunzip arthas-bin.zip arthas 依赖JDK，如果只安装了JRE，是没法使用的。\n启动 可以通过as.sh脚本启动：\n.\/as.sh 也可以通过java命令启动：\njava -jar arthas-boot.jar 启动之后会显示当前操作系统上运行的Java进行，选择应用java进程：\n$ $ java -jar arthas-boot.jar * [1]: 35542 [2]: 71560 arthas-demo.jar Demo进程是第2个，则输入2，再输入回车\/enter。Arthas会attach到目标进程上，并输出日志：\n[INFO] Try to attach process 71560 [INFO] Attach process 71560 success. [INFO] arthas-client connect 127.0.0.1 3658 ,---. ,------. ,--------.,--. ,--. ,---. ,---. \/ O \\ | .--. \u0026#39;\u0026#39;--. .--\u0026#39;| \u0026#39;--\u0026#39; | \/ O \\ \u0026#39; .-\u0026#39; | .-. || \u0026#39;--\u0026#39;.",
+  "inLanguage" : "zh-cn",
+  "wordCount":  320 ,
+  "datePublished" : "2021-01-27T15:11:16",
+  "dateModified" : "2021-01-27T15:11:16",
+  "image" : "https:\/\/hzren.github.io\/img\/avatar-icon.png",
+  "keywords" : [ "Java, tool" ],
+  "mainEntityOfPage" : "https:\/\/hzren.github.io\/blog\/2021-01-27-arthas%E4%BD%BF%E7%94%A8\/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https:\/\/hzren.github.io",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https:\/\/hzren.github.io\/img\/avatar-icon.png",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
+
+<meta property="og:title" content="Arthas使用" />
+<meta property="og:description" content="官方教程
+文档
+下载 下载全量zip包：从Github Releases页下载
+wget https://github.com/alibaba/arthas/releases/download/arthas-all-3.4.6/arthas-bin.zip 下载完成之后解压：
+unzip arthas-bin.zip arthas 依赖JDK，如果只安装了JRE，是没法使用的。
+启动 可以通过as.sh脚本启动：
+./as.sh 也可以通过java命令启动：
+java -jar arthas-boot.jar 启动之后会显示当前操作系统上运行的Java进行，选择应用java进程：
+$ $ java -jar arthas-boot.jar * [1]: 35542 [2]: 71560 arthas-demo.jar Demo进程是第2个，则输入2，再输入回车/enter。Arthas会attach到目标进程上，并输出日志：
+[INFO] Try to attach process 71560 [INFO] Attach process 71560 success. [INFO] arthas-client connect 127.0.0.1 3658 ,---. ,------. ,--------.,--. ,--. ,---. ,---. / O \ | .--. &#39;&#39;--. .--&#39;| &#39;--&#39; | / O \ &#39; .-&#39; | .-. || &#39;--&#39;.">
+<meta property="og:image" content="https://hzren.github.io/img/avatar-icon.png" />
+<meta property="og:url" content="https://hzren.github.io/blog/2021-01-27-arthas%E4%BD%BF%E7%94%A8/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Code Mark" />
+
+  <meta name="twitter:title" content="Arthas使用" />
+  <meta name="twitter:description" content="官方教程
+文档
+下载 下载全量zip包：从Github Releases页下载
+wget https://github.com/alibaba/arthas/releases/download/arthas-all-3.4.6/arthas-bin.zip 下载完成之后解压：
+unzip arthas-bin.zip arthas 依赖JDK，如果只安装了JRE，是没法使用的。
+启动 可以通 …">
+  <meta name="twitter:image" content="https://hzren.github.io/img/avatar-icon.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@username" />
+  <meta name="twitter:creator" content="@username" />
+  <link href='https://hzren.github.io/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <meta name="generator" content="Hugo 0.109.0">
+  <link rel="alternate" href="https://hzren.github.io/index.xml" type="application/rss+xml" title="Code Mark"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://hzren.github.io/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="https://hzren.github.io/css/highlight.min.css" /><link rel="stylesheet" href="https://hzren.github.io/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">切换导航</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://hzren.github.io">Code Mark</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="文章" href="/">文章</a>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent">代码</a>
+              <div class="navlinks-children">
+                
+                  <a href="/post/2017-03-07-bigimg-sample">Big Image Sample</a>
+                
+                  <a href="/post/2017-03-05-math-sample">Math Sample</a>
+                
+                  <a href="/post/2016-03-08-code-sample">Code Sample</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li>
+              <a title="关于我" href="/page/about/">关于我</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="分类" href="/tags">分类</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    
+      <div class="avatar-container">
+        <div class="avatar-img-border">
+          <a title="Code Mark" href="https://hzren.github.io">
+            <img class="avatar-img" src="https://hzren.github.io/img/avatar-icon.png" alt="Code Mark" />
+          </a>
+        </div>
+      </div>
+    
+
+  </div>
+</nav>
+
+
+
+
+    
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+
+  
+  
+  
+
+
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    
+    <div class="intro-header no-img">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="blog-heading">
+              
+                <h1>Arthas使用</h1>
+              
+              
+                <hr class="small">
+              
+              
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <p><a href="https://arthas.aliyun.com/doc/arthas-tutorials.html?language=cn">官方教程</a></p>
+<p><a href="https://arthas.aliyun.com/doc/">文档</a></p>
+<h3 id="下载">下载</h3>
+<p>下载全量zip包：<a href="https://github.com/alibaba/arthas/releases">从Github Releases页下载</a></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">wget https://github.com/alibaba/arthas/releases/download/arthas-all-3.4.6/arthas-bin.zip
+</span></span></code></pre></div><p>下载完成之后解压：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">unzip arthas-bin.zip
+</span></span></code></pre></div><p>arthas 依赖JDK，如果只安装了JRE，是没法使用的。</p>
+<h3 id="启动">启动</h3>
+<p>可以通过as.sh脚本启动：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">./as.sh
+</span></span></code></pre></div><p>也可以通过java命令启动：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">java -jar arthas-boot.jar
+</span></span></code></pre></div><p>启动之后会显示当前操作系统上运行的Java进行，选择应用java进程：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ $ java -jar arthas-boot.jar
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">* [1]: 35542
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  [2]: 71560 arthas-demo.jar
+</span></span></code></pre></div><p>Demo进程是第2个，则输入2，再输入回车/enter。Arthas会attach到目标进程上，并输出日志：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">[INFO] Try to attach process 71560
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">[INFO] Attach process 71560 success.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">[INFO] arthas-client connect 127.0.0.1 3658
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  ,---.  ,------. ,--------.,--.  ,--.  ,---.   ,---.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> /  O  \ |  .--. &#39;&#39;--.  .--&#39;|  &#39;--&#39;  | /  O  \ &#39;   .-&#39;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">|  .-.  ||  &#39;--&#39;.&#39;   |  |   |  .--.  ||  .-.  |`.  `-.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">|  | |  ||  |\  \    |  |   |  |  |  ||  | |  |.-&#39;    |
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">`--&#39; `--&#39;`--&#39; &#39;--&#39;   `--&#39;   `--&#39;  `--&#39;`--&#39; `--&#39;`-----&#39;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">wiki: https://arthas.aliyun.com/doc
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">version: 3.0.5.20181127201536
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">pid: 71560
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">time: 2018-11-28 19:16:24
+</span></span><span class="line"><span class="cl">$
+</span></span></code></pre></div><h3 id="命令">命令</h3>
+<h4 id="arthas-基础命令">Arthas 基础命令</h4>
+<ul>
+<li>help——查看命令帮助信息</li>
+<li>cls——清空当前屏幕区域</li>
+<li>session——查看当前会话的信息</li>
+<li>reset——重置增强类，将被 Arthas 增强过的类全部还原，Arthas 服务端关闭时会重置所有增强过的类version——输出当前目标 Java 进程所加载的 Arthas 版本号</li>
+<li>history——打印命令历史</li>
+<li>quit——退出当前 Arthas 客户端，其他 Arthas 客户端不受影响</li>
+<li>stop——关闭 Arthas 服务端，所有 Arthas 客户端全部退出</li>
+<li>keymap——Arthas快捷键列表及自定义快捷键</li>
+</ul>
+<h4 id="jvm相关">jvm相关</h4>
+<ul>
+<li>dashboard——当前系统的实时数据面板</li>
+<li>thread——查看当前 JVM 的线程堆栈信息</li>
+<li>jvm——查看当前 JVM 的信息</li>
+<li>sysprop——查看和修改JVM的系统属性</li>
+<li>sysenv——查看JVM的环境变量</li>
+<li>vmoption——查看和修改JVM里诊断相关的option</li>
+<li>perfcounter——查看当前 JVM 的Perf Counter信息</li>
+<li>logger——查看和修改logger</li>
+<li>getstatic——查看类的静态属性</li>
+<li>ognl——执行ognl表达式</li>
+<li>mbean——查看 Mbean 的信息</li>
+<li>heapdump——dump java heap, 类似jmap命令的heap dump功能</li>
+</ul>
+<h4 id="classclassloader相关">class/classloader相关</h4>
+<ul>
+<li>sc——查看JVM已加载的类信息</li>
+<li>sm——查看已加载类的方法信息</li>
+<li>jad——反编译指定已加载类的源码</li>
+<li>mc——内存编译器，内存编译.java文件为.class文件</li>
+<li>retransform——加载外部的.class文件，retransform到JVM里</li>
+<li>redefine——加载外部的.class文件，redefine到JVM里</li>
+<li>dump——dump 已加载类的 byte code 到特定目录</li>
+<li>classloader——查看classloader的继承树，urls，类加载信息，使用classloader去getResource</li>
+</ul>
+<h4 id="monitorwatchtrace相关">monitor/watch/trace相关</h4>
+<blockquote>
+<p>请注意，这些命令，都通过字节码增强技术来实现的，会在指定类的方法中插入一些切面来实现数据统计和观测，因此在线上、预发使用时，请尽量明确需要观测的类、方法以及条件，诊断结束要执行 stop 或将增强过的类执行 reset 命令。</p>
+</blockquote>
+<ul>
+<li>monitor——方法执行监控</li>
+<li>watch——方法执行数据观测</li>
+<li>trace——方法内部调用路径，并输出方法路径上的每个节点上耗时</li>
+<li>stack——输出当前方法被调用的调用路径</li>
+<li>tt——方法执行数据的时空隧道，记录下指定方法每次调用的入参和返回信息，并能对这些不同的时间下调用进行观测</li>
+</ul>
+<h4 id="profiler火焰图">profiler/火焰图</h4>
+<ul>
+<li>profiler–使用async-profiler对应用采样，生成火焰图</li>
+</ul>
+<h4 id="options">options</h4>
+<ul>
+<li>options——查看或设置Arthas全局开关</li>
+</ul>
+<h3 id="例子">例子</h3>
+<h4 id="热更新代码">热更新代码</h4>
+<p>通过jad/mc/redefine 命令实现动态更新代码的功能。</p>
+<p>jad反编译UserController</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">jad --source-only com.example.demo.arthas.user.UserController &gt; /tmp/UserController.java
+</span></span></code></pre></div><p>jad反编译的结果保存在 /tmp/UserController.java文件里了,编辑/tmp/UserController.java</p>
+<p>sc查找加载UserController的ClassLoader</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ sc -d *UserController | grep classLoaderHash
+</span></span><span class="line"><span class="cl"> classLoaderHash   1be6f5c3
+</span></span></code></pre></div><p>可以发现是 spring boot LaunchedURLClassLoader@1be6f5c3 加载的。</p>
+<p>请记下classLoaderHash，后面需要使用它。在这里，它是 1be6f5c3。</p>
+<p>保存好/tmp/UserController.java之后，使用mc(Memory Compiler)命令来编译，并且通过-c或者&ndash;classLoaderClass参数指定ClassLoader：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ mc --classLoaderClass org.springframework.boot.loader.LaunchedURLClassLoader /tmp/UserController.java -d /tmp
+</span></span><span class="line"><span class="cl">Memory compiler output:
+</span></span><span class="line"><span class="cl">/tmp/com/example/demo/arthas/user/UserController.class
+</span></span><span class="line"><span class="cl">Affect(row-cnt:1) cost in 346 ms
+</span></span></code></pre></div><p>也可以通过mc -c <!-- raw HTML omitted --> /tmp/UserController.java -d /tmp，使用-c参数指定ClassLoaderHash:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ mc -c 1be6f5c3 /tmp/UserController.java -d /tmp
+</span></span></code></pre></div><p>再使用redefine命令重新加载新编译好的UserController.class, <code>redefine /tmp/com/example/demo/arthas/user/UserController.class</code>：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ redefine /tmp/com/example/demo/arthas/user/UserController.class
+</span></span><span class="line"><span class="cl">redefine success, size: 1
+</span></span></code></pre></div><p>热修改代码成功</p>
+<h4 id="查看类加载信息">查看类加载信息</h4>
+<p>按类加载类型查看统计信息</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ classloader
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> name                                       numberOfInstances  loadedCountTotal
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> com.taobao.arthas.agent.ArthasClassloader  1                  2115
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> BootstrapClassLoader                       1                  1861
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> sun.reflect.DelegatingClassLoader          5                  5
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> sun.misc.Launcher$AppClassLoader           1                  4
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> sun.misc.Launcher$ExtClassLoader           1                  1
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Affect(row-cnt:5) cost in 3 ms.
+</span></span></code></pre></div><p>查看URLClassLoader实际的urls</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ classloader -c 3d4eac69
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">file:/private/tmp/arthas-demo.jar
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">file:/Users/hengyunabc/.arthas/lib/3.0.5/arthas/arthas-agent.jar
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Affect(row-cnt:9) cost in 3 ms.
+</span></span></code></pre></div><p>使用ClassLoader去查找resource</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ classloader -c 3d4eac69  -r META-INF/MANIFEST.MF
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> jar:file:/System/Library/Java/Extensions/MRJToolkit.jar!/META-INF/MANIFEST.MF
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> jar:file:/private/tmp/arthas-demo.jar!/META-INF/MANIFEST.MF
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> jar:file:/Users/hengyunabc/.arthas/lib/3.0.5/arthas/arthas-agent.jar!/META-INF/MANIFEST.MF
+</span></span></code></pre></div><p>也可以尝试查找类的class文件：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ classloader -c 1b6d3586 -r java/lang/String.class
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> jar:file:/Library/Java/JavaVirtualMachines/jdk1.8.0_60.jdk/Contents/Home/jre/lib/rt.jar!/java/lang/String.class
+</span></span></code></pre></div>
+
+        
+          <div class="blog-tags">
+            
+              <a href="https://hzren.github.io/tags/java/">Java</a>&nbsp;
+            
+              <a href="https://hzren.github.io/tags/tool/">tool</a>&nbsp;
+            
+          </div>
+        
+
+        
+            <hr/>
+            <section id="social-share">
+              <div class="list-inline footer-links">
+                
+
+<div class="share-box" aria-hidden="true">
+    <ul class="share">
+      
+      <li>
+        <a href="//twitter.com/share?url=https%3a%2f%2fhzren.github.io%2fblog%2f2021-01-27-arthas%25E4%25BD%25BF%25E7%2594%25A8%2f&amp;text=Arthas%e4%bd%bf%e7%94%a8&amp;via=username" target="_blank" title="Share on Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fhzren.github.io%2fblog%2f2021-01-27-arthas%25E4%25BD%25BF%25E7%2594%25A8%2f" target="_blank" title="Share on Facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//reddit.com/submit?url=https%3a%2f%2fhzren.github.io%2fblog%2f2021-01-27-arthas%25E4%25BD%25BF%25E7%2594%25A8%2f&amp;title=Arthas%e4%bd%bf%e7%94%a8" target="_blank" title="Share on Reddit">
+          <i class="fab fa-reddit"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fhzren.github.io%2fblog%2f2021-01-27-arthas%25E4%25BD%25BF%25E7%2594%25A8%2f&amp;title=Arthas%e4%bd%bf%e7%94%a8" target="_blank" title="Share on LinkedIn">
+          <i class="fab fa-linkedin"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fhzren.github.io%2fblog%2f2021-01-27-arthas%25E4%25BD%25BF%25E7%2594%25A8%2f&amp;title=Arthas%e4%bd%bf%e7%94%a8" target="_blank" title="Share on StumbleUpon">
+          <i class="fab fa-stumbleupon"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fhzren.github.io%2fblog%2f2021-01-27-arthas%25E4%25BD%25BF%25E7%2594%25A8%2f&amp;description=Arthas%e4%bd%bf%e7%94%a8" target="_blank" title="Share on Pinterest">
+          <i class="fab fa-pinterest"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+  
+
+              </div>
+            </section>
+        
+
+        
+          
+            
+          
+
+          
+                  <h4 class="see-also">也可以看看</h4>
+                  <ul>
+                
+                
+                    <li><a href="/blog/2022-08-03-spring%E5%94%AF%E4%B8%80%E7%BA%A6%E6%9D%9F%E5%BC%82%E5%B8%B8%E7%BB%9F%E4%B8%80%E5%A4%84%E7%90%86/">Spring唯一约束异常统一处理</a></li>
+                
+                    <li><a href="/blog/2021-12-07-spring-boot-maven-plugin-k8s/">Spring Boot Maven Plugin K8s</a></li>
+                
+                    <li><a href="/blog/2021-06-22-go%E8%AF%AD%E8%A8%80/">Go语言</a></li>
+                
+                    <li><a href="/blog/2021-01-25-jvm/">JVM</a></li>
+                
+                    <li><a href="/blog/2021-01-22-java%E8%AF%AD%E8%A8%80/">Java语言</a></li>
+                
+              </ul>
+
+          
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="https://hzren.github.io/blog/2021-01-25-jvm/" data-toggle="tooltip" data-placement="top" title="JVM">&larr; 前一篇</a>
+            </li>
+          
+          
+            <li class="next">
+              <a href="https://hzren.github.io/blog/2021-05-26-%E4%BA%8C%E8%BF%9B%E5%88%B6-%E4%BD%8D%E7%A7%BB%E8%AE%A1%E7%AE%97/" data-toggle="tooltip" data-placement="top" title="二进制-位移计算">后一篇 &rarr;</a>
+            </li>
+          
+        </ul>
+      
+
+
+      
+        
+        
+      
+
+    </div>
+  </div>
+</div>
+
+      
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+              <li>
+		
+		  <a href="mailto:hzren@outlook.com" title="Email me">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.facebook.com/username" title="Facebook">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-facebook fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://github.com/username" title="GitHub">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://gitlab.com/username" title="GitLab">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-gitlab fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://bitbucket.org/username" title="Bitbucket">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-bitbucket fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://twitter.com/username" title="Twitter">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://username.slack.com/" title="Slack">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-slack fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://reddit.com/u/username" title="Reddit">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-reddit-alien fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://linkedin.com/in/username" title="LinkedIn">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.xing.com/profile/username" title="Xing">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-xing fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://stackoverflow.com/users/XXXXXXX/username" title="StackOverflow">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-stack-overflow fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.snapchat.com/add/username" title="Snapchat">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-snapchat-ghost fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.instagram.com/username" title="Instagram">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-instagram fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.youtube.com/user/username" title="Youtube">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-youtube fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://soundcloud.com/username" title="SoundCloud">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-soundcloud fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://open.spotify.com/user/username" title="Spotify">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-spotify fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://username.bandcamp.com/" title="Bandcamp">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-bandcamp fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://itch.io/profile/username" title="Itch.io">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fas fa-gamepad fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://vk.com/username" title="VK">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-vk fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://paypal.me/username" title="PayPal">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-paypal fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://telegram.me/username" title="Telegram">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-telegram fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://500px.com/username" title="500px">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-500px fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://codepen.io/username" title="CodePen">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-codepen fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.kaggle.com/username" title="kaggle">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-kaggle fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a rel="me"href="https://url" title="Mastodon">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-mastodon fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://weibo.com/username" title="Weibo">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-weibo fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://discord.gg/invite%20code%20%28https://discord.gg/XXXXXXX%29" title="Discord">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-discord fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.strava.com/athletes/userid" title="Strava">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-strava fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+          
+          <li>
+            <a href="" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              <a href="https://hyllo.gitee.io/">renhongzhen</a>
+            
+          
+
+          &nbsp;&bull;&nbsp;&copy;
+          
+            2022
+          
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://hzren.github.io">Code Mark</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          由 <a href="https://gohugo.io">Hugo v0.109.0</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="https://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer><script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script src="https://hzren.github.io/js/main.js"></script>
+<script src="https://hzren.github.io/js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script>
+<script> $(document).ready(function() {$("pre.chroma").css("padding","0");}); </script><script> renderMathInElement(document.body); </script><script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://hzren.github.io/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+
+
+
+    
+  </body>
+</html>
+

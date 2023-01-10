@@ -1,0 +1,1080 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Blogs on Code Mark</title>
+    <link>https://hzren.github.io/blog/</link>
+    <description>Recent content in Blogs on Code Mark</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <managingEditor>hzren@outlook.com (renhongzhen)</managingEditor>
+    <webMaster>hzren@outlook.com (renhongzhen)</webMaster>
+    <lastBuildDate>Wed, 03 Aug 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://hzren.github.io/blog/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Spring唯一约束异常统一处理</title>
+      <link>https://hzren.github.io/blog/2022-08-03-spring%E5%94%AF%E4%B8%80%E7%BA%A6%E6%9D%9F%E5%BC%82%E5%B8%B8%E7%BB%9F%E4%B8%80%E5%A4%84%E7%90%86/</link>
+      <pubDate>Wed, 03 Aug 2022 00:00:00 +0000</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2022-08-03-spring%E5%94%AF%E4%B8%80%E7%BA%A6%E6%9D%9F%E5%BC%82%E5%B8%B8%E7%BB%9F%E4%B8%80%E5%A4%84%E7%90%86/</guid>
+      <description>背景：在数据库唯一约束冲突时，需要根据冲突的唯一约束自动生成错误信息然后返回给前端。
+前提 Spring会将数据库层错误统一转化为DataAccessException ，DataAccessException知只是针对数据库层错误的抽象，根据错误类型不同，Spring实现了不同DataAccessException子类，本篇文章我们只处理DataIntegrityViolationException(唯一约束冲突)。
+在WEB层做统一异常处理 Controller类上添加@ControllerAdvice注解来统一所有WEB接口异常处理。
+@ResponseBody @ExceptionHandler(DataAccessException.class) public Response dbException(DataAccessException e){ if (e instanceof DataIntegrityViolationException){ DataIntegrityViolationException dive = (DataIntegrityViolationException) e; try { return parseAndReturn(dive); }catch (Exception pe){ log.error(&amp;#34;parse Exception fail, origin:&amp;#34; + e.getMessage(), pe); } return Response.fail(dive.getMessage()); } return Response.fail(e.getMessage()); } 解析唯一约束异常中的错误信息 DataIntegrityViolationException异常信息中包含了出错的SQL和格式化之后的错误信息，SQL中可以解析出来数据库表明，格式化的错误信息中可以解析初冲突的唯一约束。
+private static Response parseAndReturn(DataIntegrityViolationException dive) throws JSQLParserException { String[] lines = dive.getMessage().split(&amp;#34;### &amp;#34;); String sql = findLine(lines, &amp;#34;SQL:&amp;#34;); String originErrMsg = dive.getCause().getMessage(); String tableName = parseTableNameFromSql(sql); String[] keyVal = parseKeyNameAndValue(originErrMsg); Map&amp;lt;String, String&amp;gt; tableMap = TABLE_KEY_MAP.</description>
+    </item>
+    
+    <item>
+      <title>Mysql转义字符</title>
+      <link>https://hzren.github.io/blog/2022-08-02-mysql%E8%BD%AC%E4%B9%89%E5%AD%97%E7%AC%A6/</link>
+      <pubDate>Tue, 02 Aug 2022 00:00:00 +0000</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2022-08-02-mysql%E8%BD%AC%E4%B9%89%E5%AD%97%E7%AC%A6/</guid>
+      <description>如果在文本搜索实现LIKE查询，通常会这样做：
+SELECT * FROM T_Whatever WHERE SomeField LIKE CONCAT(&amp;#39;%&amp;#39;, @in_SearchText, &amp;#39;%&amp;#39;) 然而，（除非不使用like使用全文搜索）当有人输入“50%”或“a_b”之类的文本时，这会产生问题。这时候需要使用LIKE转义词来解决这个问题：
+SELECT * FROM T_Whatever WHERE SomeField LIKE CONCAT(&amp;#39;%&amp;#39;, @in_SearchText, &amp;#39;%&amp;#39;) ESCAPE &amp;#39;\&amp;#39; 这意味着\现在将被视为ESCAPE字符。这意味着，现在只需在搜索字符串中的每个字符前加上\，结果就会开始正确，即使用户输入了特殊字符，比如%或_。
+例如
+string stringToSearch = &amp;#34;abc_def 50%&amp;#34;; string newString = &amp;#34;&amp;#34;; foreach(char c in stringToSearch) newString += @&amp;#34;\&amp;#34; + c; sqlCmd.Parameters.Add(&amp;#34;@in_SearchText&amp;#34;, newString); // instead of sqlCmd.Parameters.Add(&amp;#34;@in_SearchText&amp;#34;, stringToSearch); 上述代码仅用于演示。如果一个字符由点码表示（比如utf-8），这将不起作用。 例如
+string stringToSearch=“Les Mise\u0301ables”； </description>
+    </item>
+    
+    <item>
+      <title>Mysql优化</title>
+      <link>https://hzren.github.io/blog/2021-12-15-mysql%E4%BC%98%E5%8C%96/</link>
+      <pubDate>Wed, 15 Dec 2021 10:54:03 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2021-12-15-mysql%E4%BC%98%E5%8C%96/</guid>
+      <description>硬件/参数配置 升级硬件/合适的mysql参数能最直接的带来数据库性能的提升。
+硬件 有些应用数据库合应用服务同时运行在同一台配置较好的物理机器上，在这种场景下，应用本身的磁盘操作.例如写日志，会极大的影响数据库性能，建议日志和数据库使用两块不同的硬盘。
+参数 合适的参数配置，可以提高数据库写脏页的速度，减少因刷新脏页引起的停顿。
+事务级别/大事务/锁 InnoDB在对有唯一性约束的地方进行更新的事务会对数据加锁，但是只能在数据库事务结束的时候才将锁释放，对于并发进行的操作，锁会造成其他线程等待，影响数据库可用线程数。
+应在程序语句中调整有锁的地方的SQL语句的执行顺序，尽量把这语句往后放，尽量减少冲突等待的可能。
+对于大事务，因为数据引擎是MVCC的，大事务会造成别的事务回溯之前的数据版本，造成执行效率低下。
+对于查询类的语句，应尽量避免事务，例如，设置:readonly=true。这会给数据库一个暗示，有了这个暗示数据库会避免这个SQL语句事务方面的资源分配。
+SQL语句 插入 对于B+树索引，乱序插入会导致整个树节点频繁的分裂合并，对于一条SQL插入语句，影响到的树节点越少越好，最好只影响到叶子节点，这样效率是最高的。
+UUID是无序的，使用UUID做主键会影响到二层，三层四层直到叶子节点，这种插入同上面相比，复合明显是不一样的，特别在引起了节点分裂合并的情况下，会造成更多的节点更新，引起更大的变动。
+更新 更新不应有主键的变动，那样就成了删除插入了，更新语句在聚镞索引上只会引起叶子节点的更新，问题不大。在二级索引上面，如果索引键包含了该字段，该字段在索引键中的位置越靠后对树结构的变动越小，当该字段是索引的最后一个字段时，对该字段的更新基本上只会影响到叶子节点，这样效率时最高的，索引在设计索引时应尽量把更新频率最高的字段放到最后。
+InnoDB存在change buffer， 里面存放了对数据库二级索引的变更记录， 起到了把多个细小变动合并成一个作用，减少了不必要的数据库读取；对于唯一索引，唯一索引的更新需要把原数据库取出来对比是否已存在，就没法使用change buffer，所以索引设计时应尽量避免唯一索引。
+唯一索引会产生锁，需要考虑好加锁的时机和顺序，尽量减少不必要的锁等待。
+删除 delete语句并不会直接物理删除，只是在数据上标记了删除，在数据库后台默默执行删除操作
+查找 </description>
+    </item>
+    
+    <item>
+      <title>Spring Boot Maven Plugin K8s</title>
+      <link>https://hzren.github.io/blog/2021-12-07-spring-boot-maven-plugin-k8s/</link>
+      <pubDate>Tue, 07 Dec 2021 17:12:13 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2021-12-07-spring-boot-maven-plugin-k8s/</guid>
+      <description>需先安装好docker，minikube等环境依赖 minikube 启动时指定镜像 国内从官网下载太慢, 需指定镜像地址
+minikube start --driver=docker --force=true --image-mirror-country=cn --image-repository=registry.cn-hangzhou.aliyuncs.com/google_containers --registry-mirror=https://ubo05wor.mirror.aliyuncs.com --cache-images=true 配置docker 从docker.hub下载也太慢了，配置docker镜像
+[root@localhost demo]# vi /etc/docker/daemon.json { &amp;#34;registry-mirrors&amp;#34;: [&amp;#34;https://ubo05wor.mirror.aliyuncs.com&amp;#34;], &amp;#34;insecure-registries&amp;#34; : [&amp;#34;10.100.3.35:5000&amp;#34;] } 重启docker服务，10.100.3.35:5000为私有docker仓库，配置为不需要https访问
+配置 paketobuildpacks 官网地址：https://paketo.io/docs/howto/configuration/
+spring-boot-maven-plugin用到了paketobuildpacks,这个工具会从github等网站上下载文件，国内需要配置下代理
+spring-boot-maven-plugin本身提供了配置接口
+&amp;lt;plugin&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-maven-plugin&amp;lt;/artifactId&amp;gt; &amp;lt;configuration&amp;gt; &amp;lt;image&amp;gt; &amp;lt;name&amp;gt;10.100.3.35:5000/k8s-example:${project.artifactId}&amp;lt;/name&amp;gt; &amp;lt;publish&amp;gt;true&amp;lt;/publish&amp;gt; &amp;lt;env&amp;gt; &amp;lt;HTTP_PROXY&amp;gt;socks5://10.100.3.12:20070&amp;lt;/HTTP_PROXY&amp;gt; &amp;lt;HTTPS_PROXY&amp;gt;socks5://10.100.3.12:20070&amp;lt;/HTTPS_PROXY&amp;gt; &amp;lt;/env&amp;gt; &amp;lt;/image&amp;gt; &amp;lt;docker&amp;gt; &amp;lt;publishRegistry&amp;gt; &amp;lt;username&amp;gt;admin&amp;lt;/username&amp;gt; &amp;lt;password&amp;gt;admin&amp;lt;/password&amp;gt; &amp;lt;url&amp;gt;http://10.100.3.35:5000/&amp;lt;/url&amp;gt; &amp;lt;email&amp;gt;user@example.com&amp;lt;/email&amp;gt; &amp;lt;/publishRegistry&amp;gt; &amp;lt;/docker&amp;gt; &amp;lt;/configuration&amp;gt; &amp;lt;executions&amp;gt; &amp;lt;execution&amp;gt; &amp;lt;goals&amp;gt; &amp;lt;goal&amp;gt;build-image&amp;lt;/goal&amp;gt; &amp;lt;/goals&amp;gt; &amp;lt;/execution&amp;gt; &amp;lt;/executions&amp;gt; &amp;lt;/plugin&amp;gt; 参考env节点下配置以及paketobuildpacks官网文档
+push镜像 参考上面xml配置，我本地push，pull镜像是不需要登录的或token的，上面的配置只是个样式</description>
+    </item>
+    
+    <item>
+      <title>Kubeadm搭建</title>
+      <link>https://hzren.github.io/blog/2021-12-02-kubeadm%E6%90%AD%E5%BB%BA/</link>
+      <pubDate>Thu, 02 Dec 2021 15:06:03 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2021-12-02-kubeadm%E6%90%AD%E5%BB%BA/</guid>
+      <description>新建虚拟机 vmware 安装虚拟机，安装完成后配置网卡为桥接模式。
+配置网卡自动获取IP地址:
+[root@localhost ~]# vi /etc/sysconfig/network-scripts/ ifcfg-ens33 ifdown-Team ifup-post ifcfg-lo ifdown-TeamPort ifup-ppp ifdown ifdown-tunnel ifup-routes ifdown-bnep ifup ifup-sit ifdown-eth ifup-aliases ifup-Team ifdown-ippp ifup-bnep ifup-TeamPort ifdown-ipv6 ifup-eth ifup-tunnel ifdown-isdn ifup-ippp ifup-wireless ifdown-post ifup-ipv6 init.ipv6-global ifdown-ppp ifup-isdn network-functions ifdown-routes ifup-plip network-functions-ipv6 ifdown-sit ifup-plusb [root@localhost ~]# vi /etc/sysconfig/network-scripts/ 当前新建的虚拟机里面主机网卡名称为ifcfg-ens33 vi /etc/sysconfig/network-scripts/ifcfg-ens33 修改里面ONBOOT=no 为ONBOOT=yes
+重启网络服务
+service network restart 查看IP信息
+ip addr kubeadm 要求机器具有不同的名称，在机器名称一样的情况下需要修改机器名称
+hostnamectl set-hostname centos1 关闭swap kubernates 不支持swap，需要关闭
+查看swap情况
+free -m vi /etc/fstab 在swap配置前加#注释掉</description>
+    </item>
+    
+    <item>
+      <title>Byte&amp;bit</title>
+      <link>https://hzren.github.io/blog/2021-06-22-bytebit/</link>
+      <pubDate>Tue, 22 Jun 2021 11:20:11 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2021-06-22-bytebit/</guid>
+      <description>基本概念： 在计算机科学中，bit（比特）是表示信息的最小单位，叫做二进制位，一般用0和1表示。
+Byte叫做字节，由8个位（8bit）组成一个字节(1Byte)，用于表示计算机中的一个字符。
+bit与Byte之间可以进行换算，其换算关系为：1Byte=8bit（或简写为：1B=8b）；在实际应用中一般用简称， 即1bit简写为1b(注意是小写英文字母b)，1Byte简写为1B（注意是大写英文字母B）。
+相关使用：
+在java中，基本数据类型包括byte，short，int，long，float，double，boolean，char。
+byte：8 位，用于表示最小数据单位，如文件中数据，-128~127
+short：16 位，很少用，-32768 ~ 32767
+int：32 位、最常用，-2^31~2^32-1 （21 亿）
+long：64 位、次常用
+float：32 位，后缀 F 或 f，1 位符号位，8 位指数，23 位有效尾数。
+double：64 位，最常用，后缀 D 或 d，1 位符号位，11 位指数，52 位有效尾
+char：16位，是整数类型，用单引号括起来的1个字符（可以是一个中文字符），使用Unicode码代表字符，
+0~2^16-1（65535） 。
+功能扩展 在移动开发过程中，网络请求是必不可少的，大部分都是一些简单的Get请求，少部分是一些文件上传之类的Post请求，但是网络请求的响应时间往往不同，这到底和那些因素有关呢？
+首先需要理解几个概念，服务器带宽，上行速率以及下行速率。
+服务器带宽：单位，bps（比特每秒bit per second），网络供应商所说的100M带宽，指的就是100Mbps（100兆比特每秒）。
+上行速率：单位，bps（比特每秒bit per second）。
+下行速率：单位，bps（比特每秒bit per second）。
+上传速度：Bps（字节每秒Byte per second）=B/s，一般需要上传文件的时候才用
+下载速度：Bps（字节每秒），一般我们所说的下载速度就是指这个。
+相信大家已经很清楚了，一般网络供应商所说的几兆几兆带宽和我们平时理解的下载速度多少兆每秒，不是一个单位。100Mbps带宽，按理论数值来讲，其下载速度应该是100/8=12.5MB/s（注意区分大B小b）,但是因为中途传输损耗，应该能达到10M/s就不错了，而上传文件的速度是下载速度的十分之一（因为实际需求问题，一般上行速率远小于下行速率，甚至下行速率是上行速率的3倍、5倍、10倍都有可能，腾讯云服务器那边就是粗略算10倍。），即实际上传文件的速度只有1.25M/s。
+1T=1024G，1G=1024M，1M=1024KB，1KB=1024B，B=Byte（字节）。
+大写B代表字节，小写b代表位。</description>
+    </item>
+    
+    <item>
+      <title>Go语言</title>
+      <link>https://hzren.github.io/blog/2021-06-22-go%E8%AF%AD%E8%A8%80/</link>
+      <pubDate>Tue, 22 Jun 2021 11:20:11 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2021-06-22-go%E8%AF%AD%E8%A8%80/</guid>
+      <description>GOPATH 在一台电脑上GOPATH值是固定的，不因开发的代码工程的目录改变而改变。GOPATH可以通过go env命令查看：
+go env
+输出：
+C:\Users\Administrator\go&amp;gt;go env set GO111MODULE=on set GOARCH=amd64 set GOBIN= set GOCACHE=C:\Users\Administrator\AppData\Local\go-build set GOENV=C:\Users\Administrator\AppData\Roaming\go\env set GOEXE=.exe set GOFLAGS= set GOHOSTARCH=amd64 set GOHOSTOS=windows set GOINSECURE= set GOMODCACHE=C:\Users\Administrator\go\pkg\mod set GONOPROXY= set GONOSUMDB= set GOOS=windows set GOPATH=C:\Users\Administrator\go set GOPRIVATE= set GOPROXY=https://mirrors.aliyun.com/goproxy/ set GOROOT=C:\Program Files\Go set GOSUMDB=sum.golang.org set GOTMPDIR= set GOTOOLDIR=C:\Program Files\Go\pkg\tool\windows_amd64 set GOVCS= set GOVERSION=go1.16.4 set GCCGO=gccgo set AR=ar set CC=gcc set CXX=g++ set CGO_ENABLED=1 set GOMOD=NUL set CGO_CFLAGS=-g -O2 set CGO_CPPFLAGS= set CGO_CXXFLAGS=-g -O2 set CGO_FFLAGS=-g -O2 set CGO_LDFLAGS=-g -O2 set PKG_CONFIG=pkg-config set GOGCCFLAGS=-m64 -mthreads -fno-caret-diagnostics -Qunused-arguments -fmessage-length=0 -fdebug-prefix-map=C:\Users\ADMINI~1\AppData\Local\Temp\go-build3183789003=/tmp/go-build -gno-record-gcc-switches 在我电脑上GOPATH指向C:\Users\Administrator\go，在这个目录下有三个文件夹: bin, pkg, src; bin目录存放可执行文件，pkg目录存放归档文件(代码压缩包，编译后的文件例如.</description>
+    </item>
+    
+    <item>
+      <title>二进制-位移计算</title>
+      <link>https://hzren.github.io/blog/2021-05-26-%E4%BA%8C%E8%BF%9B%E5%88%B6-%E4%BD%8D%E7%A7%BB%E8%AE%A1%E7%AE%97/</link>
+      <pubDate>Wed, 26 May 2021 09:59:43 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2021-05-26-%E4%BA%8C%E8%BF%9B%E5%88%B6-%E4%BD%8D%E7%A7%BB%E8%AE%A1%E7%AE%97/</guid>
+      <description>原码 所谓原码就是机器数，是加了一位符号位的二进制数，正数符号位为0，负数符号位为1，计算机中存储、处理、运算的数据通常是8位、16位、32位或64位的，这里以最简单的8位为例讲解。注意符号位是包含在8位中的其中1位，故可直观读出的数只有7位（只有后7位数可以按权展开）。有心人可能注意到原码是有缺陷的，它只能表示255种状态，因为00000000（＋0）和10000000（－0）其实是一个数，因此原码的表示范围成了－127到＋127，这个问题需要神奇的补码来解决，因为在补码中10000000被用来表示－128。
+反码 所谓反码，英语里又叫ones&amp;rsquo; complement（对1求补），这里的1，本质上是一个有限位计数系统里所能表示出的最大值，在8位二进制里就是11111111，在1位十进制里就是9，在3位十六进制里就是FFF（再大就要进位了）。求反又被称为对一求补，用最大数减去一个数就能得到它的反，很容易看出在二进制里11111111减去任何数结果都是把这个数按位取反，0变1，1变零，所以才称之为反码。用原码求反码的方法是：正数不变，负数保留符号位1不变，剩下位按位取反。
+补码 英语里又叫two&amp;rsquo;s complement（对2求补），这个2指的是计数系统的容量（模），就是计数系统所能表示的状态数。对1位二进制数来说只有0和1两种状态，所以模是二进制 10 也就是十进制的2，对7位二进制数来说就是10 000 000，这个模是不可能取到的，因为位数多一位。用模减去一个数（无符号部分）就能得到这个数的补，比如10000000－1010010=0101110，事实上因为10 000 000=1 111 111+1， 稍加改变就成了（1 111 111－1 010 010）+1，所以又可以表述为先求反再加1。总结求补码的方法就是正数依旧不变，负数保留符号位不变，先求反码再加上1。
+原码，补码，逻辑数字对应关系：
+移位操作 二进制左移一位，其实就是将数字翻倍。
+二进制右移一位，就是将数字除以 2 并求整数商的操作。
+Java 中的左移位和右移位的表示是不太一样的; 左移位是 &amp;laquo; ，那右移位为什么是 &amp;raquo;&amp;gt; 而不是 &amp;raquo; 呢？实际上，&amp;raquo; 也是右移操作。简单来说，之所以有这两种表达方式，根本原因是 Java 的二进制数值中最高一位是符号位。
+当符号位为 0 时，表示该数值为正数；当符号位为 1 时，表示该数值为负数。我们以 32 位 Java 为例，数字 53 的二进制为 110101，从右往左数的第 32 位是 0，表示该数是正数，只是通常我们都将其省略。
+如果数字是 -53 呢？那么第 32 位就不是 0，而是 1。那么这个时候向右移位，就会产生一个问题：对于符号位（特别是符号位为 1 的时候），我们是否也需要将其右移呢？因此，Java 里定义了两种右移，逻辑右移和算术右移。逻辑右移 1 位，左边补 0 即可。
+算术右移时保持符号位不变，除符号位之外的右移一位并补符号位 1。补的 1 仍然在符号位之后。</description>
+    </item>
+    
+    <item>
+      <title>Arthas使用</title>
+      <link>https://hzren.github.io/blog/2021-01-27-arthas%E4%BD%BF%E7%94%A8/</link>
+      <pubDate>Wed, 27 Jan 2021 15:11:16 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2021-01-27-arthas%E4%BD%BF%E7%94%A8/</guid>
+      <description>官方教程
+文档
+下载 下载全量zip包：从Github Releases页下载
+wget https://github.com/alibaba/arthas/releases/download/arthas-all-3.4.6/arthas-bin.zip 下载完成之后解压：
+unzip arthas-bin.zip arthas 依赖JDK，如果只安装了JRE，是没法使用的。
+启动 可以通过as.sh脚本启动：
+./as.sh 也可以通过java命令启动：
+java -jar arthas-boot.jar 启动之后会显示当前操作系统上运行的Java进行，选择应用java进程：
+$ $ java -jar arthas-boot.jar * [1]: 35542 [2]: 71560 arthas-demo.jar Demo进程是第2个，则输入2，再输入回车/enter。Arthas会attach到目标进程上，并输出日志：
+[INFO] Try to attach process 71560 [INFO] Attach process 71560 success. [INFO] arthas-client connect 127.0.0.1 3658 ,---. ,------. ,--------.,--. ,--. ,---. ,---. / O \ | .--. &amp;#39;&amp;#39;--. .--&amp;#39;| &amp;#39;--&amp;#39; | / O \ &amp;#39; .-&amp;#39; | .-. || &amp;#39;--&amp;#39;.</description>
+    </item>
+    
+    <item>
+      <title>JVM</title>
+      <link>https://hzren.github.io/blog/2021-01-25-jvm/</link>
+      <pubDate>Mon, 25 Jan 2021 15:48:02 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2021-01-25-jvm/</guid>
+      <description>在 Java 虚拟机规范中，局部变量区等价于一个数组，并且可以用正整数来索引。除了 long、double 值需要用两个数组单元来存储之外，其他基本类型以及引用类型的值均占用一个数组单元。
+也就是说，boolean、byte、char、short 这四种类型，在栈上占用的空间和 int 是一样的，和引用类型也是一样的。因此，在 32 位的 HotSpot 中，这些类型在栈上将占用 4 个字节；而在 64 位的 HotSpot 中，他们将占 8 个字节。
+当然，这种情况仅存在于局部变量，而并不会出现在存储于堆中的字段或者数组元素上。对于 byte、char 以及 short 这三种类型的字段或者数组单元，它们在堆上占用的空间分别为一字节、两字节，以及两字节，也就是说，跟这些类型的值域相吻合。
+因此，当我们将一个 int 类型的值，存储到这些类型的字段或数组时，相当于做了一次隐式的掩码操作。举例来说，当我们把 0xFFFFFFFF（-1）存储到一个声明为 char 类型的字段里时，由于该字段仅占两字节，所以高两位的字节便会被截取掉，最终存入“\uFFFF”。
+boolean 字段和 boolean 数组则比较特殊。在 HotSpot 中，boolean 字段占用一字节，而 boolean 数组则直接用 byte 数组来实现。为了保证堆中的 boolean 值是合法的，HotSpot 在存储时显式地进行掩码操作，也就是说，只取最后一位的值存入 boolean 字段或数组中。
+重载 重载的方法在编译过程中即可完成识别。具体到每一个方法调用，Java 编译器会根据所传入参数的声明类型（注意与实际类型区分）来选取重载方法。选取的过程共分为三个阶段：
+在不考虑对基本类型自动装拆箱（auto-boxing，auto-unboxing），以及可变长参数的情况下选取重载方法； 如果在第 1 个阶段中没有找到适配的方法，那么在允许自动装拆箱，但不允许可变长参数的情况下选取重载方法； 如果在第 2 个阶段中没有找到适配的方法，那么在允许自动装拆箱以及可变长参数的情况下选取重载方法。 如果 Java 编译器在同一个阶段中找到了多个适配的方法，那么它会在其中选择一个最为贴切的，而决定贴切程度的一个关键就是形式参数类型的继承关系。
+JVM 的静态绑定和动态绑定 Java 虚拟机中关于方法重写的判定同样基于方法描述符。也就是说，如果子类定义了与父类中非私有、非静态方法同名的方法，那么只有当这两个方法的参数类型以及返回类型一致，Java 虚拟机才会判定为重写。
+对于 Java 语言中重写而 Java 虚拟机中非重写的情况，编译器会通过生成桥接方法来实现 Java 中的重写语义。</description>
+    </item>
+    
+    <item>
+      <title>Java语言</title>
+      <link>https://hzren.github.io/blog/2021-01-22-java%E8%AF%AD%E8%A8%80/</link>
+      <pubDate>Fri, 22 Jan 2021 10:55:31 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2021-01-22-java%E8%AF%AD%E8%A8%80/</guid>
+      <description>引用类型 不同的引用类型，主要体现的是对象不同的可达性（reachable）状态和对垃圾收集的影响
+强引用（&amp;ldquo;Strong&amp;rdquo; Reference），就是我们最常见的普通对象引用，只要还有强引用指向一个对象，就能表明对象还“活着”，垃圾收集器不会碰这种对象。对于一个普通的对象，如果没有其他的引用关系，只要超过了引用的作用域或者显式地将相应（强）引用赋值为null，就是可以被垃圾收集的了，当然具体回收时机还是要看垃圾收集策略。
+软引用（SoftReference），是一种相对强引用弱化一些的引用，可以让对象豁免一些垃圾收集，只有当JVM认为内存不足时，才会去试图回收软引用指向的对象。JVM会确保在抛出OutOfMemoryError之前，清理软引用指向的对象。软引用通常用来实现内存敏感的缓存，如果还有空闲内存，就可以暂时保留缓存，当内存不足时清理掉，这样就保证了使用缓存的同时，不会耗尽内存。
+**弱引用（WeakReference）**并不能使对象豁免垃圾收集，仅仅是提供一种访问在弱引用状态下对象的途径。这就可以用来构建一种没有特定约束的关系，比如，维护一种非强制性的映射关系，如果试图获取时对象还在，就使用它，否则重现实例化。它同样是很多缓存实现的选择。对于幻象引用，有时候也翻译成虚引用，你不能通过它访问对象。
+**幻象引用 (PhantomReference)**仅仅是提供了一种确保对象被fnalize以后，做某些事情的机制，比如，通常用来做所谓的Post-Mortem清理机制，我在专栏上一讲中介绍的Java平台自身Cleaner机制等，也有人利用幻象引用监控对象的创建和销毁。
+如何工作 这是JDK在语言层面提供的一种可以和GC打交道的机制。如果手动创建ReferenceQueue，一定要对ReferenceQueue里对象就行消非，不然OOM了要。
+操过过程：
+创建引用对象时需要指定引用队列(ReferenceQueue)。 JVM在调用finalize()方法后，会把对象的引用放入构造器传入的引用队列(ReferenceQueue) 通过判断该引用对象是否入队列来确定对象是否已被垃圾回收(入队时，可能已回收，也可能没回收，当前该对象已不可达) 详细逻辑参照java.lang.ref.Reference文档。
+生命周期：
+Java定义的不同可达性级别（reachability level），具体如下：
+强可达（Strongly Reachable），就是当一个对象可以有一个或多个线程可以不通过各种引用访问到的情况。比如，我们新创建一个对象，那么创建它的线程对它就是强可达。 软可达（Softly Reachable），就是当我们只能通过软引用才能访问到对象的状态。 弱可达（Weakly Reachable），类似前面提到的，就是无法通过强引用或者软引用访问，只能通过弱引用访问时的状态。这是十分临近fnalize状态的时机，当弱引用被清除的时候，就符合fnalize的条件了。 幻象可达（Phantom Reachable），上面流程图已经很直观了，就是没有强、软、弱引用关联，并且fnalize过了，只有幻象引用指向这个对象的时候。 不可达（unreachable），意味着对象可以被清除了。判断对象可达性，是JVM垃圾收集器决定如何处理对象的一部分考虑。 引用队列（ReferenceQueue）
+JVM会在特定时机将引用enqueue到队列里，我们可以从队列里获取引用（remove方法在这里实际是有获取的意思）进行相关后续逻辑。尤其是幻象引用，get方法只返回null，如果再不指定引用队列，基本就没有意义了。看看下面的示例代码。利用引用队列，我们可以在对象处于相应状态时（对于幻象引用，就是前面说的被fnalize了，处于幻象可达状态），执行后期处理逻辑。
+字符串 在Java9之前的历史版本中，它是使用char数组来存数据的，这样非常直接。但是Java中的char是两个bytes大小，拉丁语系语言的字符，根本就不需要太宽的char，这样无区别的实现就造成了一定的浪费。
+在Java 9中，引入了Compact Strings的设计，对字符串进行了大刀阔斧的改进。将数据存储方式从char数组，改变为一个byte数组加上一个标识编码的所谓coder，并且将相关字符串操作类都进行了修改。另外，所有相关的Intrinsic之类也都进行了重写，以保证没有任何性能损失。虽然底层实现发生了这么大的改变，但是Java字符串的行为并没有任何大的变化，所以这个特性对于绝大部分应用来说是透明的，绝大部分情况不需要修改已有代码。当然，在极端情况下，字符串也出现了一些能力退化，比如最大字符串的大小。
+AOP JDK 动态代理，基于接口
+cglib 可以基于类，在代理方法执行前后处理一些事情。Spring的cglib方式的事务注解代理，先根据目标类生成代理类并实例化代理对象，把目标对象作为一个属性设置到代理对象上。在需要注入目标类的地方注入代理生成的子类对象。在代码执行过程中：
+调用到代理类中重写的代理方法 代理方法内调用到目标类目标方法 目标方法如果调用了自身方法，这时候会出问题，代理类是通过在目标对象上调用目标方法来执行的，并不是通过super.方法名这种形式，所以是调用不到代理方法的。
+基本类型 int / integer Java 5中新增了静态工厂方法valueOf，在调用它的时候会利用一个缓存机制，带来了明显的性能改进。按照Javadoc，这个值默认缓存是-128到127之间。
+Boolean 在 Java 虚拟机规范中，boolean 类型则被映射成 int 类型。具体来说，“true”被映射为整数 1，而“false”被映射为整数 0。这个编码规则约束了 Java 字节码的具体实现。
+原子更新 AtomicLong 在支持CAS的机器上，通过CAS指令更新，在不支持的机器上，加锁更新。
+原子更新通过封装类实现：
+AtomicLongFieldUpdater中代码：
+/** * Creates and returns an updater for objects with the given field.</description>
+    </item>
+    
+    <item>
+      <title>Linux网络</title>
+      <link>https://hzren.github.io/blog/2021-01-19-linux%E7%BD%91%E7%BB%9C/</link>
+      <pubDate>Tue, 19 Jan 2021 18:30:32 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2021-01-19-linux%E7%BD%91%E7%BB%9C/</guid>
+      <description>摘自 倪朋飞-极客时间-Linux性能优化实战
+Linux 通用 IP 网络栈的示意图：
+网卡是发送和接收网络包的基本设备。在系统启动过程中，网卡通过内核中的网卡驱动程序注册到系统中。而在网络收发过程中，内核通过中断跟网卡进行交互。再结合前面提到的 Linux 网络栈，可以看出，网络包的处理非常复杂。所以，网卡硬中断只处理最核心的网卡数据读取或发送，而协议栈中的大部分逻辑，都会放到软中断中处理。
+网络包的接收流程 当一个网络帧到达网卡后，网卡会通过 DMA 方式，把这个网络包放到收包队列中；然后通过硬中断，告诉中断处理程序已经收到了网络包。
+接着，网卡中断处理程序会为网络帧分配内核数据结构（sk_buff），并将其拷贝到sk_buff 缓冲区中；然后再通过软中断，通知内核收到了新的网络帧。
+接下来，内核协议栈从缓冲区中取出网络帧，并通过网络协议栈，从下到上逐层处理这个网络帧。比如:
+在链路层检查报文的合法性，找出上层协议的类型（比如 IPv4 还是 IPv6），再去掉帧头、帧尾，然后交给网络层。网络层取出 IP 头，判断网络包下一步的走向，比如是交给上层处理还是转发。当网络层确认这个包是要发送到本机后，就会取出上层协议的类型（比如 TCP 还是 UDP），去掉 IP 头，再交给传输层处理。传输层取出 TCP 头或者 UDP 头后，根据 &amp;lt; 源 IP、源端口、目的 IP、目的端口 &amp;gt; 四元组作为标识，找出对应的 Socket，并把数据拷贝到 Socket 的接收缓存中。
+最后，应用程序就可以使用 Socket 接口，读取到新接收到的数据了。
+网络包的发送流程 网络包的发送流程就是上图的右半部分，很容易发现，网络包的发送方向，正好跟接收方向相反。
+首先，应用程序调用 Socket API（比如 sendmsg）发送网络包。在链路层检查报文的合法性，找出上层协议的类型（比如 IPv4 还是 IPv6），再去掉帧头、帧尾，然后交给网络层。网络层取出 IP 头，判断网络包下一步的走向，比如是交给上层处理还是转发。
+当网络层确认这个包是要发送到本机后，就会取出上层协议的类型（比如 TCP 还是 UDP），去掉 IP 头，再交给传输层处理。传输层取出 TCP 头或者 UDP 头后，根据 &amp;lt; 源 IP、源端口、目的 IP、目的端口 &amp;gt; 四元组作为标识，找出对应的 Socket，并把数据拷贝到 Socket 的接收缓存中。</description>
+    </item>
+    
+    <item>
+      <title>文件系统</title>
+      <link>https://hzren.github.io/blog/2021-01-15-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/</link>
+      <pubDate>Fri, 15 Jan 2021 17:28:36 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2021-01-15-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/</guid>
+      <description>摘自 倪朋飞-极客时间-Linux性能优化实战
+磁盘为系统提供了最基本的持久化存储。文件系统则在磁盘的基础上，提供了一个用来管理文件的树状结构。
+索引节点和目录项 文件系统，本身是对存储设备上的文件，进行组织管理的机制。组织方式不同，就会形成不同的文件系统。你要记住最重要的一点，在 Linux 中一切皆文件。不仅普通的文件和目录，就连块设备、套接字、管道等，也都要通过统一的文件系统来管理。为了方便管理，Linux 文件系统为每个文件都分配两个数据结构，索引节点（indexnode）和目录项（directory entry）。它们主要用来记录文件的元信息和目录结构。
+索引节点，简称为 inode，用来记录文件的元数据，比如 inode 编号、文件大小、访问权限、修改日期、数据的位置等。索引节点和文件一一对应，它跟文件内容一样，都会被持久化存储到磁盘中。所以记住，索引节点同样占用磁盘空间。
+目录项，简称为 dentry，用来记录文件的名字、索引节点指针以及与其他目录项的关联关系。多个关联的目录项，就构成了文件系统的目录结构。不过，不同于索引节点，目录项是由内核维护的一个内存数据结构，所以通常也被叫做目录项缓存。
+磁盘读写的最小单位是扇区，然而扇区只有 512B 大小，如果每次都读写这么小的单位，效率一定很低。所以，文件系统又把连续的扇区组成了逻辑块，然后每次都以逻辑块为最小单元，来管理数据。常见的逻辑块大小为 4KB，也就是由连续的 8 个扇区组成。
+目录项本身就是一个内存缓存，而索引节点则是存储在磁盘中的数据。在前面的Buffer 和 Cache 原理中，我曾经提到过，为了协调慢速磁盘与快速 CPU 的性能差异，文件内容会缓存到页缓存 Cache 中。磁盘在执行文件系统格式化时，会被分成三个存储区域，超级块、索引节点区和数据块区。其中：
+超级块，存储整个文件系统的状态。 索引节点区，用来存储索引节点。 数据块区，则用来存储文件数据。 虚拟文件系统 为了支持各种不同的文件系统，Linux 内核在用户进程和文件系统的中间，又引入了一个抽象层，也就是虚拟文件系统 VFS（Virtual File System）。VFS 定义了一组所有文件系统都支持的数据结构和标准接口。这样，用户进程和内核中的其他子系统，只需要跟 VFS 提供的统一接口进行交互就可以了，而不需要再关心底层各种文件系统的实现细节。
+通过这张图，你可以看到，在 VFS 的下方，Linux 支持各种各样的文件系统，如 Ext4、XFS、NFS 等等。按照存储位置的不同，这些文件系统可以分为三类。
+第一类是基于磁盘的文件系统，也就是把数据直接存储在计算机本地挂载的磁盘中。常见的 Ext4、XFS、OverlayFS 等，都是这类文件系统。 第二类是基于内存的文件系统，也就是我们常说的虚拟文件系统。这类文件系统，不需要任何磁盘分配存储空间，但会占用内存。我们经常用到的 /proc 文件系统，其实就是一种最常见的虚拟文件系统。此外，/sys 文件系统也属于这一类，主要向用户空间导出层次化的内核对象。 第三类是网络文件系统，也就是用来访问其他计算机数据的文件系统，比如 NFS、SMB、iSCSI 等。 这些文件系统，要先挂载到 VFS 目录树中的某个子目录（称为挂载点），然后才能访问其中的文件。拿第一类，也就是基于磁盘的文件系统为例，在安装系统时，要先挂载一个根目录（/），在根目录下再把其他文件系统（比如其他的磁盘分区、/proc 文件系统、/sys文件系统、NFS 等）挂载进来。
+文件系统 I/O 把文件系统挂载到挂载点后，你就能通过挂载点，再去访问它管理的文件了。VFS 提供了一组标准的文件访问接口。这些接口以系统调用的方式，提供给应用程序使用。
+容量 用 df 命令，就能查看文件系统的磁盘空间使用情况。比如：</description>
+    </item>
+    
+    <item>
+      <title>Linux内存管理</title>
+      <link>https://hzren.github.io/blog/2021-01-15-linux%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/</link>
+      <pubDate>Fri, 15 Jan 2021 15:07:33 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2021-01-15-linux%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/</guid>
+      <description>摘自 倪朋飞-极客时间-Linux性能优化实战
+内存映射 物理内存也称为主存，大多数计算机用的主存都是动态随机访问内存（DRAM）。只有内核才可以直接访问物理内存。
+Linux 内核给每个进程都提供了一个独立的虚拟地址空间，并且这个地址空间是连续的。这样，进程就可以很方便地访问内存，更确切地说是访问虚拟内存。
+虚拟地址空间的内部又被分为内核空间和用户空间两部分，不同字长（也就是单个 CPU 指令可以处理数据的最大长度）的处理器，地址空间的范围也不同。
+通过这里可以看出，32 位系统的内核空间占用 1G，位于最高处，剩下的 3G 是用户空间。而 64 位系统的内核空间和用户空间都是 128T，分别占据整个内存空间的最高和最低处，剩下的中间部分是未定义的。
+进程在用户态时，只能访问用户空间内存；只有进入内核态后，才可以访问内核空间内存。虽然每个进程的地址空间都包含了内核空间，但这些内核空间，其实关联的都是相同的物理内存。这样，进程切换到内核态后，就可以很方便地访问内核空间内存。
+既然每个进程都有一个这么大的地址空间，那么所有进程的虚拟内存加起来，自然要比实际的物理内存大得多。所以，并不是所有的虚拟内存都会分配物理内存，只有那些实际使用的虚拟内存才分配物理内存，并且分配后的物理内存，是通过内存映射来管理的。
+内存映射，其实就是将虚拟内存地址映射到物理内存地址。为了完成内存映射，内核为每个进程都维护了一张页表，记录虚拟地址与物理地址的映射关系，如下图所示：
+页表实际上存储在 CPU 的内存管理单元 MMU 中，这样，正常情况下，处理器就可以直接通过硬件，找出要访问的内存。而当进程访问的虚拟地址在页表中查不到时，系统会产生一个缺页异常，进入内核空间分配物理内存、更新进程页表，最后再返回用户空间，恢复进程的运行。TLB（Translation Lookaside Buffer，转译后备缓冲器）会影响 CPU 的内存访问性能。
+TLB 其实就是 MMU 中页表的高速缓存。由于进程的虚拟地址空间是独立的，而 TLB 的访问速度又比 MMU 快得多，所以，通过减少进程的上下文切换，减少 TLB 的刷新次数，就可以提高 TLB 缓存的使用率，进而提高 CPU 的内存访问性能。不过要注意，MMU 并不以字节为单位来管理内存，而是规定了一个内存映射的最小单位，也就是页，通常是 4 KB 大小。这样，每一次内存映射，都需要关联 4 KB 或者 4KB整数倍的内存空间。
+页的大小只有 4 KB ，导致的另一个问题就是，整个页表会变得非常大。比方说，仅 32 位系统就需要 100 多万个页表项（4GB/4KB），才可以实现整个地址空间的映射。
+决页表项过多的问题，Linux 提供了两种机制，也就是多级页表和大页（HugePage）。多级页表就是把内存分成区块来管理，将原来的映射关系改成区块索引和区块内的偏移。由于虚拟内存空间通常只用了很少一部分，那么，多级页表就只保存这些使用中的区块，这样就可以大大地减少页表的项数。
+在发现内存紧张时，系统就会通过一系列机制来回收内存，比如下面这三种方式：
+回收缓存，比如使用 LRU（Least Recently Used）算法，回收最近使用最少的内存页面； 回收不常访问的内存，把不常用的内存通过交换分区直接写到磁盘中； 杀死进程，内存紧张时系统还会通过 OOM（Out of Memory），直接杀掉占用大量内存的进程。 第二种方式回收不常访问的内存时，会用到交换分区（以下简称 Swap）。Swap其实就是把一块磁盘空间当成内存来用。它可以把进程暂时不用的数据存储到磁盘中（这个过程称为换出），当进程访问这些内存时，再从磁盘读取这些数据到内存中（这个过程称为换入）。所以，你可以发现，Swap 把系统的可用内存变大了。不过要注意，通常只在内存不足时，才会发生 Swap 交换。并且由于磁盘读写的速度远比内存慢，Swap 会导致严重的内存性能问题。</description>
+    </item>
+    
+    <item>
+      <title>CPU优化</title>
+      <link>https://hzren.github.io/blog/2021-01-15-cpu%E4%BC%98%E5%8C%96/</link>
+      <pubDate>Fri, 15 Jan 2021 14:06:46 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2021-01-15-cpu%E4%BC%98%E5%8C%96/</guid>
+      <description>摘自 倪朋飞-极客时间-Linux性能优化实战
+应用程序优化 首先，从应用程序的角度来说，降低 CPU 使用率的最好方法当然是，排除所有不必要的工作，只保留最核心的逻辑。比如减少循环的层次、减少递归、减少动态内存分配等等。
+除此之外，应用程序的性能优化也包括很多种方法，我在这里列出了最常见的几种，你可以记下来。
+从系统的角度来说，优化 CPU 的运行，一方面要充分利用 CPU 缓存的本地性，加速缓存访问；另一方面，就是要控制进程的 CPU 使用情况，减少进程间的相互影响。具体来说，系统层面的 CPU 优化方法也有不少，这里我同样列举了最常见的一些方法，方便你记忆和使用。
+编译器优化：很多编译器都会提供优化选项，适当开启它们，在编译阶段你就可以获得编译器的帮助，来提升性能。比如， gcc 就提供了优化选项 -O2，开启后会自动对应用程序的代码进行优化。 算法优化：使用复杂度更低的算法，可以显著加快处理速度。比如，在数据比较大的情况下，可以用 O(nlogn) 的排序算法（如快排、归并排序等），代替 O(n^2) 的排序算法（如冒泡、插入排序等）。 异步处理：使用异步处理，可以避免程序因为等待某个资源而一直阻塞，从而提升程序的并发处理能力。比如，把轮询替换为事件通知，就可以避免轮询耗费 CPU 的问题。 多线程代替多进程：前面讲过，相对于进程的上下文切换，线程的上下文切换并不切换进程地址空间，因此可以降低上下文切换的成本。 善用缓存：经常访问的数据或者计算过程中的步骤，可以放到内存中缓存起来，这样在下次用时就能直接从内存中获取，加快程序的处理速度。 系统优化 从系统的角度来说，优化 CPU 的运行，一方面要充分利用 CPU 缓存的本地性，加速缓存访问；另一方面，就是要控制进程的 CPU 使用情况，减少进程间的相互影响。具体来说，系统层面的 CPU 优化方法也有不少，这里我同样列举了最常见的一些方法，方便你记忆和使用。
+具体来说，系统层面的 CPU 优化方法也有不少，这里我同样列举了最常见的一些方法，方便你记忆和使用。
+CPU 绑定：把进程绑定到一个或者多个 CPU 上，可以提高 CPU 缓存的命中率，减少跨CPU 调度带来的上下文切换问题。 CPU 独占：跟 CPU 绑定类似，进一步将 CPU 分组，并通过 CPU 亲和性机制为其分配进程。这样，这些 CPU 就由指定的进程独占，换句话说，不允许其他进程再来使用这些CPU。 优先级调整：使用 nice 调整进程的优先级，正值调低优先级，负值调高优先级。优先级的数值含义前面我们提到过，忘了的话及时复习一下。在这里，适当降低非核心应用的优先级，增高核心应用的优先级，可以确保核心应用得到优先处理。为进程设置资源限制：使用 Linux cgroups 来设置进程的 CPU 使用上限，可以防止由于某个应用自身的问题，而耗尽系统资源。 NUMA（Non-Uniform Memory Access）优化：支持 NUMA 的处理器会被划分为多个 node，每个 node 都有自己的本地内存空间。NUMA 优化，其实就是让 CPU 尽可能只访问本地内存。 中断负载均衡：无论是软中断还是硬中断，它们的中断处理程序都可能会耗费大量的CPU。开启 irqbalance 服务或者配置 smp_affinity，就可以把中断处理过程自动负载均衡到多个 CPU 上。 常见的内核线程### kswapd0：用于内存回收。在 Swap 变高 案例中，我曾介绍过它的工作原理。 kworker：用于执行内核工作队列，分为绑定 CPU （名称格式为 kworker/CPU:ID）和未绑定 CPU（名称格式为 kworker/uPOOL:ID）两类。 migration：在负载均衡过程中，把进程迁移到 CPU 上。每个 CPU 都有一个 migration 内核线程。 jbd2/sda1-8：jbd 是 Journaling Block Device 的缩写，用来为文件系统提供日志功能，以保证数据的完整性；名称中的 sda1-8，表示磁盘分区名称和设备号。每个使用了 ext4 文件系统的磁盘分区，都会有一个 jbd2 内核线程。 pdflush：用于将内存中的脏页（被修改过，但还未写入磁盘的文件页）写入磁盘（已经在3.</description>
+    </item>
+    
+    <item>
+      <title>中断</title>
+      <link>https://hzren.github.io/blog/2021-01-15-%E4%B8%AD%E6%96%AD/</link>
+      <pubDate>Fri, 15 Jan 2021 10:54:40 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2021-01-15-%E4%B8%AD%E6%96%AD/</guid>
+      <description>摘自 倪朋飞-极客时间-Linux性能优化实战
+中断是一种异步的事件处理机制，可以提高系统的并发处理能力。
+由于中断处理程序会打断其他进程的运行，所以，为了减少对正常进程运行调度的影响，中断处理程序就需要尽可能快地运行。如果中断本身要做的事情不多，那么处理起来也不 会有太大问题；但如果中断要处理的事情很多，中断服务程序就有可能要运行很长时间。
+特别是，中断处理程序在响应中断时，还会临时关闭中断。这就会导致上一次中断处理完成之前，其他中断都不能响应，也就是说中断有可能会丢失。
+软中断 为了解决中断处理程序执行过长和中断丢失的问题，Linux 将中断处理过程分成了两个阶段，也就是上半部和下半部：
+上半部用来快速处理中断，它在中断禁止模式下运行，主要处理跟硬件紧密相关的或时间敏感的工作。 下半部用来延迟处理上半部未完成的工作，通常以内核线程的方式运行。 以最常见的网卡接收数据包为例：
+网卡接收到数据包后，会通过硬件中断的方式，通知内核有新的数据到了。这时，内核就应该调用中断处理程序来响应它。你可以自己先想一下，这种情况下的上半部和下半部分别负责什么工作呢？
+对上半部来说，既然是快速处理，其实就是要把网卡的数据读到内存中，然后更新一下硬件寄存器的状态（表示数据已经读好了），最后再发送一个软中断信号，通知下半部做进一步的处理。 而下半部被软中断信号唤醒后，需要从内存中找到网络数据，再按照网络协议栈，对数据进行逐层解析和处理，直到把它送给应用程序。 所以，这两个阶段你也可以这样理解：
+上半部直接处理硬件请求，也就是我们常说的硬中断，特点是快速执行； 而下半部则是由内核触发，也就是我们常说的软中断，特点是延迟执行。 实际上，上半部会打断 CPU 正在执行的任务，然后立即执行中断处理程序。而下半部以内核线程的方式执行，并且每个 CPU 都对应一个软中断内核线程，名字为 “ksoftirqd/CPU编号”，比如说， 0 号 CPU 对应的软中断内核线程的名字就是 ksoftirqd/0。
+不过要注意的是，软中断不只包括了刚刚所讲的硬件设备中断处理程序的下半部，一些内核自定义的事件也属于软中断，比如内核调度和 RCU 锁（Read-Copy Update 的缩写，RCU 是 Linux 内核中最常用的锁之一）等。
+查看软中断和内核线程 不知道你还记不记得，前面提到过的 proc 文件系统。它是一种内核空间和用户空间进行通信的机制，可以用来查看内核的数据结构，或者用来动态修改内核的配置。其中：
+/proc/softirqs 提供了软中断的运行情况 /proc/interrupts 提供了硬中断的运行情况 运行下面的命令，查看 /proc/softirqs 文件的内容，你就可以看到各种类型软中断在不同CPU 上的累积运行次数：
+[root@testswarm1 ~]# cat /proc/softirqs CPU0 CPU1 CPU2 CPU3 HI: 0 0 0 0 TIMER: 12631619 232062373 248462702 893005335 NET_TX: 8896509 4597175 4634277 4587284 NET_RX: 2318866690 2162127770 2156810551 2166304170 BLOCK: 122868813 128777565 140769264 127375707 IRQ_POLL: 0 0 0 0 TASKLET: 4994443 830265 910880 1602220 SCHED: 1556077017 1449705571 1371002788 1403110449 HRTIMER: 14076 12295 11558 14612 RCU: 3175872103 3298281937 3300542031 38936799 在查看 /proc/softirqs 文件内容时，你要特别注意以下这两点。</description>
+    </item>
+    
+    <item>
+      <title>上下文切换</title>
+      <link>https://hzren.github.io/blog/2021-01-14-%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2/</link>
+      <pubDate>Thu, 14 Jan 2021 17:13:47 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2021-01-14-%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2/</guid>
+      <description>摘自 倪朋飞-极客时间-Linux性能优化实战
+在Linux系统中，对于用户创建的进程(线程)来说，CPU分配时间片的单位是线程还是进程?
+是线程。线程是实际工作的单元[1]，进程只是一个容器，用来管理一个或多个线程。
+这是不是就意味着尽量使用多线程并发，这样可以抢到更多的时间片?
+以下摘自Linux性能优化实战
+理论上是的，多线程的一种用途就是能同时做好几件事情，以提高效率。但实际问题是，CPU的数量（核心数，下同）是有限的，而且并不多。如果你的CPU有8个CPU，并且整个系统中有8个线程的话，不考虑中断等因素，每个线程理论上能一直执行下去。然而多于8个线程以后，操作系统就必须进行调度，也就是分配时间片。
+而在每个任务运行前，CPU 都需要知道任务从哪里加载、又从哪里开始运行，也就是说，需要系统事先帮它设置好 CPU 寄存器和程序计数器（Program Counter，PC）。
+CPU 寄存器，是 CPU 内置的容量小、但速度极快的内存。而程序计数器，则是用来存储CPU 正在执行的指令位置、或者即将执行的下一条指令位置。它们都是 CPU 在运行任何任务前，必须的依赖环境，因此也被叫做 CPU 上下文。
+知道了什么是 CPU 上下文，我想你也很容易理解 CPU 上下文切换。CPU 上下文切换，就是先把前一个任务的 CPU 上下文（也就是 CPU 寄存器和程序计数器）保存起来，然后加载新任务的上下文到这些寄存器和程序计数器，最后再跳转到程序计数器所指的新位置，运行新任务。
+而这些保存下来的上下文，会存储在系统内核中，并在任务重新调度执行时再次加载进来。这样就能保证任务原来的状态不受影响，让任务看起来还是连续运行。
+根据任务的不同，CPU 的上下文切换就可以分为几个不同的场景，也就是进程上下文切换、线程上下文切换以及中断上下文切换。
+进程上下文切换 Linux 按照特权等级，把进程的运行空间分为内核空间和用户空间，分别对应着下图中，CPU 特权等级的 Ring 0 和 Ring 3。
+内核空间（Ring 0）具有最高权限，可以直接访问所有资源； 用户空间（Ring 3）只能访问受限资源，不能直接访问内存等硬件设备，必须通过系统调用陷入到内核中，才能访问这些特权资源。 换个角度看，也就是说，进程既可以在用户空间运行，又可以在内核空间中运行。进程在用户空间运行时，被称为进程的用户态，而陷入内核空间的时候，被称为进程的内核态。从用户态到内核态的转变，需要通过系统调用来完成。比如，当我们查看文件内容时，就需要多次系统调用来完成：首先调用 open() 打开文件，然后调用 read() 读取文件内容，并调用 write() 将内容写到标准输出，最后再调用 close() 关闭文件。
+那么，系统调用的过程有没有发生 CPU 上下文的切换呢？答案自然是肯定的。
+CPU 寄存器里原来用户态的指令位置，需要先保存起来。接着，为了执行内核态代码， CPU 寄存器需要更新为内核态指令的新位置。最后才是跳转到内核态运行内核任务。 而系统调用结束后，CPU 寄存器需要恢复原来保存的用户态，然后再切换到用户空间，继续运行进程。所以，一次系统调用的过程，其实是发生了两次 CPU 上下文切换。
+不过，需要注意的是，系统调用过程中，并不会涉及到虚拟内存等进程用户态的资源，也不会切换进程。这跟我们通常所说的进程上下文切换是不一样的：进程上下文切换，是指从一个进程切换到另一个进程运行。而系统调用过程中一直是同一个进程在运行。
+所以，系统调用过程通常称为特权模式切换，而不是上下文切换。但实际上，系统调用过程中，CPU 的上下文切换还是无法避免的。</description>
+    </item>
+    
+    <item>
+      <title>路由条目</title>
+      <link>https://hzren.github.io/blog/2021-01-13-%E8%B7%AF%E7%94%B1%E6%9D%A1%E7%9B%AE/</link>
+      <pubDate>Wed, 13 Jan 2021 10:13:06 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2021-01-13-%E8%B7%AF%E7%94%B1%E6%9D%A1%E7%9B%AE/</guid>
+      <description>ip route命令的输出解释。
+获取工具 ip命令包含在net-tools包中，可以通过安装net-tools包获得该命令。
+常见用法 执行man ip route
+IP-ROUTE(8) Linux IP-ROUTE(8) NAME ip-route - routing table management SYNOPSIS ip [ ip-OPTIONS ] route { COMMAND | help } ip route { list | flush } SELECTOR ip route save SELECTOR ip route restore ip route get ADDRESS [ from ADDRESS iif STRING ] [ oif STRING ] [ tos TOS ] ip route { add | del | change | append | replace } ROUTE SELECTOR := [ root PREFIX ] [ match PREFIX ] [ exact PREFIX ] [ table TABLE_ID ] [ proto RTPROTO ] [ type TYPE ] [ scope SCOPE ] ROUTE := NODE_SPEC [ INFO_SPEC ] NODE_SPEC := [ TYPE ] PREFIX [ tos TOS ] [ table TABLE_ID ] [ proto RTPROTO ] [ scope SCOPE ] [ metric METRIC ] INFO_SPEC := NH OPTIONS FLAGS [ nexthop NH ] .</description>
+    </item>
+    
+    <item>
+      <title>容器网络</title>
+      <link>https://hzren.github.io/blog/2021-01-12-%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C/</link>
+      <pubDate>Tue, 12 Jan 2021 10:43:21 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2021-01-12-%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C/</guid>
+      <description>容器网络的核心是和物理网络实现网络隔离，物理网络对于容器来说为虚拟的，不可见的。
+概念 Overlay / 覆盖网络
+覆盖网络（Overlay network）是一种建立在另一网络之上的计算机网络。
+覆盖网络中的节点可以被认为是通过虚拟或逻辑链接相连，其中每个链接对应一条路径（Path）。节点之间也可能通过下层网络中的多个物理连接实现相连。
+Flannel Flannel有UDP和VXLAN两种方案
+使用UDP实现Overlay网络 Flannel的覆盖网络：Flannel另创建了一个网络100.96.0.0/16，它是一个更大的网络，可以容纳2个¹⁶（65536）地址，它覆盖所有kubernetes节点，每个pod将在这个范围内分配一个地址。
+在主机docker网络中：在每个主机中，flannel为该主机中的所有pod分配了一个100.96.x.0/24网络，它可以容纳2⁸（256）个地址。docker网桥docker0将使用此网络创建新容器。
+通过这种设计，每个容器都有自己的IP地址，都属于覆盖子网100.96.0.0/16。同一主机内的容器可以通过docker网桥docker0相互通信。
+为了在主机间与覆盖网络中的其他容器进行通信，flannel使用内核路由表和UDP封装来实现它，下面几节将对此进行解释。
+发包过程 假设节点1中IP地址为100.96.1.2的容器（我们称之为container-1）想要连接到节点2中IP地址为100.96.2.3的容器（我们称之为container-2）:
+第一个container-1创建一个src:100.96.1.2-&amp;gt;dst:100.96.2.3的IP数据包，该数据包将直接被发送到容器的网关-docker0网桥。
+在每个主机中，flannel会运行一个名为flanneld的守护进程，flanneld会在内核的路由表中创建一些路由规则，节点1的路由表一般是这样的：
+admin@ip-172-20-33-102:~$ ip route default via 172.20.32.1 dev eth0 100.96.0.0/16 dev flannel0 proto kernel scope link src 100.96.1.0 100.96.1.0/24 dev docker0 proto kernel scope link src 100.96.1.1 172.20.32.0/19 dev eth0 proto kernel scope link src 172.20.33.102 如上所见，包的目的地址100.96.2.3落在更大的覆盖网络100.96.0.0/16中，因此它符合第二条规则100.96.0.0/16 dev flannel0 proto kernel scope link src 100.96.1.0，现在根据路由规则内核把包发送到flannel0虚拟网卡。
+100.96.0.0/16 dev flannel0 proto kernel scope link src 100.</description>
+    </item>
+    
+    <item>
+      <title>一次内网到公网_公网导内网的数据链路过程</title>
+      <link>https://hzren.github.io/blog/2021-01-06-%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E5%88%B0%E5%85%AC%E7%BD%91_%E5%85%AC%E7%BD%91%E5%AF%BC%E5%86%85%E7%BD%91%E7%9A%84%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E8%BF%87%E7%A8%8B/</link>
+      <pubDate>Wed, 06 Jan 2021 10:32:30 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2021-01-06-%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E5%88%B0%E5%85%AC%E7%BD%91_%E5%85%AC%E7%BD%91%E5%AF%BC%E5%86%85%E7%BD%91%E7%9A%84%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E8%BF%87%E7%A8%8B/</guid>
+      <description>以一次从内网到公网，公网到内网的数据交互过程来梳理整个网络链路。
+网络拓扑图 MAC地址是一个局域网内才有效的地址。因而，MAC地址只要过网关，就必定会改变，因为已经换了局域网。两者主要的区别在于IP地址是否改变。不改变IP地址的网关，我们称为转发网关；改变IP地址的网关，我们称为NAT网关。
+每到一个新的局域网，MAC都是要变的，但是IP地址都不变。在IP头里面，不会保存任何网关的IP地址。所谓的下一跳是，某个IP要将这个IP地址转换为MAC放入MAC头
+上图中： 手机A1， A2, 交换机A，路由器A组成了用户的小内网，以NAT的方式访问外网。 BGP网关ABCD组成了外网互联，根据IP地址转发路由
+请求出内网 手机A1需要向服务器B1发送数据， 手机A1发现B1和其不在同一网段 a. 手机A1在内网内广播获取网关(路由器A)IP的ARP请求 b. 网关(路由器A)收到ARP请求后，以单播的形式向手机A1发送ARP响应，返回其MAC地址 c. 内网中其他设备收到ARP请求后发现不是寻找本设备忽略该数据包 手机A1拿到网关(路由器A)MAC地址后，封装二层数据包；目标MAC地址是网关MAC，三层数据包里面的目的IP是服务器B1的公网IP 交换机A1在收到手机A1发来的数据包后，根据从端口学习到的MAC地址映射将数据包从响应端口法网路由器A 路由器A收到数据报文后，对比MAC数据报文中的MAC地址 a. 不是发往自己的，丢弃 b. 是发往自己的，检查三层数据包IP地址 请求在公网 路由器A根据三层目标IP地址和自身的公网路由规则，得到下一跳网关（BGP网关B）IP地址，然后根据ARP获得的下一条网关MAC地址，重组数据包：
+源IP替换为自身公网IP 对于TCP，UDP数据，修改三层数据包端口，建立NAT映射，所有来自该内网IP+端口的数据都会经公网IP+一固定端口转发；公网IP上该固定端口收到的数据都会被转发到对应内网IP+端口上 源MAC地址替换为自身公网网卡MAC 目标IP不变 目标IP替换为下一跳网关MAC地址 BGP网关B收到数据包后判断目标IP是否在本网关所对应的子网中，发现不在，继续转发数据包至BGP网关D，转发过程如下：
+源IP不变 源MAC地址替换为自身公网网卡MAC 目标IP不变 目标IP替换为下一跳网关MAC地址 BGP网关发现目标IP在本网关所对应的子网中，对数据包进行转发到服务器B1
+服务器B1收到数据包后，检查目标MAC地址，确认是自己的，收包，否则丢弃
+响应在公网 服务器B返回数据包 目标IP：路由器A公网出口IP 目标MAC ： 路由器A公网出口MAC 源IP ： 自身公网IP 源MAC : 自身公网MAC 过程同请求在公网
+IP报文的请求路径和响应路径很可能是不同的，具体须经由网关路由规则确定。
+响应在客户端内网 路由器A公网网口收到响应数据包，在确定目标MAC地址是自身后， 根据路由/转发规则和三层数据包里面的链接标识确定数据包最终转发到那台内网机器。
+TCP/UDP请求 根据NAT映射关系，修改数据包数据 修改三层数据包目的IP为映射的内网机器IP 修改三层数据包目的端口为映射IP的映射端口 修改 转发修改后的数据包到固定内网IP和端口上。 ICMP ICMP协议无端口，根据三层数据包里面的ICMP Query ID确定内网IP。
+原文见： IETF文档 3.1章节</description>
+    </item>
+    
+    <item>
+      <title>计算机编程体系</title>
+      <link>https://hzren.github.io/blog/2021-01-04-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BC%96%E7%A8%8B%E4%BD%93%E7%B3%BB/</link>
+      <pubDate>Mon, 04 Jan 2021 09:14:30 +0000</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2021-01-04-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BC%96%E7%A8%8B%E4%BD%93%E7%B3%BB/</guid>
+      <description>计算机网络 Hub / 交换机 / 路由器 计算机网络中常见中间设备名称及功能
+路由条目 路由条目
+一次内网到公网的HTTP访问请求 一次内网到公网_公网导内网的数据链路过程
+容器网络 容器网络
+TCP协议 TCP协议
+Linux操作系统 工具 sysstat sysstat包包含许多商用unix通用的各种实用程序，用于监视系统性能和使用活动。
+安装：
+yum install -y sysstat
+github地址：
+官网地址：
+使用文档地址：
+常用命令：
+iostat 报告设备、分区和网络文件系统的CPU统计信息和输入/输出统计信息。
+mpstat 报告单个或组合的处理器相关统计信息。
+pidstat 报告Linux任务（进程）的统计信息：I/O、CPU、内存等。
+tapestat 报告连接到系统的磁带机的统计信息。
+cifsiostat 报告CIFS统计信息。
+sysstat还包含可通过cron或systemd收集和历史化性能和活动数据：
+sar 收集、报告和保存系统活动信息（CPU、内存、磁盘、中断、网络接口、TTY、内核表等）
+sadc 是系统活动数据收集器，用作sar的后端。
+sa1 在系统活动每日数据文件中收集并存储二进制数据。它是sadc的前端，设计成从cron或systemd运行。
+sa2 编写每日活动总结报告。它是sar的前端，设计用于从cron或systemd运行。
+sadf 以多种格式（CSV、XML、JSON等）显示sar收集的数据，并可用于与其他程序的数据交换。该命令还可以用于为sar使用SVG（Scalable Vector Graphics）格式收集的各种活动绘制图形。
+上下文切换 上下文切换
+中断 中断
+内存管理 Linux内存管理
+DMA DMA
+文件系统 文件系统
+Linux网络 Linux网络
+Java语言 Java语言
+JVM相关 JVM
+JVM工具 Arthas使用
+MySQL数据库 序列号 百度的Snowflake算法实现</description>
+    </item>
+    
+    <item>
+      <title>DMA 简介</title>
+      <link>https://hzren.github.io/blog/2020-12-31-direct-memory-access-dma-%E7%AE%80%E4%BB%8B/</link>
+      <pubDate>Thu, 31 Dec 2020 10:45:29 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2020-12-31-direct-memory-access-dma-%E7%AE%80%E4%BB%8B/</guid>
+      <description>摘自 倪朋飞-极客时间-Linux性能优化实战
+概述 编程式I/O
+在编程I/O中，处理器不断扫描是否有任何设备准备好进行数据传输。如果一个I/O设备准备好了，处理器就会全力以赴地在I/O和内存之间传输数据。它以高速率传输数据，但在数据传输过程中不能参与任何其他活动。这是编程I/O的主要缺点。
+中断式 I/O
+在中断式 I/O 中，每当设备准备好进行数据传输时，就会向处理器发出一个中断。处理器完成正在执行的指令并保存其当前状态。然后它切换到数据传输，这会导致延迟。在这里，处理器不会一直扫描准备进行数据传输的外围设备。但是，它完全参与了数据传输过程。因此，这也不是一种有效的数据传输方式。
+DMA
+与编程式 I/O 和中断式 I/O 不同，Direct Memory Access 是一种在不通过 CPU 就可以在内存和外部设备之间（外部设备和外部设备之间也是）传输数据的技术。DMA通过DMA控制器实现。
+DMA通过接管 CPU 传输数据的任务来提高 CPU 的使用效率和 I/O 的传输速度，在接管期间，CPU 可以空闲出来去做别的任务。该技术克服了其它两种 I/O 技术在发出数据传输命令时耗时、数据传输时占用处理器而导致数据处理功能被浪费的缺点。
+当需要传输大量数据时，使用DMA方法更有效。为了实现DMA，处理器必须与DMA模块共享其系统总线。因此，DMA模块只能在处理器不需要总线时才能使用总线，否则必须强制处理器暂时挂起，让出系统铜线。在实际当中，后一种技术更为常用，称为 cycle stealing.
+下图展示了指令周期中的附加DMA模块周期:
+DMA 基本操作 当处理器希望读取或发送数据块时，它通过向DMA模块发送一些信息来向DMA模块发出命令。这些信息包括：
+读或写命令，通过读写控制线发送 要读取或写入的字数，在数据线上进行通信并存储在数据计数寄存器中 在存储器中读写的起始位置，通过数据线进行通信并存储在地址寄存器中 所涉及的I/O设备的地址，通过数据线进行通信 在信息发送后，处理器將继续进行其他工作。DMA模块随后将整个数据块直接传输至内存或直接从内存中传输出来，而无需经过处理器。在传输完成时，DMA模块会向处理器发送一个中断信号，通知它 DMA 已完成使用系统总线。
+DMA 基本配置 DMA 可以通过以下几种方式进行实现，包括：
+单总线，分离式 DMA 单总线，集成式 DMA-I/O I/O 总线 模式 单总线，分离式 DMA 所有模块共享同一个系统总线。DMA模块充当代理处理器，它使用编程式 I/O 的方式在内存和 I/O 设备之间通过 DMA 模块进行交换数据。这种配置虽然便宜，但效率很低。这是因为一个字的每次传输都需要消耗两个总线周期。
+单总线，集成式 DMA-I/O 在此模式中，DMA 模块和一个或多个不包括系统总线在内的 I/O 模块之间存在一条路径。DMA逻辑可以是 I/O 模块的一部分，也可以是控制一个或多个I/O模块的单独模块。因此，所需的总线周期的数量可以大幅度减少。DMA 模块与处理器和内存共享的系统总线仅用于与内存交换数据。DMA和I/O模块之间的数据交换通过系统总线进行。</description>
+    </item>
+    
+    <item>
+      <title>Java使用Protocol Buffers</title>
+      <link>https://hzren.github.io/blog/2020-09-29-java%E4%BD%BF%E7%94%A8protocol-buffers/</link>
+      <pubDate>Tue, 29 Sep 2020 16:00:09 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2020-09-29-java%E4%BD%BF%E7%94%A8protocol-buffers/</guid>
+      <description>简介 Protocol Buffers，是Google公司开发的一种数据描述语言，类似于XML能够将结构化数据序列化，可用于数据存储、通信协议等方面。
+准备工作 下载protoc代码生成器 编写.proto文件 编译.proto文件 下载protoc代码生成器 protoc可以从Google Protocol Buffers官网下载, 也可以从github ProtocBuffer仓库下载. 仓库地址
+下载文成后, 编译器位于bin文件夹下面.
+编写protoc文件 protoc文件有一套固定的语法格式, 当前份protoc2, protoc3两个版本, 官方语法文档地址.
+定义消息类型
+以proto3为例:
+syntax = &amp;#34;proto3&amp;#34;; message SearchRequest { string query = 1; int32 page_number = 2; int32 result_per_page = 3; } 指定消息字段类型
+在上面的示例中，所有字段都是标量类型：两个整数（page_number和result_per_page）和一个字符串（query）。但是，也可以为字段指定复合类型，包括枚举和其他消息类型。
+指定字段编号
+从上面可以看到，消息定义中的每个字段都有一个唯一的编号。这些数字用于标识字段在消息二进制格式中的位置，一旦消息类型已经被使用了，这些数字就不能再被更改。请注意，1到15范围内的字段号需要一个字节进行编码，包括字段号和字段类型。16到2047范围内的字段号需要两个字节。所以，应该为频繁出现的消息元素保留1到15个字段, 并且为将来可能添加的出现的元素留出一些空间。
+指定字段规则
+消息字段规则有以下三种类型：
+required：格式正确的消息必须正好包含此字段。 optional：格式良好的消息可以有零个或一个此字段（但不能超过一个）。 repeated：在格式良好的消息中，此字段可以重复任意次数（包括零）。将保留重复值的顺序。 编译.proto文件 protoc是一个命令行工具, 一般使用如下:
+protoc --proto_path=src --java_out=build/gen src/foo.proto 更多信息可以参考protoc命令行提示.
+Java集成 添加依赖 添加maven插件 生成代码 编写测试代码 添加依赖 pom文件下添加protocbuf 依赖
+&amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;com.google.protobuf&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;protobuf-java&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;3.</description>
+    </item>
+    
+    <item>
+      <title>Redis备份</title>
+      <link>https://hzren.github.io/blog/2020-09-14-redis%E5%A4%87%E4%BB%BD/</link>
+      <pubDate>Mon, 14 Sep 2020 16:39:56 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2020-09-14-redis%E5%A4%87%E4%BB%BD/</guid>
+      <description>| 导语 本文详细分析redis持久化的俩种模式的详细流程
+一. 概述redis持久化的俩种模式 随着redis越来越流行，使用者不在仅仅满足其只是一个内存数据库，同时也期望其能将内存数据落磁盘，这样重启服务就不会导致缓存数据丢失了
+redis持久化有俩种模式模式，分别如下:
+rdb(默认) aof 二. rdb持久化模式 1.rdb持久化核心思路 获取当前内存快照并将快照数据保存到磁盘实现当前数据全量备份
+2.rdb持久化难点 (1)如何获取当前内存数据快照 redis利用linux fork子进程后( cow机制:https://juejin.im/post/5bd96bcaf265da396b72f855 )子进程拥有父进程的内存快照来获取内存快照
+(2)保存数据落盘时io操作阻塞其他请求 redis rdb持久化落盘操作只在独立的子进程中进行不会影响到主进程中的其他请求
+3.rdb持久化触发条件 (1)rdb持久化为redis开启的默认持久化方式，可通过配置文件灵活配置，默认如下
+save 900 1 //15分钟内有一条数据写入时触发rdb持久化 save 300 10 //5分钟内有10条数据写入时触发rdb持久化 save 60 10000 //1分钟内有10000条数据写入时触发rdb持久化 (2)除了默认触发之外，我们也可以通过redis客户端发送命令主动触发rdb持久化，具体命令如下：
+&amp;gt;save //主进程执行rdb持久化操作 &amp;gt;bgsave //生成后台进程执行rdb持久化(默认方式) 4.rdb持久化数据安全性 疑问: rdb持久化模式下，当机器宕机，会丢失多少数据？
+答: 从最近一次rdb保存到宕机时的数据都会丢失
+5.rdb持久化核心源码(bgsave为例) int rdbSaveBackground(char *filename, rdbSaveInfo *rsi) { pid_t childpid; long long start; //如果已经存在aof重写进程或rdb持久化进程则返回错误 if (server.aof_child_pid != -1 || server.rdb_child_pid != -1) return C_ERR; server.dirty_before_bgsave = server.</description>
+    </item>
+    
+    <item>
+      <title>centos 安装 hadoop</title>
+      <link>https://hzren.github.io/blog/2020-08-28-centos-%E5%AE%89%E8%A3%85-hadoop/</link>
+      <pubDate>Fri, 28 Aug 2020 17:00:38 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2020-08-28-centos-%E5%AE%89%E8%A3%85-hadoop/</guid>
+      <description>安装JDK 上传JDK包到centos.
+解压
+tar xvf server-jre-8u251-linux-x64.tar.gz 配置环境变量
+vi /etc/profile 添加Java环境变量:
+export JAVA_HOME=/home/jdk1.8.0_251 export PATH=$PATH:$JAVA_HOME/bin 使环境变量生效
+source /etc/profile 检查Java安装
+java -version 正常输出:
+java version &amp;#34;1.8.0_251&amp;#34; Java(TM) SE Runtime Environment (build 1.8.0_251-b08) Java HotSpot(TM) 64-Bit Server VM (build 25.251-b08, mixed mode) 安装sshd, pdsh; sshd系统自带, 现在只安装pdsh.需要先安装epel
+yum install -y epel-release.noarch yum install -y pdsh.x86_64 下载最新稳定版hadoop, 当前是2.10.0
+wget https://mirrors.tuna.tsinghua.edu.cn/apache/hadoop/common/hadoop-2.10.0/hadoop-2.10.0.tar.gz 解压
+tar xvf hadoop-2.10.0.tar.gz hadoop有三种部署模式:
+单机模式 伪分布式模式 集群模式 我们以伪分布式模式安装.
+安装步骤:
+下面所有文件修改均针对hadoop目录下文件
+编辑etc/hadoop/core-site.xml:
+&amp;lt;configuration&amp;gt; &amp;lt;property&amp;gt; &amp;lt;name&amp;gt;fs.defaultFS&amp;lt;/name&amp;gt; &amp;lt;value&amp;gt;hdfs://localhost:9000&amp;lt;/value&amp;gt; &amp;lt;/property&amp;gt; &amp;lt;/configuration&amp;gt; 编辑etc/hadoop/hdfs-site.</description>
+    </item>
+    
+    <item>
+      <title>centos 安装 stress sysstat</title>
+      <link>https://hzren.github.io/blog/2020-08-25-centos-%E5%AE%89%E8%A3%85-stress-sysstat/</link>
+      <pubDate>Tue, 25 Aug 2020 11:03:20 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2020-08-25-centos-%E5%AE%89%E8%A3%85-stress-sysstat/</guid>
+      <description>检查安装的仓库列表
+yum repolist 仓库列表:
+Loaded plugins: fastestmirror Loading mirror speeds from cached hostfile * base: mirrors.163.com * epel: mirrors.bfsu.edu.cn * extras: mirrors.cn99.com * updates: mirrors.163.com repo id repo name status base/7/x86_64 CentOS-7 - Base 10,070 docker-ce-stable/x86_64 Docker CE Stable - x86_64 79 extras/7/x86_64 CentOS-7 - Extras 413 updates/7/x86_64 CentOS-7 - Updates 1,112 repolist: 25,100 先安装epel
+yum install -y epel-release.noarch 如果epel仓库已安装, 但是未启用,可以先启用epel仓库
+yum search stress --enablerepo=epel 这样就可以搜索到工具
+Loaded plugins: fastestmirror Loading mirror speeds from cached hostfile * base: mirrors.</description>
+    </item>
+    
+    <item>
+      <title>Linux 内核 内核态 用户态</title>
+      <link>https://hzren.github.io/blog/2020-08-21-linux-%E5%86%85%E6%A0%B8-%E5%86%85%E6%A0%B8%E6%80%81-%E7%94%A8%E6%88%B7%E6%80%81/</link>
+      <pubDate>Fri, 21 Aug 2020 11:22:52 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2020-08-21-linux-%E5%86%85%E6%A0%B8-%E5%86%85%E6%A0%B8%E6%80%81-%E7%94%A8%E6%88%B7%E6%80%81/</guid>
+      <description>概念 时间片 时间片是分时操作系统分配给每个正在运行的进程微观上的一段CPU时间（在抢占内核中是：从进程开始运行直到被抢占的时间）。现代操作系统（如：Windows、Linux、Mac OS X等）允许同时运行多个进程。例如，在打开音乐播放器的同时用浏览器浏览网页并下载文件。由于一台计算机通常只有一个CPU，所以不可能真正地同时运行多个任务。这些进程“看起来像”同时运行，实则是轮番运行，由于时间片通常很短（在Linux上为5ms－800ms），用户不会感觉到。
+时间片由操作系统内核的调度程序分配给每个进程。首先，内核会给每个进程分配相等的初始时间片，然后每个进程轮番地执行相应时间，当所有进程都处于时间片耗尽的状态时，内核会重新为每个进程计算并分配时间片，如此往复。
+时间片分配 通常状况下，一个系统中所有的进程被分配到的时间片长短并不是相等的，尽管初始时间片基本相等（在Linux系统中，初始时间片也不相等，而是各自父进程的一半），系统通过测量进程处于“睡眠”和“正在运行”状态的时间长短来计算每个进程的交互性，交互性和每个进程预设的静态优先级（Nice值）的叠加即是动态优先级，动态优先级按比例缩放就是要分配给那个进程时间片的长短。一般地，为了获得较快的响应速度，交互性强的进程（即趋向于IO消耗型）被分配到的时间片要长于交互性弱的（趋向于处理器消耗型）进程。
+抢占式多任务处理 抢占式多任务处理（Preemption）是计算机操作系统中一种实现多任务处理（multi task）的方式，相对于协作式多任务处理而言。协作式环境下，下一个进程被调度的前提是当前进程主动放弃时间片；抢占式环境下，操作系统完全决定进程调度方案，操作系统可以剥夺耗时长的进程的时间片，提供给其它进程。
+每个任务赋予唯一的一个优先级（有些操作系统可以动态地改变任务的优先级）；假如有几个任务同时处于就绪状态，优先级最高的那个将被运行；只要有一个优先级更高的任务就绪，它就可以中断当前优先级较低的任务的执行；Linux 内核 Linux是一个单体内核，支持真正的抢占式多任务处理（于用户态，和版本2.6系列之后的内核态）、虚拟内存、共享库、请求分页、共享写时复制可执行体（通过内核同页合并）、内存管理、Internet协议族和线程等功能。
+设备驱动程序和内核扩展运行于内核空间（在很多CPU架构中是ring 0），可以完全访问硬件，但也有运行于用户空间的一些例外，例如基于FUSE/CUSE的文件系统，和部分UIO。图形系统不运行在内核中。与标准单体内核不同，Linux的设备驱动程序可以轻易的配置为内核模块，并在系统运行期间可直接装载或卸载。也不同于标准单体内核，设备驱动程序可以在特定条件下被抢占；增加这个特征用于正确处理硬件中断并更好的支持对称多处理。出于自愿选择，Linux内核没有二进制内核接口。
+硬件也被整合入文件层级中。用户应用到设备驱动的接口是在/dev或/sys目录下的入口文件。进程信息也通过/proc目录映射到文件系统。
+进程既可以在用户空间运行，又可以在内核空间中运行。进程在用户空间运行时，被称为进程的用户态，而陷入内核空间的时候，被称为进程的内核态。
+从用户态到内核态的转变，需要通过系统调用来完成。比如，当我们查看文件内容时，就需要多次系统调用来完成：首先调用 open() 打开文件，然后调用 read() 读取文件内容，并调用 write() 将内容写到标准输出，最后再调用 close() 关闭文件。
+内核空间具有最高权限，可以直接访问所有资源；用户空间只能访问受限资源，不能直接访问内存等硬件设备，必须通过系统调用陷入到内核中，才能访问这些特权资源。那么，系统调用的过程有没有发生 CPU 上下文的切换呢？答案自然是肯定的。
+CPU 寄存器里原来用户态的指令位置，需要先保存起来。接着，为了执行内核态代码，CPU 寄存器需要更新为内核态指令的新位置。最后才是跳转到内核态运行内核任务。而系统调用结束后，CPU 寄存器需要恢复原来保存的用户态，然后再切换到用户空间，继续运行进程。所以，一次系统调用的过程，其实是发生了两次 CPU 上下文切换。
+不过，需要注意的是，系统调用过程中，并不会涉及到虚拟内存等进程用户态的资源，也不会切换进程。这跟我们通常所说的进程上下文切换是不一样的：
+进程上下文切换，是指从一个进程切换到另一个进程运行。 而系统调用过程中一直是同一个进程在运行。 进程是由内核来管理和调度的，进程的切换只能发生在内核态。所以，进程的上下文不仅包括了虚拟内存、栈、全局变量等用户空间的资源，还包括了内核堆栈、寄存器等内核空间的状态。因此，进程的上下文切换就比系统调用时多了一步：在保存当前进程的内核状态和 CPU 寄存器之前，需要先把该进程的虚拟内存、栈等保存下来；而加载了下一进程的内核态后，还需要刷新进程的虚拟内存和用户栈。
+多线程环境下的任务处理 在多线程环境下， 操作系统调度的基本单位是线程(Thread)而不是进程(Process)，操作系统按照线程设置的优先级对线程进行调度。在IO程序中，合并IO调用(读，写)可以减少系统调用次数，ji减少内核态/用户态的切换。对一个socket只在一条线程上进行读写操作，可以减少多个线程之间调用socket写操作的并发影响，提高系统效率。
+时间片持续的时间长度因操作系统而异，通常情况下也可以调整。理想情况下，一个足够长的时间片，可以平衡计算密集型进程和I/O密集型进程的工作负载，尽最大努力利用所有资源都来产生最大的总吞吐量。
+内核态 cpu可以访问内存的所有数据，包括外围设备，例如硬盘，网卡，cpu也可以将自己从一个程序切换到另一个程序。
+用户态 只能受限的访问内存，且不允许访问外围设备，占用cpu的能力被剥夺，cpu资源可以被其他程序获取。
+内核态 / 用户态 区别 内存分为两部分：
+用户空间，它是正常用户进程运行的一组位置（即除了内核之外的所有内容）。内核的作用是管理在这个空间中运行的应用程序，使之不至于弄乱彼此和机器。 内核空间，即存储内核代码并在其下执行的位置。 在用户空间下运行的进程只能访问有限的部分内存，而内核可以访问所有内存。在用户空间中运行的进程无权访问内核空间。用户空间进程只能通过内核公开的接口（系统调用）访问内核的一小部分内存(例如 共享内存， 获得系统时间用的就是共享内存)。如果进程执行系统调用，则会将软件中断发送到内核，内核将分派适当的中断处理程序，并在处理程序完成后继续其工作。
+切换 系统调用，其实系统调用本身就是中断，但是软件中断，跟硬中断不同。异常：如果当前进程运行在用户态，如果这个时候发生了异常事件，就会触发切换。例如：缺页异常。外设中断：当外设完成用户的请求时，会向CPU发送中断信号。</description>
+    </item>
+    
+    <item>
+      <title>TCP / UDP 总结</title>
+      <link>https://hzren.github.io/blog/2020-08-19-tcp-udp-%E6%80%BB%E7%BB%93/</link>
+      <pubDate>Wed, 19 Aug 2020 15:04:38 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2020-08-19-tcp-udp-%E6%80%BB%E7%BB%93/</guid>
+      <description>send()最大可以接受多少字节的数据？ 函数层面无限制，超过缓冲区大小函数会block
+TCP接到send()发送的字节，会立马保持原封不动发送吗？ 不确定！
+TCP会先将这些数据放在自己的仓库（发送缓冲区），至于什么时候发，每次发多少，已经不是应用层所能左右的了。什么时候发，一次发多少取决于不同算法，有RCP_NODELAY配置，有MSS限制TCP分组最大长度。
+TCP是基于字节流发送，可能将用户的一次数据发送砍成多个segment发送，也可能将多次应用层的发送合并在一个segment发送。而决定TCP一次最大能发segment的大小则和MSS有关，而MSS最终和MTU有关。
+分片是非常不利的选择，当前网络所做的很多努力都是极力避免分片！
+TCP MSS真的可以避免分片吗？ TCP连接的双方依据本地物理链路的MTU，按照以上的公式计算出本地的MSS，然后双方交换各自的MSS，双方会选择两者中小的MSS来继续通信。但有没有想过，如果路径中的MTU比连接双方的MTU都小，是不是分片就无法避免了？答案是肯定的！
+这个时候必须分片，不分片就会丢，这是DF = 1的状况，需要给源主机发送ICMP消息，问题是ICMP消息能到达源主机吗？如果不能到达，通信就会断，即使TCP有重传机制。
+能到达源主机，源的TCP意识到这一点，会将重传的报文重新切片，重新发送，这没有什么问题，只是耽误一点时间而已。
+DF = 0时，可以直接分片，尽管耗费很多分片的资源，到达目的地再重组，也要耗费一点资源。
+问题是，没有端口号的分片，经过安全设备时，可能会遇到障碍，这同样会造成通信的障碍。
+看，一旦分片造成多大的麻烦，麻烦意味着CPU资源的耗费，为了避免这些不必要的动作，只要不分片，一切都会变的简单。
+UDP UDP是块式消息，UDP本身没有任何分片的能力，也没有任何重传的能力，这些能力需要依赖应用层、IP层。
+计算机网络发展到今天，大家已经形成了一个共识，如果用户的数据确实需要分片传输，务必保证分片的动作由应用层来完成，到达目的地由应用层将字节流，再整理成有意义的消息块。
+TCP丢包 路由器或交换机，一旦TCP流量暴力来袭时，会尽最大能力转发流量，如果流量持续增长，流量流速&amp;gt; 物理线路速率，用缓存将多余的流量缓存在队列里，一旦线路空闲，再发送出去。
+但如果多余的流量&amp;gt; 缓存的空间，无法容纳的流量将会统统丢弃，cisco官方的名词称之为尾丢( Tail Drop)。
+所以缓存只能应付临时的突发流量（Burst Traffic）, 只要多余的突发流量&amp;lt;= 缓存空间，就不会丢弃。
+但是缓存无法应付诸如TCP 指数增长流量，唯一的办法就是尾丢。
+网络接口出方向的 ”out dircard”是正常的，TCP slow start算法就是依靠丢包来实现的，至于哪里要丢，取决于端到端哪条链路的可用带宽最小，记住可用带宽不是接口的最大带宽，可用带宽是真正可以利用的带宽。
+因为两将军问题，在TCP协议中，谁是字节数据的owner，谁才对字节数据负责！数据的接收方并不需要为字节数据负责，被动确认（Passive ACK）一次即可。</description>
+    </item>
+    
+    <item>
+      <title>ICMP Ping traceroute</title>
+      <link>https://hzren.github.io/blog/2020-08-18-icmp-ping-traceroute/</link>
+      <pubDate>Tue, 18 Aug 2020 16:52:07 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2020-08-18-icmp-ping-traceroute/</guid>
+      <description>Ping和traceroute都基于ICMP协议工作。
+ICMP 互联网控制消息协议（英语：Internet Control Message Protocol，缩写：ICMP）是互联网的核心协议之一，用于在网际协议（IP）中发送控制消息，提供可能发生在通信环境中的各种问题的反馈。通过这些信息，可以对所发生的问题作出诊断，然后采取适当的措施解决。
+ICMP基于IP协议，通常不由网络程序直接使用，除了 ping 和 traceroute 这两个特别的例子。 IPv4中的ICMP被称作ICMPv4，IPv6中的ICMP则被称作ICMPv6。
+技术细节 ICMP通常用于返回的错误信息或是分析路由。ICMP错误消息总是包括了源数据并返回给发送者。 ICMP错误消息例子之一是TTL值过期。
+每个路由器在转发数据报的时候都会把IP包头中的TTL值减1。如果TTL值为0，“TTL在传输中过期”的消息将会回报给源地址。 每个ICMP消息都是直接封装在一个IP数据包中的，因此，和UDP一样，ICMP是不可靠的。
+很多常用的工具是基于ICMP消息的。traceroute 是通过发送包含有特殊的TTL的包，然后接收ICMP超时消息和目标不可达消息来实现的。 ping 则是用ICMP的&amp;quot;Echo request&amp;quot;（类别代码：8）和&amp;quot;Echo reply&amp;quot;（类别代码：0）消息来实现的。
+报文结构 ICMP报头从IP报头的第160位开始（IP首部20字节）（除非使用了IP报头的可选部分）。
+Type - ICMP的类型,标识生成的错误报文Code - 进一步划分ICMP的类型,该字段用来查找产生错误的原因.；例如，ICMP的目标不可达类型可以把这个位设为1至15等来表示不同的意思。Checksum - Internet校验和（RFC 1071），用于进行错误检查，该校验和是从ICMP头和以该字段替换为0的数据计算得出的。Rest of Header - 报头的其余部分，四字节字段，内容根据ICMP类型和代码而有所不同。报文类型 ICMP 报文有很多的类型，不同的类型有不同的代码。最常用的类型是主动请求为 8，主动请求的应答为 0。 ICMP有两大类报文类型: 查询报文类型, 差错报文类型
+查询报文类型 主动发起的，主动应答的，对应 ICMP 的查询报文类型就是查询报文类型。例如，常用的ping 就是查询报文，是一种主动请求，并且获得主动应答的 ICMP 协议。所以，ping 发的包也是符合 ICMP协议格式的，只不过它在后面增加了自己的格式。 对 ping 的主动请求，进行网络抓包，称为ICMP ECHO REQUEST。同理主动请求的回复，称为ICMP ECHO REPLY。比起原生的 ICMP，这里面多了两个字段，一个是标识符。在选项数据中，ping 还会存放发送请求的时间值，来计算往返时间，说明路程的长短。
+差错报文类型 异常情况引起的，对应 ICMP 的差错报文类型。</description>
+    </item>
+    
+    <item>
+      <title>Linux IP地址 DHCP</title>
+      <link>https://hzren.github.io/blog/2020-08-18-linux-ip%E5%9C%B0%E5%9D%80-dhcp/</link>
+      <pubDate>Tue, 18 Aug 2020 15:06:02 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2020-08-18-linux-ip%E5%9C%B0%E5%9D%80-dhcp/</guid>
+      <description>配置 IP 地址 可以使用ifconfig，也可以使用 ip addr。设置好以后，将网卡 up 一下，就可以开始工作了。 使用 net-tools：
+$ sudo ifconfig eth1 10.0.0.1/24 $ sudo ifconfig eth1 up 使用 iproute2：
+$ sudo ip addr add 10.0.0.1/24 dev eth1 $ sudo ip link set up eth1 如果配置一个和谁都不搭边的地址呢？例如，旁边的机器都是 192.168.1.x，我非得配置一个 16.158.23.6，会出现什么现象呢？
+不会出现任何现象，就是包发不出去呗。
+为什么发不出去？192.168.1.6 就在你这台机器的旁边，甚至是在同一个交换机上，而你把机器的地址设为了16.158.23.6。在这台机器上，你企图去 ping 192.168.1.6，你觉得只要将包发出去，同一个交换机的另一台机器马上就能收到，是这样的吗？
+可是 Linux 系统不是这样的，它没你想得那么智能。你用肉眼看到那台机器就在旁边，它则需要根据自己的逻辑进行处理。只要是在网络上跑的包，都是完整的，可以有下层没上层，绝对不可能有上层没下层。 所以，虽然它有自己的源 IP 地址 16.158.23.6，也有目标 IP 地址 192.168.1.6，但是包发不出去，这是因为 MAC 层还没填。自己的 MAC 地址自己知道，这个容易。但是目标 MAC 填什么呢？是不是填 192.168.1.6 这台机器的 MAC 地址呢？ 当然不是。Linux 首先会判断，要去的这个地址和我是一个网段的吗，或者和我的一个网卡是同一网段的吗？只有是一个网段的，它才会发送 ARP 请求，获取 MAC 地址。 如果发现不是,Linux 默认的逻辑是，如果这是一个跨网段的调用，它便不会直接将包发送到网络上，而是企图将包发送到网关。 如果你配置了网关的话，Linux 会获取网关的 MAC 地址，然后将包发出去。对于 192.</description>
+    </item>
+    
+    <item>
+      <title>专用网络（内网 / 私有网络）</title>
+      <link>https://hzren.github.io/blog/2020-08-17-%E4%B8%93%E7%94%A8%E7%BD%91%E7%BB%9C%E5%86%85%E7%BD%91-%E7%A7%81%E6%9C%89%E7%BD%91%E7%BB%9C/</link>
+      <pubDate>Mon, 17 Aug 2020 17:34:48 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2020-08-17-%E4%B8%93%E7%94%A8%E7%BD%91%E7%BB%9C%E5%86%85%E7%BD%91-%E7%A7%81%E6%9C%89%E7%BD%91%E7%BB%9C/</guid>
+      <description>概念 在互联网的地址架构中，专用网络是指遵守RFC 1918（IPV4）和RFC 4193（IPV6）规范，使用专用IP地址空间的网络。私有IP无法直接连接互联网，需要使用网络地址转换（Network Address Translator，NAT）或者代理服务器 （proxy server）来实现。与公网IP相比，私有IP是免费的，同时节省了IP地址资源，适合在局域网使用。
+用途 私有IP无法直接被互联网所访问，因此，相对于公网IP地址，它更加安全。私有IP常被用于家庭，学校和企业的局域网。IPv4私有地址 共享地址 Shared Address Space（RFC 6598），IANA于2012年将100.64.0.0/10定义用于电信级NAT场景。这些地址与RFC1918中定义的私有IP是不同的，只能用于运营商的内部网络，虽然在某些特性中与私有IP相同，但在定义上不能划为私有地址（更不是公用地址）。
+IPv6私有地址 IPv6的私有IP定义在RFC 4193， 地址块fc00 :: / 7已保留。这些地址称为唯一本地地址（Unique Local Addresses，ULA）。 它们被定义为单播地址，并在路由前缀中包含一个40位的随机数，以防止在两个私有网络互连时发生冲突。 尽管在本地使用，但唯一本地地址的IPv6地址范围是全局的。</description>
+    </item>
+    
+    <item>
+      <title>子网 子网掩码 无类别域间路由</title>
+      <link>https://hzren.github.io/blog/2020-08-17-%E5%AD%90%E7%BD%91-%E5%AD%90%E7%BD%91%E6%8E%A9%E7%A0%81-%E6%97%A0%E7%B1%BB%E5%88%AB%E5%9F%9F%E9%97%B4%E8%B7%AF%E7%94%B1/</link>
+      <pubDate>Mon, 17 Aug 2020 16:54:10 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2020-08-17-%E5%AD%90%E7%BD%91-%E5%AD%90%E7%BD%91%E6%8E%A9%E7%A0%81-%E6%97%A0%E7%B1%BB%E5%88%AB%E5%9F%9F%E9%97%B4%E8%B7%AF%E7%94%B1/</guid>
+      <description>子网 在因特网协议（Internet Protocol，IP）中，子网指的是从分类网络中划分出来的一部分。
+具有相同的前半部分地址的一组IP地址，可以利用地址的前半部分划分组。在一个IP网络中划分子网使我们能将一个单一的大型网络分成若干个较小的网络。在最初引入这个概念的时候，IPv4还未引入分类网络这个概念。引入划分子网这个概念的目的是为了允许一个单一的站点能拥有多个局域网。在引入了分类网络号之后，这个概念仍然有它的用处，因为它减少了因特网路由表中的表项数量（通过隐藏一个站点内部所有独立子网的相关信息）。此外它还带来了一个好处，那就是减少了网络开销，因为它将接收IP广播的区域划分成了若干部分。
+子网掩码 子网掩码是用来划分IP地址中哪一部分是网络号，哪一部分是机器号。
+「网络掩码」又叫「子网掩码」、「地址掩码」、「子網路遮罩」（subnet mask），它是一种用来指明一个IP地址的哪些位标识的是主机所在的网络地址以及哪些位标识的是主机地址的位掩码。 通常情况下，子网掩码的表示方法和地址本身的表示方法是一样的。在IPv4中，就是点分十进制四组表示法（四个取值从0到255的数字由点隔开，比如255.128.0.0）或表示为一个八位十六进制数（如FF.80.00.00，它等同于255.128.0.0），后者用得较少。 另一种更为简短的形式叫做无类别域间路由（CIDR）表示法，它给出的是一个地址加上一个斜杠以及网络掩码的二进制表示法中“1”的位数（即网络号中和网络掩码相关的是哪些位）。例如，192.0.2.96/28表示的是一个前28位被用作网络号的IP地址（和255.255.255.240的意思一样）。
+子网掩码的好处就是：不管网络有没有划分子网，只要把子网掩码和IP地址进行逐位的“与”运算（AND）即得出网络地址来。这样在路由器处理到来的分组时就可以采用同样的方法。
+无类别域间路由 无类别域间路由（Classless Inter-Domain Routing、CIDR）是一个用于给用户分配IP地址以及在互联网上有效地路由IP数据包的对IP地址进行归类的方法。
+一个IP地址包含两部分：标识网络的前缀和紧接着的在这个网络内的主机地址。在之前的分类网络中，IP地址的分配把IP地址的32位按每8位为一段分开。这使得前缀必须为8，16或者24位。因此，可分配的最小的地址块有256（24位前缀，8位主机地址，28=256）个地址，而这对大多数企业来说太少了。大一点的地址块包含65536（16位前缀，16位主机，216=65536）个地址，而这对大公司来说都太多了。这导致不能充分使用IP地址并且在路由器上路由也很不便，因为大量的需要单独路由的小型网络（C类网络）在地域上分得很开很难进行聚合路由，这给路由设备增加了很多负担。
+无类别域间路由是基于可变长子网掩码（VLSM）来进行任意长度的前缀的分配的。在RFC 950（1985）中有关于可变长子网掩码的说明。CIDR包括：
+指定任意长度的前缀的可变长子网掩码技术。遵从CIDR规则的地址有一个后缀说明前缀的位数，例如：192.168.0.0/16。这使得对日益缺乏的IPv4地址的使用更加有效。将多个连续的前缀聚合成超网，以及，在互联网中，只要有可能，就显示为一个聚合的网络，因此在总体上可以减少路由表的表项数目。聚合使得互联网的路由表不用分为多级，并通过VLSM逆转“划分子网”的过程。根据机构的实际需要和短期预期需要而不是分类网络中所限定的过大或过小的地址块来管理IP地址的分配的过程。因为在IPv6中也使用了IPv4的用后缀指示前缀长度的CIDR，所以IPv4中的分类在IPv6中已不再使用。
+子网掩码的计算 怎么划分子网网段？为什么要遮掩IP地址？怎么个遮掩法？现在我们有这么个IP地址：
+192.168.1.129
+我们并不知道它的网络号，也不知道它属于哪部分子网网段。我们现在就需要一个东西来划分出子网网段，这个东西就叫：子网掩码。 再，我们给出具体子网掩码：255.255.255.0 什么要这么给？因为子网掩码的长度要和IP地址相同32位，每8位预先被划分为一段。255的二进制就是1111 1111。 那么我们把子网掩码设置为255.255.255.193 行不行？
+这需要看它的二进制，子网掩码还需要满足一个条件才可以使用：它的二进制中1和0必须是连续的。
+255.255.255.193的二进制：1111 1111.1111 1111.1111 1111.1100 0001可以看出它1并不连续，所以255.255.255.193不能作为子网掩码使用。255.255.255.0就很符合条件。那子网掩码怎么用？
+用乘法来遮掩IP地址。1×1=1、1×0=0、0×0=0、0×1=0IP地址：192.168.1.129 ， 二进制：1100 0000.1010 1000.0000 0001.1000 0001 子网掩码：255.255.255.0 二进制：1111 1111.1111 1111.1111 1111.0000 0000计算：
+1100 0000.1010 1000.0000 0001.1011 1100 1111 1111.1111 1111.1111 1111.1110 0000 ———————————————————— 1100 0000.1010 1000.0000 0001.1010 0000 不再是24位未被遮掩了，而是27位未被遮掩。被遮掩的后5位，我们不必再关心它是1还是0了。 这就意味着：后5位不论怎么变换，都是在同一个网段里。后5位的变化是在1100 0000.1010 000.0000 0001.</description>
+    </item>
+    
+    <item>
+      <title>TCP协议</title>
+      <link>https://hzren.github.io/blog/2020-08-14-tcp%E5%8D%8F%E8%AE%AE/</link>
+      <pubDate>Fri, 14 Aug 2020 14:46:06 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2020-08-14-tcp%E5%8D%8F%E8%AE%AE/</guid>
+      <description>传输控制协议（缩写：TCP）是一种面向连接的、可靠的、基于字节流的传输层通信协议，由IETF的RFC 793定义。在计算机网络OSI模型中，它处于第四层传输层，同用户数据报协议（UDP）位于同一层。
+应用层向TCP层发送用于网络间传输的、用8位字节表示的数据流，然后TCP把数据流分割成适当长度的报文段（通常受链接数据链路层的最大传输单元（MTU）限制）。之后TCP把结果包传给IP层，由它来透过网络将包传送给接收端实体的TCP层。
+TCP为了保证不发生丢包，就给每个包一个序号，同时序号也保证了传送到接收端实体的包的按序接收。然后接收端实体对已成功收到的包发回一个相应的确认信息（ACK）；如果发送端实体在合理的往返时延（RTT）内未收到确认，那么对应的数据包就被假设为已丢失并进行重传。TCP用一个校验和函数来检验数据是否有错误，在发送和接收时都要计算校验和。
+概念 数据在TCP层称为流（Stream），数据分组称为分段（Segment）。作为比较，数据在IP层称为Datagram，数据分组称为分片（Fragment）。 UDP 中分组称为Message。
+运行方式 一个完整的TCP链接分为三个阶段：连接建立(connection establishment)、数据传送（data transfer）和连接终止（connection termination）。操作系统将TCP连接抽象为套接字表示的本地端点（local end-point）作为编程接口给程序使用。在TCP链接的生命期周期内，本地端点会经历一系列的状态改变。
+数据包结构 链接建立 TCP协议经过三次握手建立链接:
+1. 客户端通过向服务器端发送一个SYN来建立一个主动打开，作为三次握手的一部分。客户端把这段连接的序号设定为随机数A。2. 服务器端应当为一个合法的SYN回送一个SYN/ACK。ACK的确认码应为A+1，SYN/ACK包本身又有一个随机产生的序号B。3. 最后，客户端再发送一个ACK。此时包的序号被设定为A+1，而ACK的确认码则为B+1。当服务端收到这个ACK的时候，就完成了三次握手，并进入了连接建立状态。在第二步，服务器确认自己能收到客户端的数据包 在第三步，客户端收到服务器端的数据包，客户端确认服务器能收到自己的数据包，自己也能收到服务器的数据包 服务器端还不确定客户端是否能收到自己发送的数据包，所以服务器一定要等收到客户端发来的第二个ACK应答才真正建立链接 如果服务器端在收到了客户端的SYN后回了SYN-ACK后客户端掉线了，服务器端没有收到客户端回来的ACK，那么，这个连接就处于一个中间状态，既没有成功，也没有失败。这个时候,服务器端会在一定时间内重发SYN-ACK。在Linux下，默认重试次数为5次，重试的间隔时间从1s开始每次都翻倍，5次的重试时间间隔为1s, 2s, 4s, 8s, 16s，总共31s，第5次发出后还要等32s才知道第5次也超时了，所以，总共需要 1s + 2s + 4s+ 8s+ 16s + 32s = 63s，服务器端才会断开这个连接。可以使用三个TCP参数来调整行为：tcp_synack_retries 减少重试次数；tcp_max_syn_backlog，增大SYN连接数；tcp_abort_on_overflow在检查到 backlog 队列已满时，直接发 RST 包给客户端终止此连接,此时客户端程序会收到 104 Connection reset by peer 错误。
+TCP_FASTOPEN 控制server socket 接收链接。
+TCP_FASTOPEN_CONNECT 控制socket发起链接。
+为什么是三次握手？
+三次以上的握手是没意义的，因为没办法给每个对方发来的数据包都做确认，这样就陷入了确认包的死循环当中。三次握手的 三次握手的核心是通讯双方都明确自身能收到对方发来的数据包，对方能收到自己发来的数据包
+绑定端口 主机在收到一个TCP包时，使用两端的IP地址与端口号来标识这个TCP包属于哪个TCP链接。主机使用一张表来存储所有的session，表中的每条称作Transmission Control Block（TCB），tcb结构上包括链接的源端口、源IP，目的端口、目的ip、序号、应答序号、对方窗口大小、己方窗口大小、tcp状态、tcp输入/输出队列、应用层输出队列、tcp的重传变量等。
+服务器端的链接数量是无限的，只受内存的限制。客户端的连接数量，在Linux kernel 4.2 之前由于在发送第一个SYN到服务器之前需要先分配一个随机空闲的端口，理论上最大链接数受限于端口数据量，最大65k。从Linux 4.</description>
+    </item>
+    
+    <item>
+      <title>IPv4 与 IPv6 区别</title>
+      <link>https://hzren.github.io/blog/2020-08-13-ipv4-%E4%B8%8E-ipv6-%E5%8C%BA%E5%88%AB/</link>
+      <pubDate>Thu, 13 Aug 2020 11:17:22 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2020-08-13-ipv4-%E4%B8%8E-ipv6-%E5%8C%BA%E5%88%AB/</guid>
+      <description> 两者报文的前四位都是版本号字段， 通过该报文的前四位即可判断出这是一个IPv4报文还是一个IPv6报文，因此，在同一线路，路由器同时支持IPv4和IPv6就不存在问题。
+IPv4和IPv6是Internet协议版本4和Internet协议版本6，IP版本6是Internet协议的新版本，就复杂性和效率而言，它比IP版本4更好。
+IPv4和IPv6之间的区别：
+IPV4 IPV6 IPv4具有32位地址长度 IPv6具有128位地址长度 支持手动和DHCP地址配置 支持自动和重新编号地址配置 在端对端连接中无法实现完整性 在端到端连接中，可以实现完整性 它可以生成4.29×109地址空间 可以产生3.4×1038的地址空间 安全功能取决于应用程序 IPSEC是IPv6协议中的内置安全功能 IPv4的地址表示形式（十进制） IPv6的地址表示形式为十六进制 发送方和转发路由器都可执行分段 仅由发送方执行分段 在IPv4中，数据包流标识不可用 在IPv6中，数据包流标识可用，并且在标头中使用流标签字段 在IPv4中，checksumfield可用 在IPv6中，校验和字段不可用 它具有广播消息传输方案 在IPv6多播中，任何强制转换消息传输方案均可用 在IPv4中未提供加密和身份验证功能 在IPv6中提供了加密和身份验证 IPv4的标头为20-60字节 IPv6的标头固定为40个字节 </description>
+    </item>
+    
+    <item>
+      <title>IPv6 协议</title>
+      <link>https://hzren.github.io/blog/2020-08-13-ipv6-%E5%8D%8F%E8%AE%AE/</link>
+      <pubDate>Thu, 13 Aug 2020 11:15:34 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2020-08-13-ipv6-%E5%8D%8F%E8%AE%AE/</guid>
+      <description>概念 IPv6是网际协议的最新版本，用作互联网的协议。用它来取代IPv4主要是为了解决IPv4地址枯竭问题，同时它也在其他方面对于IPv4有许多改进。IPv6的设计目的是取代IPv4，然而长期以来IPv4在互联网流量中仍占据主要地位，IPv6的使用增长缓慢。
+与IPv4比较 在Internet上，数据以分组的形式传输。IPv6定义了一种新的分组格式，目的是为了最小化路由器处理的消息标头。由于IPv4消息和IPv6消息标头有很大不同，因此这两种协议无法互操作。但是在大多数情况下，IPv6仅仅是对IPv4的一种保守扩展。除了嵌入了互联网地址的那些应用协议（如FTP和NTPv3，新地址格式可能会与当前协议的语法冲突）以外，大多数传输层和应用层协议几乎不怎么需要修改就可以在IPv6上运行。
+无状态地址自动配置（SLAAC） 当连接到IPv6网络上时，IPv6主机可以使用邻居发现协议对自身进行自动配置。当第一次连接到网络上时，主机发送一个链路本地路由器请求（solicitation）多播请求来获取配置参数。路由器使用包含Internet层配置参数的路由器宣告（advertisement）报文进行回应。在不适合使用IPv6无状态地址自动配置的场景下，网络可以使用有状态配置（DHCPv6），或者使用静态方法手动配置。
+IPv6格式 IPv6二进位制下为128位长度，以16位为一组，每组以冒号“:”隔开，可以分为8组，每组以4位十六进制方式表示。例如：2001:0db8:86a3:08d3:1319:8a2e:0370:7344 是一个合法的IPv6地址。类似于IPv4的点分十进制，同样也存在点分十六进制的写法，将8组4位十六进制地址的冒号去除后，每位以点号“.”分组，例如：2001:0db8:85a3:08d3:1319:8a2e:0370:7344则记为2.0.0.1.0.d.b.8.8.5.a.3.0.8.d.3.1.3.1.9.8.a.2.e.0.3.7.0.7.3.4.4，其倒序写法用于ip6.arpa子域名记录IPv6地址与域名的映射。
+同时IPv6在某些条件下可以省略：
+每项数字前导的0可以省略，省略后前导数字仍是0则继续，例如下组IPv6是等价的。2001:0DB8:02de:0000:0000:0000:0000:0e132001:DB8:2de:0000:0000:0000:0000:e132001:DB8:2de:000:000:000:000:e132001:DB8:2de:00:00:00:00:e132001:DB8:2de:0:0:0:0:e13可以用双冒号“::”表示一组0或多组连续的0，但只能出现一次：如果四组数字都是零，可以被省略。遵照以上省略规则，下面这两组IPv6都是相等的。2001:DB8:2de:0:0:0:0:e132001:DB8:2de::e132001:0DB8:0000:0000:0000:0000:1428:57ab2001:0DB8:0000:0000:0000::1428:57ab2001:0DB8:0:0:0:0:1428:57ab2001:0DB8:0::0:1428:57ab2001:0DB8::1428:57ab2001::25de::cade 是非法的，因为双冒号出现了两次。它有可能是下种情形之一，造成无法推断。2001:0000:0000:0000:0000:25de:0000:cade2001:0000:0000:0000:25de:0000:0000:cade2001:0000:0000:25de:0000:0000:0000:cade2001:0000:25de:0000:0000:0000:0000:cade如果这个地址实际上是IPv4的地址，后32位可以用10进制数表示；因此::ffff:192.168.89.9 相等于::ffff:c0a8:5909。另外，::ffff:1.2.3.4 格式叫做IPv4映射地址。
+IPv4位址可以很容易的转化为IPv6格式。举例来说，如果IPv4的一个地址为135.75.43.52（十六进制为0x874B2B34），它可以被转化为0000:0000:0000:0000:0000:FFFF:874B:2B34 或者::FFFF:874B:2B34。同时，还可以使用混合符号（IPv4-compatible address），则地址可以为::ffff:135.75.43.52。
+报文格式 IPv6封包由两个主要部分组成：头部和负载。 包头是包的前320比特，并且包含有源和目的地址，协议版本，通信类别（8位元，包优先级），流标记（20位元，QoS服务质量控制），分组长度（16位），下一个头部（用于入栈解码，类似IPv4中的协议号），和跳段数限制（8位元，生存时间，相当于IPv4中的TTL）。后面是负载。MTU至少1280字节长，在常见的以太网环境中为1500字节。负载在标准模式下最大可为65535字节，如果扩展报头设置了&amp;quot;jumbo payload&amp;quot;选项，则长度值被置为0。 IPv6曾有两个有着细微差别的版本；在 RFC 1883 中定义的原始版本（现在废弃）和 RFC 2460 中描述的现在提议的标准版本。两者主要在通信类别这个选项上有所不同，它的位数由4位变为了8位。其他的区别都是微不足道的。 由于分片（Fragmentation）只在IPv6的主机中处理，而IPv6也要求实现“MTU路径发现”来避免数据包需要被中间设备分片，所以IPv4头涉及分片的字段从IPv6基本头移出至专用的分片扩展报头中。 在IPv6中，可选项都被从标准头部中移出并在协议字段中指定，类似于IPv4的协议字段功能。</description>
+    </item>
+    
+    <item>
+      <title>IPv4 协议</title>
+      <link>https://hzren.github.io/blog/2020-08-13-ipv4-%E5%8D%8F%E8%AE%AE/</link>
+      <pubDate>Thu, 13 Aug 2020 11:15:06 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2020-08-13-ipv4-%E5%8D%8F%E8%AE%AE/</guid>
+      <description>概念 IPv4是一种无连接的协议，操作在使用分组交换的链路层（如以太网）上，位于网络层。协议会尽最大努力交付数据包，它不保证任何数据包均能送达目的地，也不保证所有数据包均按照正确的顺序无重复地到达。这些功能由上层的传输协议（如传输控制协议 / TCP）来保证。
+地址 IPv4使用32位（4字节）地址，因此地址空间中只有4,294,967,296（232）个地址。不过，一些地址是为特殊用途所保留的，如专用网络（约1800万个地址）和多播地址（约2.7亿个地址），这减少了可在互联网上路由的地址数量。随着地址不断被分配给最终用户，IPv4地址枯竭问题也在随之产生。基于分类网络、无类别域间路由和网络地址转换的地址结构重构显著地减少了地址枯竭的速度。但在2011年2月3日，在最后5个地址块被分配给5个区域互联网注册管理机构之后，IANA的主要地址池已经用尽。
+常规分类 分配 最初，一个IP地址被分成两部分：网络识别码在地址的高位字节中，主机识别码在剩下的部分中。
+为了克服这个限制，在随后出现的分类网络中，地址的高位字节被重定义为网络的类(Class)。这个系统定义了五个类別：A、B、C、D和E。A、B和C类有不同的网络类別长度，剩余的部分被用来识别网络内的主机，这就意味着每个网络类別有着不同的给主机编址的能力。D类被用于多播地址，E类被留作将来使用。
+1993年，无类别域间路由（CIDR）正式地取代了分类网络，后者也因此被称为“有类别”的。
+CIDR被设计为可以重新划分地址空间，因此小的或大的地址块均可以分配给用户。CIDR创建的分层架构由互联网号码分配局（IANA）和区域互联网注册管理机构（RIR）进行管理，每个RIR均维护着一个公共的WHOIS数据库，以此提供IP地址分配的详情。
+特殊用途的地址 报文格式 IP报文包含IP首部和数据部分
+首部 IPv4报文的首部包含14个字段，其中13个是必须的，第14个是可选的（红色标出），并命名为：“选项”字段。首部中的字段均以大端序包装，在以下的图表和讨论中，最高有效位（Most Significant bit）被标记为0。
+版本（Version） 版本字段占4bit，通信双方使用的版本必须一致。对于IPv4，字段的值是4。
+首部长度（Internet Header Length， IHL） 占4bit，首部长度说明首部有多少32位字（4字节）。由于IPv4首部可能包含数目不定的选项，这个字段也用来确定数据的偏移量。这个字段的最小值是5（二进制0101），相当于5*4=20字节（RFC 791），最大十进制值是15。
+区分服务（Differentiated Services，DS） 占6bit，最初被定义为服务类型字段，实际上并未使用，但1998年被IETF重定义为区分服务RFC 2474。只有在使用区分服务时，这个字段才起作用，在一般的情况 下都不使用这个字段。例如需要实时数据流的技术会应用这个字段，一个例子是VoIP。
+显式拥塞通告（ Explicit Congestion Notification，ECN） 在RFC 3168中定义，允许在不丢弃报文的同时通知对方网络拥塞的发生。ECN是一种可选的功能，仅当两端都支持并希望使用，且底层网络支持时才被使用。
+全长（Total Length） 这个16位字段定义了报文总长，包含首部和数据，单位为字节。这个字段的最小值是20（20字节首部+0字节数据），最大值是216-1=65,535。IP规定所有主机都必须支持最小576字节的报文，这是假定上层数据长度512字节，加上最长IP首部60字节，加上4字节富裕量，得出576字节，但大多数现代主机支持更大的报文。当下层的数据链路协议的最大传输单元（MTU）字段的值小于IP报文长度时，报文就必须被分片，详细见下个标题。
+标识符（Identification） 占16位，这个字段主要被用来唯一地标识一个报文的所有分片，因为分片不一定按序到达，所以在重组时需要知道分片所属的报文。每产生一个数据报，计数器加1，并赋值给此字段。一些实验性的工作建议将此字段用于其它目的，例如增加报文跟踪信息以协助探测伪造的源地址。[7]
+标志 （Flags） 这个3位字段用于控制和识别分片，它们是：
+位0：保留，必须为0；位1：禁止分片（Don’t Fragment，DF），当DF=0时才允许分片；位2：更多分片（More Fragment，MF），MF=1代表后面还有分片，MF=0 代表已经是最后一个分片。如果DF标志被设置为1，但路由要求必须分片报文，此报文会被丢弃。这个标志可被用于发往没有能力组装分片的主机。当一个报文被分片，除了最后一片外的所有分片都设置MF为1。最后一个片段具有非零片段偏移字段，将其与未分片数据包区分开，未分片的偏移字段为0。分片偏移 （Fragment Offset） 这个13位字段指明了每个分片相对于原始报文开头的偏移量，以8字节作单位。
+存活时间（Time To Live，TTL） 这个8位字段避免报文在互联网中永远存在（例如陷入路由环路）。存活时间以秒为单位，但小于一秒的时间均向上取整到一秒。在现实中，这实际上成了一个跳数计数器：报文经过的每个路由器都将此字段减1，当此字段等于0时，报文不再向下一跳传送并被丢弃，最大值是255。常规地，一份ICMP报文被发回报文发送端说明其发送的报文已被丢弃。这也是traceroute的核心原理。
+协议 （Protocol） 占8bit，这个字段定义了该报文数据区使用的协议。IANA维护着一份协议列表（最初由RFC 790定义），详细参见IP协议号列表。
+首部检验和 （Header Checksum） 这个16位检验和字段只对首部查错，不包括数据部分。在每一跳，路由器都要重新计算出的首部检验和并与此字段进行比对，如果不一致，此报文将会被丢弃。重新计算的必要性是因为每一跳的一些首部字段（如TTL、Flag、Offset等）都有可能发生变化，不检查数据部分是为了减少工作量。数据区的错误留待上层协议处理——用户数据报协议（UDP）和传输控制协议（TCP）都有检验和字段。此处的检验计算方法不使用CRC。 RFC 1071</description>
+    </item>
+    
+    <item>
+      <title>IP 协议</title>
+      <link>https://hzren.github.io/blog/2020-08-13-ip-%E5%8D%8F%E8%AE%AE/</link>
+      <pubDate>Thu, 13 Aug 2020 00:00:00 +0000</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2020-08-13-ip-%E5%8D%8F%E8%AE%AE/</guid>
+      <description>前言 IP协议，又称网际协议，是整个互联网事实的基石。
+IP地址最核心的概念之一就是IP地址，IP地址用来标识网络上的一台设备；为什么有了MAC地址还需要IP地址呢，因为MAC地址是和硬件绑定在一起的，硬件设备是可以人为位置转移的，一台设备，它可以用在这个世界上的任何地方。
+如果只有MAC地址没有IP地址，一个ISP(电信运营商)下面所链接的设备MAC地址将是无法确定的，毫无规律可言，当一个数据包从一台网络设备发出之后，我们无法确定这个数据包的目标是在哪个国家的哪个地方。所以需要在MAC地址之上虚拟新的一层，IP层，当数据夸网络传输时，我们根据数据包的目的IP地址确定其所在国家的ISP，将其发送过去，目标ISP收到该报文后通过其IP地址分配确定目标设备，将该数据包转发过去。
+在同一个网络中的内部通信并不需要网络层设备(IP地址不是必要条件)，仅仅靠数据链路层(MAC地址)就可以完成相互通信，对于不同的网络之间相互通信则必须借助路由器等三层设备。
+概念 IP协议是网络层最重要的协议之一，IP协议的功能是根据源主机和目的主机的地址来传送数据。为达到此目的，IP协议定义了寻址方法和数据报的封装结构。第一个架构的主要版本为IPv4，目前仍然是广泛使用的互联网协议，IPv6还在推进中。
+IP封装 数据在IP协议层会被封装为数据包。IP协议的特点在于：在传输过程中，主机在传输数据之前，无须预先和目标主机建立好一条特定的“通路”。IP协议是一种“不可靠的”数据包传输机制（也被称作“尽力而为”或“尽最大努力交付”）；也就是说，IP协议不保证数据能准确的传输。数据包在到达的时候可能已经损坏，顺序错乱（与其它一起传送的封包相比），产生冗余包，或者全部丢失。如果应用需要保证可靠性，一般需要采取其他的方法，例如利用IP的上层协议控制。
+IP提供的服务 由于封装带来的抽象机制，IP协议可以在各种各样的网络上工作，例如以太网，ATM，FDDI，Wi-Fi，令牌环等等。每个链路层的实现可能有自己的方法（也有可能是完全没有它自己的方法），把IP地址解析成相应的数据链路地址(MAC地址)。IPv4协议使用地址解析协议（ARP），而IPv6采用邻居发现协议（NDP）。
+可靠性 互联网协议的设计原则，网络基础设施本身就是不可靠的，在传输过程中使用的是节点和连接也是动态的。不存在中央式的衡量机制来跟踪和维护网络状态。为了减少网络的复杂性，大部分网络分布在每个数据传输的终端节点。传输路径中的路由器只是简单地将数据包发送到下一个匹配的目的地址的路由前缀的本地网关。
+基于这种设计，IP协议只提供了尽力传送保证，IP服务是不可靠的。IP协议是一种无连接的协议，相对于面向连接的协议。IP协议允许下列任何故障发生：
+- 数据损坏- 丢失数据包- 重复到来- 数据包传递乱序；意思是，封包A即使在封包B之前发送，B也可能在A之前先抵达。IPv4会在IP层计算和校验签名头和来确保IP数据报头是正确的。校验失败的话这数据包会直接丢弃。在这种情况下不会有任何通知给任一个终端节点。IPv6为了快速传输已经放弃了该功能。
+除了可靠性问题，因为网络组成的多样性和复杂性，数据包在不同的网络路径下传输结果很可能是不一样的，即使网络路径是有效并且可靠的。原因之一是数据链层上的MTU设置。
+IP寻址和路由 IP协议最复杂的就是寻址和路由了。寻址就是如何将IP地址分配给各个终端节点，以及如何划分和组合子网。所有网络端点都需要路由，尤其是网际之间的路由器。路由器通常用内部网关协议（Interior Gateway Protocols，IGPs）和外部网关协议（External Gateway Protocols，EGPs）决定怎样发送IP数据包。
+IGP / 内部网关协议 内部网关协议可分为三类：1) 距离矢量路由协议，2) 连接状态路由协议，3) 高级距离矢量路由协议。
+距离矢量路由协议
+这类协议使用贝尔曼-福特算法（Bellman-Ford）计算路径。在距离-矢量路由协议中，每个路由器并不了解整个网络的拓扑信息。它们只是向其它路由器通告自己的距离、也从其它路由器那里收到类似的通告。每个路由器都通过这种路由通告来传播它的路由表。在之后的通告周期中，各路由器通告其整张路由表。该过程持续至所有路由器的路由表都收敛至一稳定状态为止。
+这类协议具有收敛缓慢的缺点，然而，它们通常容易处理且非常适合小型网络。距离-矢量路由协议的一些例子包括：
+1. 路由信息协议（RIP）2. 内部网关路由协议（IGRP）（注意：勿将内部网关协议IGP与内部网关路由协议IGRP混淆，IGP是本条目所指一类协议，而IGRP是特定的一种路由协议）链路状态路由协议
+在链路状态路由协议中，每个节点都知晓整个网络的拓扑信息。各节点使用自己了解的网络拓扑情况来各自独立地对网络中每个可能的目的地址计算出其最佳的转发地址（下一跳）。所有最佳转发地址汇集到一起构成该节点的完整路由表。
+与距离-矢量路由协议使用的那种每个节点与其相邻节点分享自己的路由表的工作方式不同，链路状态路由协议的工作方式是节点间仅传播用于构造网络连通图所需的信息。
+最初创建这类协议就是为了解决距离-矢量路由协议收敛缓慢的缺点，然而，为此链路状态路由协议会消耗大量的内存与处理器能力。
+链路状态路由协议的例子有：
+1. 开放式最短路径优先协议（OSPF）2. 中间系统到中间系统路由交换协议（IS-IS）高级距离矢量路由协议
+又名混合路由协议或者平衡混合路由协议，是继距离-矢量路由协议与链路状态路由协议之后的又一个内部网关协议，强调了前两者的优点，规避了它们的不足。
+高级距离矢量路由协议的例子有：
+1. 增强型内部网关路由协议（EIGRP）（增强型内部网关路由协议EIGRP是内部网关路由协议IGRP的增强版，EIGRP是Cisco专用协议）</description>
+    </item>
+    
+    <item>
+      <title>计算机网络 - 网络层</title>
+      <link>https://hzren.github.io/blog/2020-08-11-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%BD%91%E7%BB%9C%E5%B1%82/</link>
+      <pubDate>Tue, 11 Aug 2020 15:21:57 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2020-08-11-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%BD%91%E7%BB%9C%E5%B1%82/</guid>
+      <description>概念 网络层（Network Layer）是OSI模型中的第三层（TCP/IP模型中的网际层），提供路由和寻址的功能，使两終端系統能够互连且決定最佳路径，並具有一定的拥塞控制和流量控制的能力。相当于传送邮件时需要地址一般重要。由于TCP/IP协议体系中的网络层功能由IP协议规定和实现，故又称IP层。
+功能 寻址 对网络层而言使用IP地址来唯一标识互联网上的设备，网络层依靠IP地址进行相互通信（类似于数据链路层的MAC地址），详细的编址方案参见IPv4和IPv6。
+路由 在同一个网络中的内部通信并不需要网络层设备，仅仅靠数据链路层就可以完成相互通信，对于不同的网络之间相互通信则必须借助路由器等三层设备。
+常见网络层协议 IP （V4、V6）IPXX.25RARPICMP（V4、V6）IGMPIPsecRIPOSPF总结 网络层已经基本脱离了硬件层面，基本上全部属于软件层面定义的东西。IP协议虽然和IPX， IPSec，ICPMP协议位于同一层，但是它们基本都依赖于IP地址，ICMP，IGMP的报文都是通过IP报文进行传输的， IP协议是整个互联网事实上的基石。</description>
+    </item>
+    
+    <item>
+      <title>计算机网络 - 物理层</title>
+      <link>https://hzren.github.io/blog/2020-08-10-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%89%A9%E7%90%86%E5%B1%82/</link>
+      <pubDate>Mon, 10 Aug 2020 18:59:45 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2020-08-10-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%89%A9%E7%90%86%E5%B1%82/</guid>
+      <description>物理层的基本概念 物理层的主要任务描述为确定与传输媒体的接口的一些特性 机械特性 指明接口所用接线器的形状和尺寸、引线数目和排列、固定和锁定装置等等。 电气特性 指明在接口电缆的各条线上出现的电压的范围。 功能特性 指明某条线上出现的某一电平的电压表示何种意义。 过程特性 指明对于不同功能的各种可能事件的出现顺序。 物理层基本工作内容 物理层利用传输介质为通信的两端建立、管理和释放物理链接，实现比特流的透明传输，保证比特流正确的传输到对端。物理层中承载的是比特流单位是比特（bit）。
+物理层都有那些协议 电话网络modems-V.92 EIARS-232，EIA-422，EIA-423，RS-449，RS-485 Ethernet physical layerIncluding10BASE-T，10BASE2，10BASE5，100BASE-TX，100BASE-FX。100BASE-T，1000BASE-T，1000BASE-SX还有其他类型 Varieties of 802.11Wi-Fi物理层 DSL ISDN T1 and otherT-carrierlinks， and E1 and otherE-carrierlinks SONET/SDH Optical Transport Network（OTN） GSMUm air interface物理层 Bluetooth物理层 IEEE 1394 interface TransferJet物理层 Etherloop ARINC 818航空电子数字视频总线 G.hn/G.9960物理层 N bus（controller area network）物理层 理层协议就分为两类，点对点通信线路物理层协议和广播通信线路物理层协议，其中广播通信线路又分为有线通信线路和无线通信线路，有线通信线路就是咱们常说的网线形式的网络，无线通信线路就是WIFI。有线通讯不容易窃听,无线通讯的数据很容易被窃听到，以无线通讯的报文基本上都是需要在底层链路做加密的。
+数据通信的基础知识 数据通信系统的模型 据传输按照使用的信道数量可以分为串行通信和并行通信
+串行通信：将一个字符的二进制代码按从低位到高位顺序传输，传输中需要建立一个信道。 并行通信：将一个字符的二进制代码同时通过8条信道同时传输，每发送一个字符都需要建立8条信道，成本较高。 有关信道的几个基本概念 单向通信（单工通信）——只能有一个方向的通信而没有反方向的交互。 双向交替通信（半双工通信）——通信的双方都可以发送信息，但不能双方同时发送(当然也就不能同时接收)。 双向同时通信（全双工通信）——通信的双方可以同时发送和接收信息。 几种最基本的调制方法
+调幅(AM)：载波的振幅随基带数字信号而变化。 调频(FM)：载波的频率随基带数字信号而变化。 调相(PM) ：载波的初始相位随基带数字信号而变化。 物理层下面的传输媒体 导向传输媒体
+双绞线 屏蔽双绞线 STP (Shielded Twisted Pair) 无屏蔽双绞线 UTP (Unshielded Twisted Pair) 同轴电缆 50 Ω同轴电缆 75 Ω 同轴电缆 光缆 光纤的工作原理 光线在纤芯中传输的方式是不断地全反射 非导向传输媒体</description>
+    </item>
+    
+    <item>
+      <title>Markdown 语法</title>
+      <link>https://hzren.github.io/blog/2020-08-07-markdown-%E8%AF%AD%E6%B3%95/</link>
+      <pubDate>Fri, 07 Aug 2020 17:17:52 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2020-08-07-markdown-%E8%AF%AD%E6%B3%95/</guid>
+      <description>标题 使用 # 号可表示 1-6 级标题，一级标题对应一个 # 号，二级标题对应两个 # 号，以此类推。
+# 一级标题 ## 二级标题 ### 三级标题 #### 四级标题 ##### 五级标题 ###### 六级标题 显示效果如下图：
+段落 Markdown 段落没有特殊的格式，直接编写文字就好，段落的换行是使用两个以上空格加上回车。
+当然也可以在段落后面使用一个空行来表示重新开始一个段落。
+字体 Markdown 可以使用以下几种字体：
+*斜体文本* _斜体文本_ **粗体文本** __粗体文本__ ***粗斜体文本*** ___粗斜体文本___ 显示效果如下所示：
+分隔线 删除线 下划线 可以在一行中用三个以上的星号、减号、底线来建立一个分隔线，行内不能有其他东西。你也可以在星号或是减号中间插入空格。下面每种写法都可以建立分隔线：
+*** * * * ***** - - - ---------- 如果段落上的文字要添加删除线，只需要在文字的两端加上两个波浪线 ~~ 即可，实例如下：
+~~BAIDU.COM~~ BAIDU.COM
+下划线可以通过 HTML 的 &amp;lt;u&amp;gt; 标签来实现
+&amp;lt;u&amp;gt;带下划线文本&amp;lt;/u&amp;gt; 带下划线文本
+列表 Markdown 支持有序列表和无序列表。无序列表使用星号(*)、加号(+)或是减号(-)作为列表标记，这些标记后面要添加一个空格，然后再填写内容：
+* 第一项 * 第二项 * 第三项 + 第一项 + 第二项 + 第三项 - 第一项 - 第二项 - 第三项 显示结果如下：</description>
+    </item>
+    
+    <item>
+      <title>计算机网络中常见中间设备名称及功能</title>
+      <link>https://hzren.github.io/blog/2020-08-06-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E4%B8%AD%E5%B8%B8%E8%A7%81%E4%B8%AD%E9%97%B4%E8%AE%BE%E5%A4%87%E5%90%8D%E7%A7%B0%E5%8F%8A%E5%8A%9F%E8%83%BD/</link>
+      <pubDate>Thu, 06 Aug 2020 17:12:51 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2020-08-06-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E4%B8%AD%E5%B8%B8%E8%A7%81%E4%B8%AD%E9%97%B4%E8%AE%BE%E5%A4%87%E5%90%8D%E7%A7%B0%E5%8F%8A%E5%8A%9F%E8%83%BD/</guid>
+      <description>集线器/HUB: 集线器（Ethernet hub）是指将多条以太网双绞线或光纤集合连接在同一段物理介质下的装置。集线器是运作在OSI模型中的实体层，可以让其连结的设备工作在同一网段。集线器上有多个I/O端口，信号从任意一个端口进入后，会从其他端口出现。中继器（Repeater hub，集线器的一种）也会参与冲突检测（collision detection），在检测到冲突时向所有端口转发拥塞信号。
+集线器相比于交换机更为简单，它可以被视作有多个端口的中继器，从一个端口接受比特位（或符号），再从其他端口送出。它对物理层数据包有所感知，可以检测到其开始、挂起及冲突。在检测到冲突时会发送拥塞信号以传播这一事件。集线器不能对经过它的网络流量做更进一步地检查与管理：任何进入的数据包都会被广播到其他端口。集线器/中继器无法储存数据——数据包必须在接收时被发送，一旦发生冲突，就会丢包（发送端应当能够侦测到，并重新发送）。基于此，集线器只能以半双工模式工作。因此，由于冲突域更广，相比于使用更复杂的网络设备，使用集线器的数据网络更容易出现数据包冲突。
+以太网设计目标：电脑使用一个网络接口，可以同时与多台电脑通信，将电脑连接起来的黑盒子最先面世，称之为集线器，但我们更喜欢叫它Hub。 这种集线器，通常有多个端口，可以接入多台电脑，这种黑盒子使电脑连接在一起成为一种可能，其内部工作原理，就是信号放大器。
+HUB内部采用广播的形式传播其收到的每一个网络包.因为其采用广播的形式, 这就注定了一个HUB上不可能有太多端口, 不能链接太多电脑, 不然在广播网络时就形成了网络风暴。
+由于HUB只是简单的转发，所以hub工作在物理层（L1）。
+网桥: 网桥将网络的多个网段在数据链路层（OSI模型第2层）连接起来（即桥接）。
+网桥有别于路由器。路由器允许多个网络之间的独立通信，但又保持区隔，而网桥则是将两个独立的网络连接起来，就如同单一网络。如果所桥接的网络有一个以上的区段是无线网络，则该设备称为无线网桥。
+桥接器在功能上与集线器等其他用于连接网段的设备类似，不过后者工作在物理层（OSI模型第1层）。
+网桥能够识别数据链路层中的数据帧，并将这些数据帧临时存储于内存，再重新生成信号作为一个全新的数据帧转发给相连的另一个网段（network segment）。由于能够对数据帧拆包、暂存、重新打包（称为存储转发机制store-and-forward），网桥能够连接不同技术参数传输速率的数据链路，如连接10BASE-T与100BASE-TX。
+数据帧中有一个位叫做FCS，用来通过CRC方式校验数据帧中的位。网桥可以检查FCS，将那些损坏的数据帧丢弃。
+网桥在向其他网段转发数据帧时会做冲突检测控制。
+网桥还能通过地址自学机制和过滤功能控制网络流量，具有OSI第2层网络交换机功能。其机制是网桥内部有一个数据库，最初没有数据。当网桥从一个网段收到一个数据帧，就会在数据库中登记（或者更新）数据帧的源地址属于这个网段，并检查数据包的目的地址。如果目的地址在数据库中属于另外一个网段，则网桥向该网段转发该数据帧；如果目的地址在数据库中没有记录，则网桥向除了源地址所在之外的其他所有网段转发（flood）该数据帧。
+桥接器仅仅在不同网络之间有数据传输的时候才将数据转发到其他网络，不是像集线器那样对所有数据都进行广播。对于以太网，“桥接”这一术语正式的含义是指符合IEEE802.1D标准的设备，即“网络切换”。网桥可以分割网段，不似集线器仍是在为同一碰撞域，所以对频宽耗损较大。因网桥透过其内之MAC表格，让传送帧不会通过，所以其称之为数据连接层操作之网络元件，可隔离碰撞。
+交换机: 在集线器的基础上，添加了MAC地址学习功能，成为了交换机，这样可以避免集线器对所有帧都广播的弊病。
+交换机是一种多端口的网桥，在数据链路层使用MAC地址转发数据。通过引入路由功能，一些交换机也可以在网络层转发数据，这种交换机一般被称为三层交换机或者多层交换机。
+工作原理 交换机工作于OSI参考模型的第二层，即数据链路层。交换机内部的CPU会在每个端口成功连接时，通过将MAC地址和端口对应，形成一张MAC表。在今后的通讯中，发往该MAC地址的数据包将仅送往其对应的端口，而不是所有的端口。因此交换机可用于划分数据链路层广播，即冲突域；但它不能划分网络层广播，即广播域。
+交换机对数据包的转发是建立在MAC地址——物理地址基础之上的，对于IP网络协议来说，它是透明的，即交换机在转发数据包时，不知道也无须知道信源机和信宿机的IP地址，只需知其物理地址。
+交换机在操作过程当中会不断的收集资料去建立它本身的一个地址表，这个表相当简单，它说明了某个MAC地址是在哪个端口上被发现的，所以当交换机收到一个TCP/ IP封包时，它便会查看该数据包的目的MAC地址，核对自己的地址表以确认应该从哪个端口把数据包发出去。由于这个过程比较简单，加上这功能由一崭新硬件进行——ASIC，因此速度相当快。一般只需几十微秒，交换机便可决定一个IP封包该往哪里送。
+如果目的地MAC地址不能在地址表中找到时，交换机会把IP封包「扩散」出去，即把它从每一个端口中送出去，就如交换机在处理一个收到的广播封包时一样。二层交换机的弱点正是它处理广播封包的手法不太有效，比方说，当一个交换机收到一个从TCP / IP工作站上发出来的广播封包时，他便会把该封包传到所有其他端口去，哪怕有些端口上连的是IPX或DECnet工作站。这样一来，非TCP/ IP节点的带宽便会受到负面的影响，就算同样的TCP/ IP节点，如果他们的子网跟发送那个广播封包的工作站的子网相同，那幺他们也会无缘无故地收到一些与他们毫不相干的网络广播，整个网络的效率因此会大打折扣。
+工作方式 当一台交换机安装配置好之后，其工作过程如下：
+收到某网段（设为A）MAC地址为X的计算机发给MAC地址为Y的计算机的数据包。交换机从而记* 下了MAC地址X在网段A。这称为学习（learning）。 交换机还不知道MAC地址Y在哪个网段上，于是向除了A以外的所有网段转发该数据包。这称为泛洪（flooding）。 MAC地址Y的计算机收到该数据包，向MAC地址X发出确认包。交换机收到该包后，从而记录下MAC地址Y所在的网段。 交换机向MAC地址X转发确认包。这称为转发（forwarding）。 交换机收到一个数据包，查表后发现该数据包的来源地址与目的地址属于同一网段。交换机将不处理该数据包。这称为过滤（filtering）。 交换机内部的MAC地址-网段查询表的每条记录采用时间戳记录最后一次访问的时间。早于某个阈值（用户可配置）的记录被清除。这称为老化（aging）。 对于全交换（full-switch）局域网，交换机每个端口只连接一台设备，因此不会发生碰撞。交换机也不需要做过滤。 但这些设备依然都是桥接设备，因为帧经过它们时，帧原封不动。
+但是随着无线局域网的诞生，关于桥接的定义被刷新，有线的Ethernet II 帧访问无线802.11时，帧格式发生了变化，但依然称AP（Access Point)为桥接设备，为何？因为一个广播帧可以无障碍通过AP，AP并没有分割广播域，所以依然是桥接设备。
+路由器 路由器（英语：Router，又称路径器）是一种电讯网络设备，提供路由与转送两种重要机制，可以决定封包从来源端到目的端所经过的路由路径（host到host之间的传输路径），这个过程称为路由；将路由器输入端的封包移送至适当的路由器输出端（在路由器内部进行），这称为转送。路由工作在OSI模型的第三层——即网络层，例如网际协议（IP）
+基本概念 由器就是连接两个以上个别网络的设备。
+由于位于两个或更多个网络的交汇处，从而可在它们之间传递分组（一种数据的组织形式）。路由器与交换机在概念上有一定重叠但也有不同：交换机泛指工作于任何网络层次的数据中继设备（尽管多指网桥），而路由器则更专注于网络层。
+路由器与交换机的差别，路由器是属于OSI第三层的产品，交换机是OSI第二层的产品。第二层的产品功能在于，将网络上各个电脑的MAC位址记在MAC地址表中，当区域网路中的电脑要经过交换机去交换传递数据时，就查询交换机上的MAC地址表中的信息，将封包传送给指定的电脑，而不会像第一层的产品（如集线器）每台在网络中的电脑都发送。而路由器除了有交换机的功能外，更拥有路由表作为传送封包时的依据，在有多种选择的路径中选择最佳的路径。此外，并可以连接两个以上不同网段的网络，而交换机只能连接两个。并具有IP分享的功能，如：区分哪些封包是要传送至WAN。路由表存储了（向前往）某一网络的最佳路径，该路径的“路由度量值”以及下一个（跳路由器）。参考条目路由获得这个过程的详细描述。
+尽管也有其它一些很少用到的被路由协议，但路由通常指的就是IP路由。</description>
+    </item>
+    
+    <item>
+      <title>Redis哨兵模式概要</title>
+      <link>https://hzren.github.io/blog/2020-08-06-redis%E5%93%A8%E5%85%B5%E6%A8%A1%E5%BC%8F%E6%A6%82%E8%A6%81/</link>
+      <pubDate>Thu, 06 Aug 2020 15:10:38 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2020-08-06-redis%E5%93%A8%E5%85%B5%E6%A8%A1%E5%BC%8F%E6%A6%82%E8%A6%81/</guid>
+      <description>哨兵模式的官方说明 Redis 的 Sentinel 系统用于管理多个 Redis 服务器（instance）， 该系统执行以下三个任务： . 监控（Monitoring）： Sentinel 会不断地检查你的主服务器和从服务器是否运作正常。 . 提醒（Notification）： 当被监控的某个 Redis 服务器出现问题时， Sentinel 可以通过 API 向管理员或者其他应用程序发送通知。 . 自动故障迁移（Automatic failover）： 当一个主服务器不能正常工作时， Sentinel 会开始一次自动故障迁移操作， 它会将失效主服务器的其中一个从服务器升级为新的主服务器， 并让失效主服务器的其他从服务器改为复制新的主服务器； 当客户端试图连接失效的主服务器时， 集群也会向客户端返回新主服务器的地址， 使得集群可以使用新主服务器代替失效服务器。
+获取 Sentinel 现在Sentinel就包含在redis发行版中，sentinel是redis发行版的一部分。
+启动 Sentinel 对于 redis-sentinel 程序， 可以用以下命令来启动 Sentinel 系统：
+redis-sentinel /path/to/sentinel.conf 对于 redis-server 程序， 你可以用以下命令来启动一个运行在 Sentinel 模式下的 Redis 服务器：
+redis-server /path/to/sentinel.conf --sentinel 两种方法都可以启动一个 Sentinel 实例。 启动 Sentinel 实例必须指定相应的配置文件， 系统会使用配置文件来保存 Sentinel 的当前状态， 并在 Sentinel 重启时通过载入配置文件来进行状态还原。 如果启动 Sentinel 时没有指定相应的配置文件， 或者指定的配置文件不可写（not writable）， 那么 Sentinel 会拒绝启动。</description>
+    </item>
+    
+    <item>
+      <title>一次HttpHeaders setContentDispositionFormData 引发的服务端链接异常记录</title>
+      <link>https://hzren.github.io/blog/2020-08-04-%E4%B8%80%E6%AC%A1httpheaders-setcontentdispositionformdata-%E5%BC%95%E5%8F%91%E7%9A%84%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%93%BE%E6%8E%A5%E5%BC%82%E5%B8%B8%E8%AE%B0%E5%BD%95/</link>
+      <pubDate>Tue, 04 Aug 2020 14:20:42 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2020-08-04-%E4%B8%80%E6%AC%A1httpheaders-setcontentdispositionformdata-%E5%BC%95%E5%8F%91%E7%9A%84%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%93%BE%E6%8E%A5%E5%BC%82%E5%B8%B8%E8%AE%B0%E5%BD%95/</guid>
+      <description>正常情况下，告诉浏览器当前请求的响应是下载一个文件，对应的http header应该是这样的 ：
+HTTP/1.1 200 OK Server: Apache-Coyote/1.1 Content-Disposition: attachment;fileName=CMClient.apk Content-Type: application/octet-stream;charset=UTF-8 Content-Length: 3501505 Date: Wed, 26 Feb 2014 06:06:53 GMT 该头信息的关键就在于这两个字段：
+Content-Disposition: attachment;fileName=CMClient.apk Content-Type: application/octet-stream;charset=UTF-8 Content-Disposition: attachment;fileName=CMClient.apk 告诉浏览器当前的响应是下载文件， 文件以CMClient.apk这个名字进行存储。 Content-Type: application/octet-stream;charset=UTF-8 告诉浏览器响应的内容是以流的形式传输。
+在代码实现中，直接调用Spring MVC的HttpHeaders setContentDispositionFormData方法进行设置，在浏览器通过firebug观察实际返回的头信息：
+HTTP/1.1 200 OK Server: Apache-Coyote/1.1 Content-Disposition: form-data; name=&amp;#34;attachment&amp;#34;; filename=&amp;#34;CMClient.apk&amp;#34; Content-Type: application/octet-stream;charset=UTF-8 Content-Length: 3501505 Date: Wed, 26 Feb 2014 06:08:13 GMT 这种做法在PC的上Chrome，Firefox 上表现正常， 在Android 4.03上却出现了问题，server端出现了在流未写完链接就被远程客户端关闭的异常。 调试发现Android浏览器在第一次收到响应后直接关闭了当前链接，新开了一链接下载该文件，所以出现了服务器端链接异常关闭的错误 诡异的问题，服务端改为改为调用 public void add(String headerName, String headerValue)方法手动设置浏览器各个头信息，设置完成后正常。
+框架层掩盖了太多细节，浏览器表现的不一致性是最大的问题，最好的办法还是按照标准文档手动去设置头信息</description>
+    </item>
+    
+    <item>
+      <title>统一资源定位器（URL）</title>
+      <link>https://hzren.github.io/blog/2020-08-03-%E7%BB%9F%E4%B8%80%E8%B5%84%E6%BA%90%E5%AE%9A%E4%BD%8D%E5%99%A8url/</link>
+      <pubDate>Mon, 03 Aug 2020 18:30:39 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2020-08-03-%E7%BB%9F%E4%B8%80%E8%B5%84%E6%BA%90%E5%AE%9A%E4%BD%8D%E5%99%A8url/</guid>
+      <description>目录
+1．绪论... 2
+2．常规URL语法... 2
+2．1&amp;nbsp; URL的主要部分... 2
+2．2&amp;nbsp; URL字符编码问题... 3
+2．3 分层方案和关系链接... 4
+3．特殊方案... 4
+3．1通用因特网方案语法... 4
+3．2 FTP. 5
+3．3 HTTP. 7
+3．4 GOPHER. 7
+3．5 MAILTO.. 9
+3．6 NEWS（新闻）... 10
+3．7 NNTP（Network News Transfer Protocol,网络新闻传输协议）... 10
+3．8 TELNET. 10
+3．9 WAIS（Wide Area Information Servers,广域信息服务系统）... 11
+3．10 FILES(文件) 11
+3．11 PROSPERO.. 12
+4． 新方案的注册... 13
+5．特定URL方案的BNF（巴柯斯范式）... 13
+6．安全事项... 16
+7．感谢... 16
+附录：上下文URL的推荐标准... 17
+参考文献：... 17
+编者地址：... 19
+&amp;nbsp;</description>
+    </item>
+    
+    <item>
+      <title>电商网站高并发场景下的库存加减思路思考</title>
+      <link>https://hzren.github.io/blog/2020-08-01-%E7%94%B5%E5%95%86%E7%BD%91%E7%AB%99%E9%AB%98%E5%B9%B6%E5%8F%91%E5%9C%BA%E6%99%AF%E4%B8%8B%E7%9A%84%E5%BA%93%E5%AD%98%E5%8A%A0%E5%87%8F%E6%80%9D%E8%B7%AF%E6%80%9D%E8%80%83/</link>
+      <pubDate>Sat, 01 Aug 2020 15:11:11 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2020-08-01-%E7%94%B5%E5%95%86%E7%BD%91%E7%AB%99%E9%AB%98%E5%B9%B6%E5%8F%91%E5%9C%BA%E6%99%AF%E4%B8%8B%E7%9A%84%E5%BA%93%E5%AD%98%E5%8A%A0%E5%87%8F%E6%80%9D%E8%B7%AF%E6%80%9D%E8%80%83/</guid>
+      <description>前言 每当电子商务平台搞活动，“秒杀”经常是提升网站活跃度的利器之一。比如活动日早上10点1元爱疯7秒杀7台，谁看到了估计都想去秒一把，万一秒中了呢。秒杀的典型特征就是在特定的短时间突然涌入大量请求，对系统造成洪峰冲击，如果系统设计得不好，很容易被直接打垮掉。现在因为疫情原因，秒杀场景也变得更泛化，很多时候会出现商品被瞬间抢完的情况，如果时通过数据库直接扣库存的话， 会给数据库带来了很大压力。很有可能整个数据库会HANG在那里，导致整个系统被拖垮。
+问题 为什么高并发场景下直接数据库扣库存会搞垮整个数据库呢？
+数据库事务特性： 对于一条记录，数据库在该事务修改的时候加锁，在整个事务提交完才释放锁。 这样就导致一个问题，当同时有多个请求对同一条记录(库存记录)进行修改时，会在该记录上造成锁排队现象，流程大概时这样的：
+在同一时间点有A，B，C五个数据库线程对记录K进行修改 A开始事务，对K加锁 B开始事务，对K加所，发现K已锁，等待K锁释放 C同上 A释放锁，B(也可能C，视数据库实现而定)获得锁，C继续等待 B释放锁，C获得锁 从上面的整个流程可以看出，在高并发场景下，对K的更新操作变成了线性操作，假设一个事务1ms处理完，当同时有成百上千个修改请求同时过来的时候，后面的修改请求响应时间就大大变长，如果数据库给每个链接分配一个单独的线程来处理，就会导致数据库服务器可用线程急剧下降，当无可用线程时，整个数据库就HANG在了那里。 解决思路 最好的并发就是没有并发 我们预先把库存数值缓存到内存中，这个内存可以是业务服务器内存，也可以是专用的缓存服务器，例如redis这种。当有库存操作的时候，我们直接在内存层面进行加减操作，在数据库没有唯一键冲突的情况下，数据库插入操作也比库存修改操作快的多，用这两种当时来实现库存个高并发修改。
+redis扣库存 redis 是一个高兴能的缓存服务器，它提供了很强大的指令功能，它可以对某个缓存的KEY进行值的加减操作，其TPS可以达到10W级别。在redis层面，我们使用lua脚本来进行数据库加减操作。 脚本如下：
+local num = redis.call(&amp;#39;get&amp;#39;, KEYS[1]) local minus = tonumber(KEYS[2]); if tonumber(num) &amp;gt; minus then redis.call(&amp;#39;decr&amp;#39;, minus) return 1 else return 0 end 库存扣减成功返回1， 库存扣减失败返回0；
+数据库批量合并扣库存 使用redis控制库存增减虽然很快，但是如果服务器意外宕机，或者交易失败，库存回滚就会比较麻烦，特别是redis事务和数据库事务不在一个事务里，无法做到强一致性，不可避免的会产生一些数据不一致问题。因此我们需要在数据库层面也进行库存同步修改操作，具体操作流程如下：
+用户下单，redis减库存成功，数据库插入下单记录 后台服务器每秒钟同步统计该商品所有新增库存订单，按照下单顺序，汇总库存修改总额，更新库存。 在上一步中，如果出现库存不足情况，或者用户超出了购买限制，标记为下单失败，如已支付，发起退款操作。 库存真正扣减成功后再进行发货操作。 定时同步数据库剩余库存到redis，redis库存值和数据库库存值可以不一致，最终下单是否成功，前台/客户端需要向服务端轮询该订单是否实际扣库存成功 当redis库存数量为0时，后台更新数据库剩余库存到redis。 5，6步时必须手段， 不然会出现用户下单成功了但是被库存不足砍单情况， 非用户原因下这样会引起纠纷的 通过上面的操作，我们成功把数据的多个并发修改操作合成了一个数据库的修改操作，大大减轻了数据库锁等待问题。
+数据库分片扣库存 当商品数量很多时，我们根据商品ID可以把商品分片到多个数据库。这样对一个数据库的修改操作就可以分散到多个数据库。当订单量很大，数据库出现插入压力时，可以根据用户ID分片，把同一商品的不同用户订单分别存储到不同数据库，减轻单一数据库压力。</description>
+    </item>
+    
+    <item>
+      <title>第三方网站数据爬取经验总结</title>
+      <link>https://hzren.github.io/blog/2020-07-31-%E7%AC%AC%E4%B8%89%E6%96%B9%E7%BD%91%E7%AB%99%E6%95%B0%E6%8D%AE%E7%88%AC%E5%8F%96%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93/</link>
+      <pubDate>Fri, 31 Jul 2020 15:11:23 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2020-07-31-%E7%AC%AC%E4%B8%89%E6%96%B9%E7%BD%91%E7%AB%99%E6%95%B0%E6%8D%AE%E7%88%AC%E5%8F%96%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93/</guid>
+      <description>尝试爬取过大大小小很多网站，有些许体会心得。根据个人难易成度感觉排序，开发语言主要是Java。
+主要工具 Chrome DevTools 用来查看页面请求流程，请求头信息，响应信息，cookie Fiddler 有些页面有重定向，对于此类页面Chrome DevTools 不太好看到请求流程，可以使用Fiddler抓包，另外Fiddler也可以抓一些移动端APP的报文 Jsoup Java HTML解析器 httpclient-fluent Java HTTP请求库 selenium Java库 用来控制selenium 各浏览器对应webdriver 用来控制浏览器，和selenium搭配使用 常见问题 有用户名密码验证 登录有图形验证码 登录有滑动验证码 登录有控件 请求过程中存在数据加密，登录过程中存在多个页面重定向，多次重定向过程中生成cookie 请求响应的数据有加密，或者存在于JS或者HTML代码中 解决办法 1. 有用户名密码验证 对于有用户名密码验证的网站，有两种方式
+手工在浏览器登录，复制cookie至代码中，在代码中使用该cookie登录 分析登录接口，使用代码，登陆后获得cookie，然后爬取数据 2. 登录有图形验证码 手工登录，登陆后复制cookie 在代码登录前，先调用获取验证码接口获得新验证码，存储至本地，对于简单的验证码，可以用ocr软件训练识别，对于负责验证码，调用第三方打码网站识别(12306刷票就是接的第三方打码) 3. 登录有滑动验证码 接入滑动验证码是有成本的，有用户使用成本和费用成本
+手工登录，复制cookie 对于支持很多用户手工登录，可以设计为在移动端APP内打开，然后结合WebView脚本注入来实现登录，具体流程如下： a. 用户在APP内通过WebView打开页面 b. APP注入JS脚本，检测登录状态，控制页面在APP内的打开样式 c. 用户登录，脚本检测到用户登录成功后，APP获得WebView Cookie，然后把Cookie发送给服务器 d. 如果该Cookie支持多IP访问，直接在服务器端爬取数据 e. 如果该Cookie不支持多IP访问，客户端爬取数据，传递到服务器，客户端APP尽量定时打开页面刷新Cookie 上述方法可以破解一般的滑动验证码登录，对于阿里云的WAF验证也可破解，在通过服务器IP爬取数据的过程中， 在请求过程中，服务器本身尽量把自己模拟出代理服务器，尽量避免第三方服务器的一些IP访问限制
+4. 登录有控件 登录有控件只能在windows上破解 手动登录，复制cookie后爬取 使用selenium打开浏览器，移动鼠标至控件位置，点击聚焦，模拟键盘输入， 输入完成之后找到登录按钮，点击提交 登录完成后从selenium拿到浏览器cookie，同步至程序，使用程序进行后面的爬取解析工作 5. 请求过程中存在数据加密，登录过程中存在多个页面重定向，多次重定向过程中生成cookie 使用selenium完成整个登录流程，登录完成后同步cookie到程序爬取
+6. 请求响应的数据有加密，或者存在于JS或者HTML代码中 使用selenium打开加载整个页面，加载完成后从selenium获取页面代码至程序，接续爬取。</description>
+    </item>
+    
+    <item>
+      <title>Docker使用nexus作为镜像仓库</title>
+      <link>https://hzren.github.io/blog/2020-07-30-docker%E4%BD%BF%E7%94%A8nexus%E4%BD%9C%E4%B8%BA%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93/</link>
+      <pubDate>Thu, 30 Jul 2020 15:52:56 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2020-07-30-docker%E4%BD%BF%E7%94%A8nexus%E4%BD%9C%E4%B8%BA%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93/</guid>
+      <description>登录docker repo
+docker login -u admin -p admin123 192.168.135.73:8082 给镜像打tag:
+docker tag jdk:jre8 192.168.135.73:8082/jdk:jre8 上传镜像:
+docker push 192.168.135.73:8082/jdk:jre8 下载镜像: nexus中镜像: </description>
+    </item>
+    
+    <item>
+      <title>2PC - 分布式场景下的两阶段提交算法</title>
+      <link>https://hzren.github.io/blog/2020-07-30-2pc-%E5%88%86%E5%B8%83%E5%BC%8F%E5%9C%BA%E6%99%AF%E4%B8%8B%E7%9A%84%E4%B8%A4%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4%E7%AE%97%E6%B3%95/</link>
+      <pubDate>Thu, 30 Jul 2020 15:11:37 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2020-07-30-2pc-%E5%88%86%E5%B8%83%E5%BC%8F%E5%9C%BA%E6%99%AF%E4%B8%8B%E7%9A%84%E4%B8%A4%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4%E7%AE%97%E6%B3%95/</guid>
+      <description>概念 二阶段提交(Two-phaseCommit)是指，在计算机网络以及数据库领域内，为了使基于分布式系统架构下的所有节点在进行事务提交时保持一致性而设计的一种算法(Algorithm)。通常，二阶段提交也被称为是一种协议(Protocol))。在分布式系统中，每个节点虽然可以知晓自己的操作时成功或者失败，却无法知道其他节点的操作的成功或失败。当一个事务跨越多个节点时，为了保持事务的ACID特性，需要引入一个作为协调者的组件来统一掌控所有节点(称作参与者)的操作结果并最终指示这些节点是否要把操作结果进行真正的提交(比如将更新后的数据写入磁盘等等)。因此，二阶段提交的算法思路可以概括为：参与者将操作成败通知协调者，再由协调者根据所有参与者的反馈情报决定各参与者是否要提交操作还是中止操作。
+两个角色: 协调者，参与者。
+所谓的两个阶段是指：第一阶段：准备阶段(投票阶段)和第二阶段：提交阶段（执行阶段）。
+过程 第一阶段(提交请求阶段): 协调者询向所有参与者节点询问, 是否可以执行提交操作, 并开始等待参与者节点响应 参与者节点执行询问发起为止所有事务操作, 并将undo信息和redo信息写入日志. 各参与者节点响应协调者发起的询问, 如果参与者节点的事务操作执行成功, 就返回一个&amp;quot;同意&amp;quot;消息, 如果失败, 就返回一个&amp;quot;中止消息&amp;quot; 第二阶段(提交执行阶段): 当协调者获得所有节点的响应为&amp;quot;同意&amp;quot;时:
+协调者想所有节点发起&amp;quot;正式提交&amp;quot;请求 参与者节点正式完成操作, 并释放整个事务期间占用的资源 参与者节点向协调者节点发送&amp;quot;完成&amp;quot;消息 协调者节点收到所有参与者节点反馈的&amp;quot;完成&amp;quot;消息后, 完成事务. 回滚阶段 如果任一参与者节点在第一阶段返回了&amp;quot;中止&amp;quot;消息, 或者协调者节点在第一阶段询问时间超时之前无法获得所有节点的响应信息
+协调者向所有参与者节点发起&amp;quot;回滚操作&amp;quot; 的请求 参与者使用第一阶段的undo信息执行回滚操作, 并占用第一阶段锁定的资源 参与者节点向协调者发送&amp;quot;回滚完成&amp;quot; 消息 协调者收到所有节点发起的&amp;quot;回滚完成&amp;quot;消息后取消事务 两段提交最大的问题就是如果第一阶段完成后，参与者在第二阶没有收到决策，那么数据结点会进入“不知所措”的状态，这个状态会block住整个事务。也就是说，协调者Coordinator对于事务的完成非常重要，Coordinator的可用性是个关键点所在，因此在两阶段的基础上衍生出了三阶段提交算法，三阶段先询问，再锁资源，提交。
+两阶段流程图(来自维基百科) </description>
+    </item>
+    
+    <item>
+      <title>docker 创建Oracle Server Jre 镜像</title>
+      <link>https://hzren.github.io/blog/2020-07-29-docker-%E5%88%9B%E5%BB%BAoracle-server-jre-%E9%95%9C%E5%83%8F/</link>
+      <pubDate>Wed, 29 Jul 2020 15:38:13 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2020-07-29-docker-%E5%88%9B%E5%BB%BAoracle-server-jre-%E9%95%9C%E5%83%8F/</guid>
+      <description>先上Dockerfile配置: FROM centos:7 # 维护者 MAINTAINER your-name # 将jdk压缩包添加到容器的 /root 目录，解压后目录名称为jdk1.8.0_211 #ADD server-jre-8u251-linux-x64.tar.gz /root COPY jre /jre # 配置JAVA_HOME环境变量 ENV JAVA_HOME /jre/ # 将JAVA_HOME/bin 添加至PATH环境变量 ENV PATH $JAVA_HOME/bin:$PATH # 启动容器执行的命令，仅用于验证安装配置是否正确，生产环境使用需注释后再build #CMD java -version #ENTRYPOINT [&amp;#34;/jre/bin/java&amp;#34;, &amp;#34;-version&amp;#34;] 步骤: 下载oracle server jre, 我当前下载下来是8u251版本 上传到centos, Dockfile同层目录下 解压缩, 修改解压缩后文件夹名字为jre 在当前目录执行docker build: docker build -t jdk:jre8 . 执行完成后, 镜像被保存到本地仓库, jdk 为 image名称, jre为版本, -t 代表 tag 遇到的坑: 不能FROM scratch, 继承自空白镜像连sh命令都没有, Dockerfile 中的CMD和ENTRYPOINT命令是以sh -c xxxxx 执行的, 没sh命令根本执行不了 不能FROM busybox:latest , 也是一样找不到sh命令, docker本身是去找bash, 但是busybox 不包含bash 不能FROM alpine:latest, 理由同上, 也是找不到bash 最后FROM centos:7 好了</description>
+    </item>
+    
+    <item>
+      <title>Spring component-sacn 扫描加载全流程分析</title>
+      <link>https://hzren.github.io/blog/2020-07-29-spring-component-sacn-%E6%89%AB%E6%8F%8F%E5%8A%A0%E8%BD%BD%E5%85%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90/</link>
+      <pubDate>Wed, 29 Jul 2020 15:11:56 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2020-07-29-spring-component-sacn-%E6%89%AB%E6%8F%8F%E5%8A%A0%E8%BD%BD%E5%85%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90/</guid>
+      <description>@ComponentScan 如果你理解了ComponentScan， 你就理解了Spring。 Spring是一个依赖注入(dependency injection)框架。所有的内容都是关于bean的定义及其依赖关系。 定义Spring Beans的第一步是使用正确的注解-@Component或@Service或@Repository或@Controller等等。 在Spring容器启动过程中，Spring并不知道你定义了哪个bean，除非它知道从哪里可以找到这个bean。
+Spring 找到Bean的集中方式 XML文件定义Bean Configuration类通过Java 风格定义Bean元素 ComponentScan 自动扫描加载Bean 通过XML定义加载Bean Spring 解析XML元素，根据元素内配置的Bean定义，找到Bean的package和className，通过constructor配置直接反射生成Bean对象
+Configuration类通过Java 风格定义Bean元素 Spring容器找到@Configuration注解所在类，通过反射获取其所有方法，依次调用标有@Bean注解的方法，生成对应Bean对象
+通过ComponentScan动态扫描加载Bean 对于Spring容器来说，这种方式是最复杂的方式，也是最慢的方式，在Spring容器启动的时候，Spring并不知道其要加载的Bean有多少，甚至连这些Bean的Class文件所在位置在那里都不知道，加载这些Bean，对于Spring容器来说，是一个漫长的过程。 这些Spring要加载的Bean的Class文件，可能位于Jar包当中，也可能位于Class文件当中，Spring需要去查看每个Jar包来寻找这个Class文件。
+@ComponentScan加载代码分析 通过ComponentScanBeanDefinitionParser类来支持@ComponentScan注解 参见 org.springframework.context.config.ContextNamespaceHandler
+@Override public void init() { registerBeanDefinitionParser(&amp;#34;property-placeholder&amp;#34;, new PropertyPlaceholderBeanDefinitionParser()); registerBeanDefinitionParser(&amp;#34;property-override&amp;#34;, new PropertyOverrideBeanDefinitionParser()); registerBeanDefinitionParser(&amp;#34;annotation-config&amp;#34;, new AnnotationConfigBeanDefinitionParser()); registerBeanDefinitionParser(&amp;#34;component-scan&amp;#34;, new ComponentScanBeanDefinitionParser()); registerBeanDefinitionParser(&amp;#34;load-time-weaver&amp;#34;, new LoadTimeWeaverBeanDefinitionParser()); registerBeanDefinitionParser(&amp;#34;spring-configured&amp;#34;, new SpringConfiguredBeanDefinitionParser()); registerBeanDefinitionParser(&amp;#34;mbean-export&amp;#34;, new MBeanExportBeanDefinitionParser()); registerBeanDefinitionParser(&amp;#34;mbean-server&amp;#34;, new MBeanServerBeanDefinitionParser()); } org.springframework.context.annotation.ComponentScanBeanDefinitionParser 主要逻辑如下 protected ClassPathBeanDefinitionScanner configureScanner(ParserContext parserContext, Element element) { boolean useDefaultFilters = true; if (element.</description>
+    </item>
+    
+    <item>
+      <title>docker容器内进程的启动</title>
+      <link>https://hzren.github.io/blog/2020-07-27-docker%E5%AE%B9%E5%99%A8%E5%86%85%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%90%AF%E5%8A%A8/</link>
+      <pubDate>Mon, 27 Jul 2020 15:30:26 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2020-07-27-docker%E5%AE%B9%E5%99%A8%E5%86%85%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%90%AF%E5%8A%A8/</guid>
+      <description>CMD 容器启动命令 CMD 指令的格式和 RUN 相似，也是两种格式：
+shell 格式：CMD &amp;lt;命令&amp;gt; exec 格式：CMD [&amp;quot;可执行文件&amp;quot;, &amp;quot;参数1&amp;quot;, &amp;quot;参数2&amp;quot;...] 参数列表格式：CMD [&amp;quot;参数1&amp;quot;, &amp;quot;参数2&amp;quot;...]。在指定了 ENTRYPOINT 指令后，用 CMD 指定具体的参数。 之前介绍容器的时候曾经说过，Docker 不是虚拟机，容器就是进程。既然是进程，那么在启动容器的时候，需要指定所运行的程序及参数。CMD 指令就是用于指定默认的容器主进程的启动命令的。
+在运行时可以指定新的命令来替代镜像设置中的这个默认命令，比如，ubuntu 镜像默认的 CMD 是 /bin/bash，如果我们直接 docker run -it ubuntu 的话，会直接进入 bash。我们也可以在运行时指定运行别的命令，如 docker run -it ubuntu cat /etc/os-release。这就是用 cat /etc/os-release 命令替换了默认的 /bin/bash 命令了，输出了系统版本信息。
+在指令格式上，一般推荐使用 exec 格式，这类格式在解析时会被解析为 JSON 数组，因此一定要使用双引号 &amp;quot;，而不要使用单引号。
+如果使用 shell 格式的话，实际的命令会被包装为 sh -c 的参数的形式进行执行。比如：
+CMD echo $HOME 在实际执行中，会将其变更为：
+CMD [ &amp;#34;sh&amp;#34;, &amp;#34;-c&amp;#34;, &amp;#34;echo $HOME&amp;#34; ] 这就是为什么我们可以使用环境变量的原因，因为这些环境变量会被 shell 进行解析处理。</description>
+    </item>
+    
+    <item>
+      <title>计算机网络 - 数据链路层</title>
+      <link>https://hzren.github.io/blog/2020-07-23-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/</link>
+      <pubDate>Thu, 23 Jul 2020 16:01:00 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2020-07-23-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/</guid>
+      <description>概念 数据链路层（Data Link Layer）是OSI参考模型第二层，位于物理层与网络层之间。在广播式多路访问链路中（局域网），由于可能存在介质争用，它还可以细分成介质访问控制（MAC）子层和逻辑链路控制（LLC）子层，介质访问控制（MAC）子层专职处理介质访问的争用与冲突问题。
+只提供导线的一端到另一端的数据传输。
+一个IP数据包的传输要经过多个数据链路层的链接，数据链路层存在于两个物理链接(有线/无线)设备之间。代表设备： 普通交换机, 网卡, 桥接器
+交换机根据需要发送的以太网帧的目标mac地址， 找到对应的物理端口，从该端口将该帧发送出去
+主要功能 概要 在两个网络实体之间提供数据链路连接的建立、维持和释放管理。构成数据链路数据单元（frame：数据帧），并对帧定界、同步、收发顺序的控制。传输过程中的网路流量控制、差错检测和差错控制等方面。
+数据链路层会在 frame 尾端置放检查码（parity，sum，CRC）以检查实质内容，将物理层提供的可能出错的物理连接改造成逻辑上无差错的数据链路，并对物理层的原始数据进行数据封装。 数据链路层中的数据封装是指：封装的数据信息中，包含了地址段和数据段等。地址段含有点对点发送节点和接收节点的地址（如MAC），控制段用来表示数格连接帧的类型，数据段包含实际要传输的数据。
+详情 四个基本功能：
+1. 链路管理
+数据链路层有三种基本服务。无确认的无连接服务，有确认的无连接服务，有确认的有连接服务。链路管理主要是负责链路的建立，维护和释放。主要面向有连接的服务。
+2. 帧同步
+接收方收到的比特流中，一帧的开始位置与结束位置。
+3. 差错控制
+用于使接收方确认接受到的就是发送方发送的数据。
+4. 透明传输
+就是不管数据是怎样的比特组合，都能在链路上传输。
+数据链路层是不可靠的。 现在互联网的数据链路层协议使用的最多的就是PPP和CSMA/CD协议(用于拨号和以太网)。这两种协议都不需要序号和确认机制，当接收方检测到帧在传输中出了差错后，或者默默丢弃不做处理(PPP或者CSMA/CD)，或者使用重传机制要求发送方重传(HDLC)，后面的情况很少用。因此。如果需要可靠传输，就需要由高层的TCP负责重传，但是数据链路层并不知道这是重传的帧，所以还是默认可靠传输由传输层负责，而不是数据链路层。
+当数据链路层使用PPP或者CSMA/CD协议时，在数据链路层的接收端对所接受的帧进行差错检测是为了不将已经发现出错的帧接收下来。如果不进行检测，那么接收方上交给主机的帧。可能就包括传输过程中，已经出了错的帧。而这种帧对于接收方的主机，是没有用的。所以，接收方进行差错检测，是为了&amp;quot;上交给主机的帧，都是没有传输差错的&amp;quot;，有差错的帧都丢弃了。达到一定的概率之后，我们就可以以接近1的概率去说，凡是上交给主机的帧，都是没有传输差错的。
+数据链路层没有流量控制，处理不过来，接受到的包出错会被直接丢掉。
+总体来说，网线比无线可靠，但网线也不是100%可靠，在交换机的入端口错误统计上，CRC Error 一般都是名列前茅，造成CRC Error 的原因有：网卡的软件故障、硬件故障、网线质量、信号干扰。曾经在数据中心里，接入层的交换机某些入口有1.5%% 的CRC Error，先换网线，情况依然。到最后把服务器重启，CRC Error 消失，过几天故障依然。后来发现这种情况只发生在某个型号，特定版本的服务器上，解决方案是升级软件版本，故障消失。无线是很不可靠的，可以在电脑上ping 无线路由器，ping 100个包，一般都会丢几个。造成丢失的原因：因为周围有很多工作在同一个频端的无线路由器，互相会干扰，造成无线信号不可用，从而丢弃。还有一个原因，无线路由器与电脑之间有很多墙，信号衰减很多，再加上干扰，最后变得面目可憎而被抛弃。 ** 来自知乎 车小胖**
+分帧 分帧是靠硬件完成的。 不同协议的数据帧格式可能不同。
+以太网帧 在以太网链路上的数据包称作以太帧。以太帧起始部分由前导码和帧开始符组成。后面紧跟着一个以太网报头，以MAC地址说明目的地址和源地址。帧的中部是该帧负载的包含其他协议报头的数据包(例如IP协议)。以太帧由一个32位冗余校验码结尾。它用于检验数据传输是否出现损坏。
+结构 来自线路的二进制数据包称作一个帧。从物理线路上看到的帧，除其他信息外，还可看到前导码和帧开始符。任何物理硬件都会需要这些信息。 下面的表格显示了在以1500个八位元组为MTU传输(有些吉比特以太网甚至更高速以太网支持更大的帧，称作巨型帧)时的完整帧格式。一个八位元组是八个位组成的数据(也就是现代计算机的一个字节)。
+**802.3 以太网帧结构 **
+IEEE 802.1Q协议帧结构，相比802.3以太网帧多了 802.1Q标签
+** IEEE 802.1ad协议帧结构 **
+前导码和帧开始符
+一个帧以7个字节的前导码和1个字节的帧开始符作为帧的开始。快速以太网之前，在线路上帧的这部分的位模式是10101010 10101010 10101010 10101010 10101010 10101010 10101010 10101011。由于在传输一个字节时最低位最先传输(LSB)，因此其相应的16进制表示为0x55 0x55 0x55 0x55 0x55 0x55 0x55 0xD5。</description>
+    </item>
+    
+    <item>
+      <title>Maven依赖选择原理及解决办法</title>
+      <link>https://hzren.github.io/blog/2019-09-02-maven%E4%BE%9D%E8%B5%96%E9%80%89%E6%8B%A9%E5%8E%9F%E7%90%86%E5%8F%8A%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/</link>
+      <pubDate>Mon, 02 Sep 2019 11:42:02 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2019-09-02-maven%E4%BE%9D%E8%B5%96%E9%80%89%E6%8B%A9%E5%8E%9F%E7%90%86%E5%8F%8A%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/</guid>
+      <description>Maven Maven 是 Apache 下的一个纯 Java 开发的开源项目。基于项目对象模型（缩写：POM）概念，Maven利用一个中央信息片断能管理一个项目的构建、报告和文档等步骤。Maven 是一个项目管理工具，可以对 Java 项目进行构建、依赖管理。Maven 曾是 Jakarta 项目的子项目，现为由 Apache 软件基金会主持的独立 Apache 项目。
+依赖冲突 当我们使用 Maven 来构建我们的程序时，我们可以用几句配置来代替大量的 Jar 包（一个依赖会引入其依赖的其他依赖，而那些依赖也会引入其依赖的依赖，所以有依赖树这种说法），同时因为这种配置在我们交流代码时可以不用自己引入 Jar 包（避免了版本不一致而出错），只要更新 Maven，它就会在后台帮我们解决这一切。但是在我们享受这种方便的同时，我们也在为这种方便付出代价。
+首先我们先来看一个例子： &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.hibernate&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;hibernate-validator&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;5.1.3.Final&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.hibernate&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;hibernate-core&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;${hibernate.version}&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt; 其依赖树如下: POM中引入的依赖库越多，遇到依赖冲突的可能性就越大。 maven默认是如何选择依赖呢? 不同Jar包可能会依赖不同版本的其它Jar包。在实际当中maven的依赖是以树的形式展现的 从上面的树形方案中可以明显看出， 即使我们没有在POM中明确指定它们，我们的项目 X也会使用所有库（Y，Z和G）。实际上，在这种情况下， 即使我们不知道库Z存在，库 Z也会作为Maven的接建依赖库导入到项目中。这种依赖关系称为 传递依赖关系。 由于 Y 和 G 依赖于Z的不同版本 ，因此我们这两个依赖关系就产生了冲突。在项目 的实际运行时只能使用Z库的一个版本 （1.0或2.0）, 不是两者都包含。如果我们使用的Z的版本与另一个库不兼容；系统最终可能会产生错误并崩溃。假设库 Z 是导致项目错误的元凶。我们就需要知道哪个版本的 Z 会产生错误。
+我们正在使用哪个Z版本？ Maven 使用一种称为依赖关系机制 的机制来解决依赖这个问题。 让我们看看依赖机制是如何工作的。 首先，将使用库的版本中+，其节点最接近依赖关系树中的根（项目 X）。但是，如果同一个库有多个版本-节点在树中处于同一级别，会发生什么？在这种情况下，将使用找到的第一个库版本。这意味着库版本的选择取决于POM文件中的依赖关系顺序，其中首先声明的那些依赖关系将首先被选择。
+如何解决冲突 解决上述冲突有两种方法。第一个也是最简单的解决方法是在X的POM文件中将库G导入到库Y之前；正如我上面解释的。但是，更巧妙的解决方案是将Z的最新版本（2.0）导入为X的直接依赖项 。如果库Z支持向后兼容（因为库Y使用 Z的v1.</description>
+    </item>
+    
+    <item>
+      <title>译文：使用子查询计算非重复数目以提高速度</title>
+      <link>https://hzren.github.io/blog/2016-01-07-%E8%AF%91%E6%96%87%E4%BD%BF%E7%94%A8%E5%AD%90%E6%9F%A5%E8%AF%A2%E8%AE%A1%E7%AE%97%E9%9D%9E%E9%87%8D%E5%A4%8D%E6%95%B0%E7%9B%AE%E4%BB%A5%E6%8F%90%E9%AB%98%E9%80%9F%E5%BA%A6/</link>
+      <pubDate>Thu, 07 Jan 2016 16:56:57 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2016-01-07-%E8%AF%91%E6%96%87%E4%BD%BF%E7%94%A8%E5%AD%90%E6%9F%A5%E8%AF%A2%E8%AE%A1%E7%AE%97%E9%9D%9E%E9%87%8D%E5%A4%8D%E6%95%B0%E7%9B%AE%E4%BB%A5%E6%8F%90%E9%AB%98%E9%80%9F%E5%BA%A6/</guid>
+      <description>本文说的这个技术是通用的，但为了解释说明，我们选用了 PostgreSQL。感谢 pgAdminIII 提供的解释性插图，这些插图有很大帮助。 很有用，但是却很慢 计算非重复的数目是SQL分析的一个灾难。
+首先一点：我们如果有一个很大的数据集而且可以容忍它不精确。一个像 HyperLogLog的概率统计器可能是你的首选（我们在以后的博客中会讲到HyperLogLog ），但是要追求快速精准的结果，子查询的方法会节省你很多时间。
+让我们从一个简单的查询语句开始吧：哪一个dashboard用户访问的最频繁。
+SELECT dashboards.name, COUNT(DISTINCT time_on_site_logs.user_id) FROM time_on_site_logs JOIN dashboards ON time_on_site_logs.dashboard_id = dashboards.id GROUP BY name ORDER BY count DESC 首先，让我们假设在user_id 和 dashboard_id上都有高效的索引，并且日志行数要比user_id 和 dashboard_id多很多。
+仅仅一千万行数据，查询语句就花费了48秒的时间。知道为什么吗？让我们看一下明了的图解吧。
+慢的原因是数据库要遍历dashboards表和logs表的所有记录，然后JOIN操作，然后排序，之后才进行实际需要的分组和聚集操作。
+先聚集，然后联合数据表
+分组和聚集之后，一切数据库操作的代价都变小了，因为数据的数量变小了。在分组和聚集的时候，因为我们不需要dashboards.name，所以我们可以在JOIN操作前先进行聚集操作：
+SELECT dashboards.name, log_counts.ct FROM dashboards JOIN (SELECT dashboard_id, COUNT(DISTINCT user_id) AS ct FROM time_on_site_logs GROUP BY dashboard_id) AS log_counts ON log_counts.dashboard_id = dashboards.id ORDER BY log_counts.ct DESC 语句运行了24秒，获得了2.4倍的性能提高。在来看一下，图解可以清楚无误的表明原因。
+像我们预期地那样，join操作之前先进行了group-and-aggregate操作。快上加快，我们还可以在time_on_site_logs 表上加上索引。
+**第一步，让你的数据变小 **</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="zh-cn" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+ 
+
+
+      <title>电商网站高并发场景下的库存加减思路思考 - </title>
+
+  <meta name="description" content="前言 每当电子商务平台搞活动，“秒杀”经常是提升网站活跃度的利器之一。比如活动日早上10点1元爱疯7秒杀7台，谁看到了估计都想去秒一把，万一秒中了呢。秒杀的典型特征就是在特定的短时间突然涌入大量请求，对系统造成洪峰冲击，如果系统设计得不好，很容易被直接打垮掉。现在因为疫情原因，秒杀场景也变得更泛化，很多时候会出现商品被瞬间抢完的情况，如果时通过数据库直接扣库存的话， 会给数据库带来了很大压力。很有可能整个数据库会HANG在那里，导致整个系统被拖垮。
+问题 为什么高并发场景下直接数据库扣库存会搞垮整个数据库呢？
+数据库事务特性： 对于一条记录，数据库在该事务修改的时候加锁，在整个事务提交完才释放锁。 这样就导致一个问题，当同时有多个请求对同一条记录(库存记录)进行修改时，会在该记录上造成锁排队现象，流程大概时这样的：
+在同一时间点有A，B，C五个数据库线程对记录K进行修改 A开始事务，对K加锁 B开始事务，对K加所，发现K已锁，等待K锁释放 C同上 A释放锁，B(也可能C，视数据库实现而定)获得锁，C继续等待 B释放锁，C获得锁 从上面的整个流程可以看出，在高并发场景下，对K的更新操作变成了线性操作，假设一个事务1ms处理完，当同时有成百上千个修改请求同时过来的时候，后面的修改请求响应时间就大大变长，如果数据库给每个链接分配一个单独的线程来处理，就会导致数据库服务器可用线程急剧下降，当无可用线程时，整个数据库就HANG在了那里。 解决思路 最好的并发就是没有并发 我们预先把库存数值缓存到内存中，这个内存可以是业务服务器内存，也可以是专用的缓存服务器，例如redis这种。当有库存操作的时候，我们直接在内存层面进行加减操作，在数据库没有唯一键冲突的情况下，数据库插入操作也比库存修改操作快的多，用这两种当时来实现库存个高并发修改。
+redis扣库存 redis 是一个高兴能的缓存服务器，它提供了很强大的指令功能，它可以对某个缓存的KEY进行值的加减操作，其TPS可以达到10W级别。在redis层面，我们使用lua脚本来进行数据库加减操作。 脚本如下：
+local num = redis.call(&#39;get&#39;, KEYS[1]) local minus = tonumber(KEYS[2]); if tonumber(num) &gt; minus then redis.call(&#39;decr&#39;, minus) return 1 else return 0 end 库存扣减成功返回1， 库存扣减失败返回0；
+数据库批量合并扣库存 使用redis控制库存增减虽然很快，但是如果服务器意外宕机，或者交易失败，库存回滚就会比较麻烦，特别是redis事务和数据库事务不在一个事务里，无法做到强一致性，不可避免的会产生一些数据不一致问题。因此我们需要在数据库层面也进行库存同步修改操作，具体操作流程如下：
+用户下单，redis减库存成功，数据库插入下单记录 后台服务器每秒钟同步统计该商品所有新增库存订单，按照下单顺序，汇总库存修改总额，更新库存。 在上一步中，如果出现库存不足情况，或者用户超出了购买限制，标记为下单失败，如已支付，发起退款操作。 库存真正扣减成功后再进行发货操作。 定时同步数据库剩余库存到redis，redis库存值和数据库库存值可以不一致，最终下单是否成功，前台/客户端需要向服务端轮询该订单是否实际扣库存成功 当redis库存数量为0时，后台更新数据库剩余库存到redis。 5，6步时必须手段， 不然会出现用户下单成功了但是被库存不足砍单情况， 非用户原因下这样会引起纠纷的 通过上面的操作，我们成功把数据的多个并发修改操作合成了一个数据库的修改操作，大大减轻了数据库锁等待问题。
+数据库分片扣库存 当商品数量很多时，我们根据商品ID可以把商品分片到多个数据库。这样对一个数据库的修改操作就可以分散到多个数据库。当订单量很大，数据库出现插入压力时，可以根据用户ID分片，把同一商品的不同用户订单分别存储到不同数据库，减轻单一数据库压力。">
+  <meta name="author" content="renhongzhen"/><script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "Code Mark",
+    
+    "url": "https:\/\/hzren.github.io"
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "",
+  "url": "https:\/\/hzren.github.io"
+  
+  
+  
+  
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https:\/\/hzren.github.io",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https:\/\/hzren.github.io\/blog\/2020-08-01-%E7%94%B5%E5%95%86%E7%BD%91%E7%AB%99%E9%AB%98%E5%B9%B6%E5%8F%91%E5%9C%BA%E6%99%AF%E4%B8%8B%E7%9A%84%E5%BA%93%E5%AD%98%E5%8A%A0%E5%87%8F%E6%80%9D%E8%B7%AF%E6%80%9D%E8%80%83\/",
+          "name": "电商网站高并发场景下的库存加减思路思考"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : "renhongzhen"
+  },
+  "headline": "电商网站高并发场景下的库存加减思路思考",
+  "description" : "前言 每当电子商务平台搞活动，“秒杀”经常是提升网站活跃度的利器之一。比如活动日早上10点1元爱疯7秒杀7台，谁看到了估计都想去秒一把，万一秒中了呢。秒杀的典型特征就是在特定的短时间突然涌入大量请求，对系统造成洪峰冲击，如果系统设计得不好，很容易被直接打垮掉。现在因为疫情原因，秒杀场景也变得更泛化，很多时候会出现商品被瞬间抢完的情况，如果时通过数据库直接扣库存的话， 会给数据库带来了很大压力。很有可能整个数据库会HANG在那里，导致整个系统被拖垮。\n问题 为什么高并发场景下直接数据库扣库存会搞垮整个数据库呢？\n数据库事务特性： 对于一条记录，数据库在该事务修改的时候加锁，在整个事务提交完才释放锁。 这样就导致一个问题，当同时有多个请求对同一条记录(库存记录)进行修改时，会在该记录上造成锁排队现象，流程大概时这样的：\n在同一时间点有A，B，C五个数据库线程对记录K进行修改 A开始事务，对K加锁 B开始事务，对K加所，发现K已锁，等待K锁释放 C同上 A释放锁，B(也可能C，视数据库实现而定)获得锁，C继续等待 B释放锁，C获得锁 从上面的整个流程可以看出，在高并发场景下，对K的更新操作变成了线性操作，假设一个事务1ms处理完，当同时有成百上千个修改请求同时过来的时候，后面的修改请求响应时间就大大变长，如果数据库给每个链接分配一个单独的线程来处理，就会导致数据库服务器可用线程急剧下降，当无可用线程时，整个数据库就HANG在了那里。 解决思路 最好的并发就是没有并发 我们预先把库存数值缓存到内存中，这个内存可以是业务服务器内存，也可以是专用的缓存服务器，例如redis这种。当有库存操作的时候，我们直接在内存层面进行加减操作，在数据库没有唯一键冲突的情况下，数据库插入操作也比库存修改操作快的多，用这两种当时来实现库存个高并发修改。\nredis扣库存 redis 是一个高兴能的缓存服务器，它提供了很强大的指令功能，它可以对某个缓存的KEY进行值的加减操作，其TPS可以达到10W级别。在redis层面，我们使用lua脚本来进行数据库加减操作。 脚本如下：\nlocal num = redis.call(\u0026#39;get\u0026#39;, KEYS[1]) local minus = tonumber(KEYS[2]); if tonumber(num) \u0026gt; minus then redis.call(\u0026#39;decr\u0026#39;, minus) return 1 else return 0 end 库存扣减成功返回1， 库存扣减失败返回0；\n数据库批量合并扣库存 使用redis控制库存增减虽然很快，但是如果服务器意外宕机，或者交易失败，库存回滚就会比较麻烦，特别是redis事务和数据库事务不在一个事务里，无法做到强一致性，不可避免的会产生一些数据不一致问题。因此我们需要在数据库层面也进行库存同步修改操作，具体操作流程如下：\n用户下单，redis减库存成功，数据库插入下单记录 后台服务器每秒钟同步统计该商品所有新增库存订单，按照下单顺序，汇总库存修改总额，更新库存。 在上一步中，如果出现库存不足情况，或者用户超出了购买限制，标记为下单失败，如已支付，发起退款操作。 库存真正扣减成功后再进行发货操作。 定时同步数据库剩余库存到redis，redis库存值和数据库库存值可以不一致，最终下单是否成功，前台\/客户端需要向服务端轮询该订单是否实际扣库存成功 当redis库存数量为0时，后台更新数据库剩余库存到redis。 5，6步时必须手段， 不然会出现用户下单成功了但是被库存不足砍单情况， 非用户原因下这样会引起纠纷的 通过上面的操作，我们成功把数据的多个并发修改操作合成了一个数据库的修改操作，大大减轻了数据库锁等待问题。\n数据库分片扣库存 当商品数量很多时，我们根据商品ID可以把商品分片到多个数据库。这样对一个数据库的修改操作就可以分散到多个数据库。当订单量很大，数据库出现插入压力时，可以根据用户ID分片，把同一商品的不同用户订单分别存储到不同数据库，减轻单一数据库压力。",
+  "inLanguage" : "zh-cn",
+  "wordCount":  60 ,
+  "datePublished" : "2020-08-01T15:11:11",
+  "dateModified" : "2020-08-01T15:11:11",
+  "image" : "https:\/\/hzren.github.io\/img\/avatar-icon.png",
+  "keywords" : [ "秒杀" ],
+  "mainEntityOfPage" : "https:\/\/hzren.github.io\/blog\/2020-08-01-%E7%94%B5%E5%95%86%E7%BD%91%E7%AB%99%E9%AB%98%E5%B9%B6%E5%8F%91%E5%9C%BA%E6%99%AF%E4%B8%8B%E7%9A%84%E5%BA%93%E5%AD%98%E5%8A%A0%E5%87%8F%E6%80%9D%E8%B7%AF%E6%80%9D%E8%80%83\/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https:\/\/hzren.github.io",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https:\/\/hzren.github.io\/img\/avatar-icon.png",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
+
+<meta property="og:title" content="电商网站高并发场景下的库存加减思路思考" />
+<meta property="og:description" content="前言 每当电子商务平台搞活动，“秒杀”经常是提升网站活跃度的利器之一。比如活动日早上10点1元爱疯7秒杀7台，谁看到了估计都想去秒一把，万一秒中了呢。秒杀的典型特征就是在特定的短时间突然涌入大量请求，对系统造成洪峰冲击，如果系统设计得不好，很容易被直接打垮掉。现在因为疫情原因，秒杀场景也变得更泛化，很多时候会出现商品被瞬间抢完的情况，如果时通过数据库直接扣库存的话， 会给数据库带来了很大压力。很有可能整个数据库会HANG在那里，导致整个系统被拖垮。
+问题 为什么高并发场景下直接数据库扣库存会搞垮整个数据库呢？
+数据库事务特性： 对于一条记录，数据库在该事务修改的时候加锁，在整个事务提交完才释放锁。 这样就导致一个问题，当同时有多个请求对同一条记录(库存记录)进行修改时，会在该记录上造成锁排队现象，流程大概时这样的：
+在同一时间点有A，B，C五个数据库线程对记录K进行修改 A开始事务，对K加锁 B开始事务，对K加所，发现K已锁，等待K锁释放 C同上 A释放锁，B(也可能C，视数据库实现而定)获得锁，C继续等待 B释放锁，C获得锁 从上面的整个流程可以看出，在高并发场景下，对K的更新操作变成了线性操作，假设一个事务1ms处理完，当同时有成百上千个修改请求同时过来的时候，后面的修改请求响应时间就大大变长，如果数据库给每个链接分配一个单独的线程来处理，就会导致数据库服务器可用线程急剧下降，当无可用线程时，整个数据库就HANG在了那里。 解决思路 最好的并发就是没有并发 我们预先把库存数值缓存到内存中，这个内存可以是业务服务器内存，也可以是专用的缓存服务器，例如redis这种。当有库存操作的时候，我们直接在内存层面进行加减操作，在数据库没有唯一键冲突的情况下，数据库插入操作也比库存修改操作快的多，用这两种当时来实现库存个高并发修改。
+redis扣库存 redis 是一个高兴能的缓存服务器，它提供了很强大的指令功能，它可以对某个缓存的KEY进行值的加减操作，其TPS可以达到10W级别。在redis层面，我们使用lua脚本来进行数据库加减操作。 脚本如下：
+local num = redis.call(&#39;get&#39;, KEYS[1]) local minus = tonumber(KEYS[2]); if tonumber(num) &gt; minus then redis.call(&#39;decr&#39;, minus) return 1 else return 0 end 库存扣减成功返回1， 库存扣减失败返回0；
+数据库批量合并扣库存 使用redis控制库存增减虽然很快，但是如果服务器意外宕机，或者交易失败，库存回滚就会比较麻烦，特别是redis事务和数据库事务不在一个事务里，无法做到强一致性，不可避免的会产生一些数据不一致问题。因此我们需要在数据库层面也进行库存同步修改操作，具体操作流程如下：
+用户下单，redis减库存成功，数据库插入下单记录 后台服务器每秒钟同步统计该商品所有新增库存订单，按照下单顺序，汇总库存修改总额，更新库存。 在上一步中，如果出现库存不足情况，或者用户超出了购买限制，标记为下单失败，如已支付，发起退款操作。 库存真正扣减成功后再进行发货操作。 定时同步数据库剩余库存到redis，redis库存值和数据库库存值可以不一致，最终下单是否成功，前台/客户端需要向服务端轮询该订单是否实际扣库存成功 当redis库存数量为0时，后台更新数据库剩余库存到redis。 5，6步时必须手段， 不然会出现用户下单成功了但是被库存不足砍单情况， 非用户原因下这样会引起纠纷的 通过上面的操作，我们成功把数据的多个并发修改操作合成了一个数据库的修改操作，大大减轻了数据库锁等待问题。
+数据库分片扣库存 当商品数量很多时，我们根据商品ID可以把商品分片到多个数据库。这样对一个数据库的修改操作就可以分散到多个数据库。当订单量很大，数据库出现插入压力时，可以根据用户ID分片，把同一商品的不同用户订单分别存储到不同数据库，减轻单一数据库压力。">
+<meta property="og:image" content="https://hzren.github.io/img/avatar-icon.png" />
+<meta property="og:url" content="https://hzren.github.io/blog/2020-08-01-%E7%94%B5%E5%95%86%E7%BD%91%E7%AB%99%E9%AB%98%E5%B9%B6%E5%8F%91%E5%9C%BA%E6%99%AF%E4%B8%8B%E7%9A%84%E5%BA%93%E5%AD%98%E5%8A%A0%E5%87%8F%E6%80%9D%E8%B7%AF%E6%80%9D%E8%80%83/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Code Mark" />
+
+  <meta name="twitter:title" content="电商网站高并发场景下的库存加减思路思考" />
+  <meta name="twitter:description" content="前言 每当电子商务平台搞活动，“秒杀”经常是提升网站活跃度的利器之一。比如活动日早上10点1元爱疯7秒杀7台，谁看到了估计都想去秒一把，万一秒中了呢。秒杀的典型特征就是在特定的短时间突然涌入大量请求，对系统造成洪峰冲击，如果系统设计得不好，很容易被直接打垮掉。现在因为疫情原因，秒杀场景也变得更泛化，很多时候会出现商品被瞬间抢完的情况，如果时通过数据库直接扣库存的话， 会给数据库带来了很大压力。很有 …">
+  <meta name="twitter:image" content="https://hzren.github.io/img/avatar-icon.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@username" />
+  <meta name="twitter:creator" content="@username" />
+  <link href='https://hzren.github.io/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <meta name="generator" content="Hugo 0.109.0">
+  <link rel="alternate" href="https://hzren.github.io/index.xml" type="application/rss+xml" title="Code Mark"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://hzren.github.io/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="https://hzren.github.io/css/highlight.min.css" /><link rel="stylesheet" href="https://hzren.github.io/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">切换导航</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://hzren.github.io">Code Mark</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="文章" href="/">文章</a>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent">代码</a>
+              <div class="navlinks-children">
+                
+                  <a href="/post/2017-03-07-bigimg-sample">Big Image Sample</a>
+                
+                  <a href="/post/2017-03-05-math-sample">Math Sample</a>
+                
+                  <a href="/post/2016-03-08-code-sample">Code Sample</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li>
+              <a title="关于我" href="/page/about/">关于我</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="分类" href="/tags">分类</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    
+      <div class="avatar-container">
+        <div class="avatar-img-border">
+          <a title="Code Mark" href="https://hzren.github.io">
+            <img class="avatar-img" src="https://hzren.github.io/img/avatar-icon.png" alt="Code Mark" />
+          </a>
+        </div>
+      </div>
+    
+
+  </div>
+</nav>
+
+
+
+
+    
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+
+  
+  
+  
+
+
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    
+    <div class="intro-header no-img">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="blog-heading">
+              
+                <h1>电商网站高并发场景下的库存加减思路思考</h1>
+              
+              
+                <hr class="small">
+              
+              
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <h3 id="前言">前言</h3>
+<blockquote>
+<p>每当电子商务平台搞活动，“秒杀”经常是提升网站活跃度的利器之一。比如活动日早上10点1元爱疯7秒杀7台，谁看到了估计都想去秒一把，万一秒中了呢。秒杀的典型特征就是在特定的短时间突然涌入大量请求，对系统造成洪峰冲击，如果系统设计得不好，很容易被直接打垮掉。现在因为疫情原因，秒杀场景也变得更泛化，很多时候会出现商品被瞬间抢完的情况，如果时通过数据库直接扣库存的话， 会给数据库带来了很大压力。很有可能整个数据库会HANG在那里，导致整个系统被拖垮。</p>
+</blockquote>
+<h3 id="问题">问题</h3>
+<p><strong>为什么高并发场景下直接数据库扣库存会搞垮整个数据库呢？</strong></p>
+<blockquote>
+<p><strong>数据库事务特性： 对于一条记录，数据库在该事务修改的时候加锁，在整个事务提交完才释放锁。</strong>
+这样就导致一个问题，当同时有多个请求对同一条记录(库存记录)进行修改时，会在该记录上造成锁排队现象，流程大概时这样的：</p>
+<ol>
+<li>在同一时间点有A，B，C五个数据库线程对记录K进行修改</li>
+<li>A开始事务，对K加锁</li>
+<li>B开始事务，对K加所，发现K已锁，等待K锁释放</li>
+<li>C同上</li>
+<li>A释放锁，B(也可能C，视数据库实现而定)获得锁，C继续等待</li>
+<li>B释放锁，C获得锁
+从上面的整个流程可以看出，在高并发场景下，对K的更新操作变成了线性操作，假设一个事务1ms处理完，当同时有成百上千个修改请求同时过来的时候，后面的修改请求响应时间就大大变长，如果数据库给每个链接分配一个单独的线程来处理，就会导致数据库服务器可用线程急剧下降，当无可用线程时，整个数据库就HANG在了那里。</li>
+</ol>
+</blockquote>
+<h3 id="解决思路">解决思路</h3>
+<blockquote>
+<p><strong>最好的并发就是没有并发</strong>
+我们预先把库存数值缓存到内存中，这个内存可以是业务服务器内存，也可以是专用的缓存服务器，例如redis这种。当有库存操作的时候，我们直接在内存层面进行加减操作，在数据库没有唯一键冲突的情况下，数据库插入操作也比库存修改操作快的多，用这两种当时来实现库存个高并发修改。</p>
+</blockquote>
+<h4 id="redis扣库存">redis扣库存</h4>
+<blockquote>
+<p>redis 是一个高兴能的缓存服务器，它提供了很强大的指令功能，它可以对某个缓存的KEY进行值的加减操作，其TPS可以达到10W级别。在redis层面，我们使用lua脚本来进行数据库加减操作。
+脚本如下：</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">local num = redis.call(&#39;get&#39;, KEYS[1])
+</span></span><span class="line"><span class="cl">local minus = tonumber(KEYS[2]);
+</span></span><span class="line"><span class="cl">if tonumber(num) &gt; minus then
+</span></span><span class="line"><span class="cl">    redis.call(&#39;decr&#39;, minus)
+</span></span><span class="line"><span class="cl">    return 1
+</span></span><span class="line"><span class="cl">else
+</span></span><span class="line"><span class="cl">    return 0
+</span></span><span class="line"><span class="cl">end
+</span></span></code></pre></div><p>库存扣减成功返回1， 库存扣减失败返回0；</p>
+<h4 id="数据库批量合并扣库存">数据库批量合并扣库存</h4>
+<blockquote>
+<p>使用redis控制库存增减虽然很快，但是如果服务器意外宕机，或者交易失败，库存回滚就会比较麻烦，特别是redis事务和数据库事务不在一个事务里，无法做到强一致性，不可避免的会产生一些数据不一致问题。因此我们需要在数据库层面也进行库存同步修改操作，具体操作流程如下：</p>
+</blockquote>
+<ol>
+<li>用户下单，redis减库存成功，数据库插入下单记录</li>
+<li>后台服务器每秒钟同步统计该商品所有新增库存订单，按照下单顺序，汇总库存修改总额，更新库存。</li>
+<li>在上一步中，如果出现库存不足情况，或者用户超出了购买限制，标记为下单失败，如已支付，发起退款操作。</li>
+<li>库存真正扣减成功后再进行发货操作。</li>
+<li>定时同步数据库剩余库存到redis，redis库存值和数据库库存值可以不一致，最终下单是否成功，前台/客户端需要向服务端轮询该订单是否实际扣库存成功</li>
+<li>当redis库存数量为0时，后台更新数据库剩余库存到redis。</li>
+<li>5，6步时必须手段， 不然会出现用户下单成功了但是被库存不足砍单情况， 非用户原因下这样会引起纠纷的</li>
+</ol>
+<blockquote>
+<p>通过上面的操作，我们成功把数据的多个并发修改操作合成了一个数据库的修改操作，大大减轻了数据库锁等待问题。</p>
+</blockquote>
+<h4 id="数据库分片扣库存">数据库分片扣库存</h4>
+<blockquote>
+<p>当商品数量很多时，我们根据商品ID可以把商品分片到多个数据库。这样对一个数据库的修改操作就可以分散到多个数据库。当订单量很大，数据库出现插入压力时，可以根据用户ID分片，把同一商品的不同用户订单分别存储到不同数据库，减轻单一数据库压力。</p>
+</blockquote>
+
+
+        
+          <div class="blog-tags">
+            
+              <a href="https://hzren.github.io/tags/%E7%A7%92%E6%9D%80/">秒杀</a>&nbsp;
+            
+          </div>
+        
+
+        
+            <hr/>
+            <section id="social-share">
+              <div class="list-inline footer-links">
+                
+
+<div class="share-box" aria-hidden="true">
+    <ul class="share">
+      
+      <li>
+        <a href="//twitter.com/share?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-08-01-%25E7%2594%25B5%25E5%2595%2586%25E7%25BD%2591%25E7%25AB%2599%25E9%25AB%2598%25E5%25B9%25B6%25E5%258F%2591%25E5%259C%25BA%25E6%2599%25AF%25E4%25B8%258B%25E7%259A%2584%25E5%25BA%2593%25E5%25AD%2598%25E5%258A%25A0%25E5%2587%258F%25E6%2580%259D%25E8%25B7%25AF%25E6%2580%259D%25E8%2580%2583%2f&amp;text=%e7%94%b5%e5%95%86%e7%bd%91%e7%ab%99%e9%ab%98%e5%b9%b6%e5%8f%91%e5%9c%ba%e6%99%af%e4%b8%8b%e7%9a%84%e5%ba%93%e5%ad%98%e5%8a%a0%e5%87%8f%e6%80%9d%e8%b7%af%e6%80%9d%e8%80%83&amp;via=username" target="_blank" title="Share on Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fhzren.github.io%2fblog%2f2020-08-01-%25E7%2594%25B5%25E5%2595%2586%25E7%25BD%2591%25E7%25AB%2599%25E9%25AB%2598%25E5%25B9%25B6%25E5%258F%2591%25E5%259C%25BA%25E6%2599%25AF%25E4%25B8%258B%25E7%259A%2584%25E5%25BA%2593%25E5%25AD%2598%25E5%258A%25A0%25E5%2587%258F%25E6%2580%259D%25E8%25B7%25AF%25E6%2580%259D%25E8%2580%2583%2f" target="_blank" title="Share on Facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//reddit.com/submit?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-08-01-%25E7%2594%25B5%25E5%2595%2586%25E7%25BD%2591%25E7%25AB%2599%25E9%25AB%2598%25E5%25B9%25B6%25E5%258F%2591%25E5%259C%25BA%25E6%2599%25AF%25E4%25B8%258B%25E7%259A%2584%25E5%25BA%2593%25E5%25AD%2598%25E5%258A%25A0%25E5%2587%258F%25E6%2580%259D%25E8%25B7%25AF%25E6%2580%259D%25E8%2580%2583%2f&amp;title=%e7%94%b5%e5%95%86%e7%bd%91%e7%ab%99%e9%ab%98%e5%b9%b6%e5%8f%91%e5%9c%ba%e6%99%af%e4%b8%8b%e7%9a%84%e5%ba%93%e5%ad%98%e5%8a%a0%e5%87%8f%e6%80%9d%e8%b7%af%e6%80%9d%e8%80%83" target="_blank" title="Share on Reddit">
+          <i class="fab fa-reddit"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-08-01-%25E7%2594%25B5%25E5%2595%2586%25E7%25BD%2591%25E7%25AB%2599%25E9%25AB%2598%25E5%25B9%25B6%25E5%258F%2591%25E5%259C%25BA%25E6%2599%25AF%25E4%25B8%258B%25E7%259A%2584%25E5%25BA%2593%25E5%25AD%2598%25E5%258A%25A0%25E5%2587%258F%25E6%2580%259D%25E8%25B7%25AF%25E6%2580%259D%25E8%2580%2583%2f&amp;title=%e7%94%b5%e5%95%86%e7%bd%91%e7%ab%99%e9%ab%98%e5%b9%b6%e5%8f%91%e5%9c%ba%e6%99%af%e4%b8%8b%e7%9a%84%e5%ba%93%e5%ad%98%e5%8a%a0%e5%87%8f%e6%80%9d%e8%b7%af%e6%80%9d%e8%80%83" target="_blank" title="Share on LinkedIn">
+          <i class="fab fa-linkedin"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-08-01-%25E7%2594%25B5%25E5%2595%2586%25E7%25BD%2591%25E7%25AB%2599%25E9%25AB%2598%25E5%25B9%25B6%25E5%258F%2591%25E5%259C%25BA%25E6%2599%25AF%25E4%25B8%258B%25E7%259A%2584%25E5%25BA%2593%25E5%25AD%2598%25E5%258A%25A0%25E5%2587%258F%25E6%2580%259D%25E8%25B7%25AF%25E6%2580%259D%25E8%2580%2583%2f&amp;title=%e7%94%b5%e5%95%86%e7%bd%91%e7%ab%99%e9%ab%98%e5%b9%b6%e5%8f%91%e5%9c%ba%e6%99%af%e4%b8%8b%e7%9a%84%e5%ba%93%e5%ad%98%e5%8a%a0%e5%87%8f%e6%80%9d%e8%b7%af%e6%80%9d%e8%80%83" target="_blank" title="Share on StumbleUpon">
+          <i class="fab fa-stumbleupon"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-08-01-%25E7%2594%25B5%25E5%2595%2586%25E7%25BD%2591%25E7%25AB%2599%25E9%25AB%2598%25E5%25B9%25B6%25E5%258F%2591%25E5%259C%25BA%25E6%2599%25AF%25E4%25B8%258B%25E7%259A%2584%25E5%25BA%2593%25E5%25AD%2598%25E5%258A%25A0%25E5%2587%258F%25E6%2580%259D%25E8%25B7%25AF%25E6%2580%259D%25E8%2580%2583%2f&amp;description=%e7%94%b5%e5%95%86%e7%bd%91%e7%ab%99%e9%ab%98%e5%b9%b6%e5%8f%91%e5%9c%ba%e6%99%af%e4%b8%8b%e7%9a%84%e5%ba%93%e5%ad%98%e5%8a%a0%e5%87%8f%e6%80%9d%e8%b7%af%e6%80%9d%e8%80%83" target="_blank" title="Share on Pinterest">
+          <i class="fab fa-pinterest"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+  
+
+              </div>
+            </section>
+        
+
+        
+          
+
+          
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="https://hzren.github.io/blog/2020-07-31-%E7%AC%AC%E4%B8%89%E6%96%B9%E7%BD%91%E7%AB%99%E6%95%B0%E6%8D%AE%E7%88%AC%E5%8F%96%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93/" data-toggle="tooltip" data-placement="top" title="第三方网站数据爬取经验总结">&larr; 前一篇</a>
+            </li>
+          
+          
+            <li class="next">
+              <a href="https://hzren.github.io/blog/2020-08-03-%E7%BB%9F%E4%B8%80%E8%B5%84%E6%BA%90%E5%AE%9A%E4%BD%8D%E5%99%A8url/" data-toggle="tooltip" data-placement="top" title="统一资源定位器（URL）">后一篇 &rarr;</a>
+            </li>
+          
+        </ul>
+      
+
+
+      
+        
+        
+      
+
+    </div>
+  </div>
+</div>
+
+      
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+              <li>
+		
+		  <a href="mailto:hzren@outlook.com" title="Email me">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.facebook.com/username" title="Facebook">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-facebook fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://github.com/username" title="GitHub">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://gitlab.com/username" title="GitLab">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-gitlab fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://bitbucket.org/username" title="Bitbucket">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-bitbucket fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://twitter.com/username" title="Twitter">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://username.slack.com/" title="Slack">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-slack fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://reddit.com/u/username" title="Reddit">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-reddit-alien fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://linkedin.com/in/username" title="LinkedIn">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.xing.com/profile/username" title="Xing">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-xing fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://stackoverflow.com/users/XXXXXXX/username" title="StackOverflow">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-stack-overflow fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.snapchat.com/add/username" title="Snapchat">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-snapchat-ghost fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.instagram.com/username" title="Instagram">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-instagram fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.youtube.com/user/username" title="Youtube">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-youtube fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://soundcloud.com/username" title="SoundCloud">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-soundcloud fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://open.spotify.com/user/username" title="Spotify">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-spotify fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://username.bandcamp.com/" title="Bandcamp">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-bandcamp fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://itch.io/profile/username" title="Itch.io">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fas fa-gamepad fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://vk.com/username" title="VK">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-vk fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://paypal.me/username" title="PayPal">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-paypal fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://telegram.me/username" title="Telegram">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-telegram fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://500px.com/username" title="500px">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-500px fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://codepen.io/username" title="CodePen">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-codepen fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.kaggle.com/username" title="kaggle">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-kaggle fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a rel="me"href="https://url" title="Mastodon">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-mastodon fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://weibo.com/username" title="Weibo">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-weibo fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://discord.gg/invite%20code%20%28https://discord.gg/XXXXXXX%29" title="Discord">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-discord fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.strava.com/athletes/userid" title="Strava">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-strava fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+          
+          <li>
+            <a href="" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              <a href="https://hyllo.gitee.io/">renhongzhen</a>
+            
+          
+
+          &nbsp;&bull;&nbsp;&copy;
+          
+            2022
+          
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://hzren.github.io">Code Mark</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          由 <a href="https://gohugo.io">Hugo v0.109.0</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="https://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer><script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script src="https://hzren.github.io/js/main.js"></script>
+<script src="https://hzren.github.io/js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script>
+<script> $(document).ready(function() {$("pre.chroma").css("padding","0");}); </script><script> renderMathInElement(document.body); </script><script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://hzren.github.io/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+
+
+
+    
+  </body>
+</html>
+

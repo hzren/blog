@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>UDP on Code Mark</title>
+    <link>https://hzren.github.io/tags/udp/</link>
+    <description>Recent content in UDP on Code Mark</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <managingEditor>hzren@outlook.com (renhongzhen)</managingEditor>
+    <webMaster>hzren@outlook.com (renhongzhen)</webMaster>
+    <lastBuildDate>Wed, 19 Aug 2020 15:04:38 +0800</lastBuildDate><atom:link href="https://hzren.github.io/tags/udp/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>TCP / UDP 总结</title>
+      <link>https://hzren.github.io/blog/2020-08-19-tcp-udp-%E6%80%BB%E7%BB%93/</link>
+      <pubDate>Wed, 19 Aug 2020 15:04:38 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2020-08-19-tcp-udp-%E6%80%BB%E7%BB%93/</guid>
+      <description>send()最大可以接受多少字节的数据？ 函数层面无限制，超过缓冲区大小函数会block
+TCP接到send()发送的字节，会立马保持原封不动发送吗？ 不确定！
+TCP会先将这些数据放在自己的仓库（发送缓冲区），至于什么时候发，每次发多少，已经不是应用层所能左右的了。什么时候发，一次发多少取决于不同算法，有RCP_NODELAY配置，有MSS限制TCP分组最大长度。
+TCP是基于字节流发送，可能将用户的一次数据发送砍成多个segment发送，也可能将多次应用层的发送合并在一个segment发送。而决定TCP一次最大能发segment的大小则和MSS有关，而MSS最终和MTU有关。
+分片是非常不利的选择，当前网络所做的很多努力都是极力避免分片！
+TCP MSS真的可以避免分片吗？ TCP连接的双方依据本地物理链路的MTU，按照以上的公式计算出本地的MSS，然后双方交换各自的MSS，双方会选择两者中小的MSS来继续通信。但有没有想过，如果路径中的MTU比连接双方的MTU都小，是不是分片就无法避免了？答案是肯定的！
+这个时候必须分片，不分片就会丢，这是DF = 1的状况，需要给源主机发送ICMP消息，问题是ICMP消息能到达源主机吗？如果不能到达，通信就会断，即使TCP有重传机制。
+能到达源主机，源的TCP意识到这一点，会将重传的报文重新切片，重新发送，这没有什么问题，只是耽误一点时间而已。
+DF = 0时，可以直接分片，尽管耗费很多分片的资源，到达目的地再重组，也要耗费一点资源。
+问题是，没有端口号的分片，经过安全设备时，可能会遇到障碍，这同样会造成通信的障碍。
+看，一旦分片造成多大的麻烦，麻烦意味着CPU资源的耗费，为了避免这些不必要的动作，只要不分片，一切都会变的简单。
+UDP UDP是块式消息，UDP本身没有任何分片的能力，也没有任何重传的能力，这些能力需要依赖应用层、IP层。
+计算机网络发展到今天，大家已经形成了一个共识，如果用户的数据确实需要分片传输，务必保证分片的动作由应用层来完成，到达目的地由应用层将字节流，再整理成有意义的消息块。
+TCP丢包 路由器或交换机，一旦TCP流量暴力来袭时，会尽最大能力转发流量，如果流量持续增长，流量流速&amp;gt; 物理线路速率，用缓存将多余的流量缓存在队列里，一旦线路空闲，再发送出去。
+但如果多余的流量&amp;gt; 缓存的空间，无法容纳的流量将会统统丢弃，cisco官方的名词称之为尾丢( Tail Drop)。
+所以缓存只能应付临时的突发流量（Burst Traffic）, 只要多余的突发流量&amp;lt;= 缓存空间，就不会丢弃。
+但是缓存无法应付诸如TCP 指数增长流量，唯一的办法就是尾丢。
+网络接口出方向的 ”out dircard”是正常的，TCP slow start算法就是依靠丢包来实现的，至于哪里要丢，取决于端到端哪条链路的可用带宽最小，记住可用带宽不是接口的最大带宽，可用带宽是真正可以利用的带宽。
+因为两将军问题，在TCP协议中，谁是字节数据的owner，谁才对字节数据负责！数据的接收方并不需要为字节数据负责，被动确认（Passive ACK）一次即可。</description>
+    </item>
+    
+  </channel>
+</rss>

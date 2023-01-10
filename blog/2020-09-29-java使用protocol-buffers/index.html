@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="zh-cn" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+ 
+
+
+      <title>Java使用Protocol Buffers - </title>
+
+  <meta name="description" content="简介 Protocol Buffers，是Google公司开发的一种数据描述语言，类似于XML能够将结构化数据序列化，可用于数据存储、通信协议等方面。
+准备工作 下载protoc代码生成器 编写.proto文件 编译.proto文件 下载protoc代码生成器 protoc可以从Google Protocol Buffers官网下载, 也可以从github ProtocBuffer仓库下载. 仓库地址
+下载文成后, 编译器位于bin文件夹下面.
+编写protoc文件 protoc文件有一套固定的语法格式, 当前份protoc2, protoc3两个版本, 官方语法文档地址.
+定义消息类型
+以proto3为例:
+syntax = &#34;proto3&#34;; message SearchRequest { string query = 1; int32 page_number = 2; int32 result_per_page = 3; } 指定消息字段类型
+在上面的示例中，所有字段都是标量类型：两个整数（page_number和result_per_page）和一个字符串（query）。但是，也可以为字段指定复合类型，包括枚举和其他消息类型。
+指定字段编号
+从上面可以看到，消息定义中的每个字段都有一个唯一的编号。这些数字用于标识字段在消息二进制格式中的位置，一旦消息类型已经被使用了，这些数字就不能再被更改。请注意，1到15范围内的字段号需要一个字节进行编码，包括字段号和字段类型。16到2047范围内的字段号需要两个字节。所以，应该为频繁出现的消息元素保留1到15个字段, 并且为将来可能添加的出现的元素留出一些空间。
+指定字段规则
+消息字段规则有以下三种类型：
+required：格式正确的消息必须正好包含此字段。 optional：格式良好的消息可以有零个或一个此字段（但不能超过一个）。 repeated：在格式良好的消息中，此字段可以重复任意次数（包括零）。将保留重复值的顺序。 编译.proto文件 protoc是一个命令行工具, 一般使用如下:
+protoc --proto_path=src --java_out=build/gen src/foo.proto 更多信息可以参考protoc命令行提示.
+Java集成 添加依赖 添加maven插件 生成代码 编写测试代码 添加依赖 pom文件下添加protocbuf 依赖
+&lt;dependency&gt; &lt;groupId&gt;com.google.protobuf&lt;/groupId&gt; &lt;artifactId&gt;protobuf-java&lt;/artifactId&gt; &lt;version&gt;3.">
+  <meta name="author" content="renhongzhen"/><script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "Code Mark",
+    
+    "url": "https:\/\/hzren.github.io"
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "",
+  "url": "https:\/\/hzren.github.io"
+  
+  
+  
+  
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https:\/\/hzren.github.io",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https:\/\/hzren.github.io\/blog\/2020-09-29-java%E4%BD%BF%E7%94%A8protocol-buffers\/",
+          "name": "Java使用 protocol buffers"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : "renhongzhen"
+  },
+  "headline": "Java使用Protocol Buffers",
+  "description" : "简介 Protocol Buffers，是Google公司开发的一种数据描述语言，类似于XML能够将结构化数据序列化，可用于数据存储、通信协议等方面。\n准备工作 下载protoc代码生成器 编写.proto文件 编译.proto文件 下载protoc代码生成器 protoc可以从Google Protocol Buffers官网下载, 也可以从github ProtocBuffer仓库下载. 仓库地址\n下载文成后, 编译器位于bin文件夹下面.\n编写protoc文件 protoc文件有一套固定的语法格式, 当前份protoc2, protoc3两个版本, 官方语法文档地址.\n定义消息类型\n以proto3为例:\nsyntax = \u0026#34;proto3\u0026#34;; message SearchRequest { string query = 1; int32 page_number = 2; int32 result_per_page = 3; } 指定消息字段类型\n在上面的示例中，所有字段都是标量类型：两个整数（page_number和result_per_page）和一个字符串（query）。但是，也可以为字段指定复合类型，包括枚举和其他消息类型。\n指定字段编号\n从上面可以看到，消息定义中的每个字段都有一个唯一的编号。这些数字用于标识字段在消息二进制格式中的位置，一旦消息类型已经被使用了，这些数字就不能再被更改。请注意，1到15范围内的字段号需要一个字节进行编码，包括字段号和字段类型。16到2047范围内的字段号需要两个字节。所以，应该为频繁出现的消息元素保留1到15个字段, 并且为将来可能添加的出现的元素留出一些空间。\n指定字段规则\n消息字段规则有以下三种类型：\nrequired：格式正确的消息必须正好包含此字段。 optional：格式良好的消息可以有零个或一个此字段（但不能超过一个）。 repeated：在格式良好的消息中，此字段可以重复任意次数（包括零）。将保留重复值的顺序。 编译.proto文件 protoc是一个命令行工具, 一般使用如下:\nprotoc --proto_path=src --java_out=build\/gen src\/foo.proto 更多信息可以参考protoc命令行提示.\nJava集成 添加依赖 添加maven插件 生成代码 编写测试代码 添加依赖 pom文件下添加protocbuf 依赖\n\u0026lt;dependency\u0026gt; \u0026lt;groupId\u0026gt;com.google.protobuf\u0026lt;\/groupId\u0026gt; \u0026lt;artifactId\u0026gt;protobuf-java\u0026lt;\/artifactId\u0026gt; \u0026lt;version\u0026gt;3.",
+  "inLanguage" : "zh-cn",
+  "wordCount":  263 ,
+  "datePublished" : "2020-09-29T16:00:09",
+  "dateModified" : "2020-09-29T16:00:09",
+  "image" : "https:\/\/hzren.github.io\/img\/avatar-icon.png",
+  "keywords" : [ "Java" ],
+  "mainEntityOfPage" : "https:\/\/hzren.github.io\/blog\/2020-09-29-java%E4%BD%BF%E7%94%A8protocol-buffers\/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https:\/\/hzren.github.io",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https:\/\/hzren.github.io\/img\/avatar-icon.png",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
+
+<meta property="og:title" content="Java使用Protocol Buffers" />
+<meta property="og:description" content="简介 Protocol Buffers，是Google公司开发的一种数据描述语言，类似于XML能够将结构化数据序列化，可用于数据存储、通信协议等方面。
+准备工作 下载protoc代码生成器 编写.proto文件 编译.proto文件 下载protoc代码生成器 protoc可以从Google Protocol Buffers官网下载, 也可以从github ProtocBuffer仓库下载. 仓库地址
+下载文成后, 编译器位于bin文件夹下面.
+编写protoc文件 protoc文件有一套固定的语法格式, 当前份protoc2, protoc3两个版本, 官方语法文档地址.
+定义消息类型
+以proto3为例:
+syntax = &#34;proto3&#34;; message SearchRequest { string query = 1; int32 page_number = 2; int32 result_per_page = 3; } 指定消息字段类型
+在上面的示例中，所有字段都是标量类型：两个整数（page_number和result_per_page）和一个字符串（query）。但是，也可以为字段指定复合类型，包括枚举和其他消息类型。
+指定字段编号
+从上面可以看到，消息定义中的每个字段都有一个唯一的编号。这些数字用于标识字段在消息二进制格式中的位置，一旦消息类型已经被使用了，这些数字就不能再被更改。请注意，1到15范围内的字段号需要一个字节进行编码，包括字段号和字段类型。16到2047范围内的字段号需要两个字节。所以，应该为频繁出现的消息元素保留1到15个字段, 并且为将来可能添加的出现的元素留出一些空间。
+指定字段规则
+消息字段规则有以下三种类型：
+required：格式正确的消息必须正好包含此字段。 optional：格式良好的消息可以有零个或一个此字段（但不能超过一个）。 repeated：在格式良好的消息中，此字段可以重复任意次数（包括零）。将保留重复值的顺序。 编译.proto文件 protoc是一个命令行工具, 一般使用如下:
+protoc --proto_path=src --java_out=build/gen src/foo.proto 更多信息可以参考protoc命令行提示.
+Java集成 添加依赖 添加maven插件 生成代码 编写测试代码 添加依赖 pom文件下添加protocbuf 依赖
+&lt;dependency&gt; &lt;groupId&gt;com.google.protobuf&lt;/groupId&gt; &lt;artifactId&gt;protobuf-java&lt;/artifactId&gt; &lt;version&gt;3.">
+<meta property="og:image" content="https://hzren.github.io/img/avatar-icon.png" />
+<meta property="og:url" content="https://hzren.github.io/blog/2020-09-29-java%E4%BD%BF%E7%94%A8protocol-buffers/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Code Mark" />
+
+  <meta name="twitter:title" content="Java使用Protocol Buffers" />
+  <meta name="twitter:description" content="简介 Protocol Buffers，是Google公司开发的一种数据描述语言，类似于XML能够将结构化数据序列化，可用于数据存储、通信协议等方面。
+准备工作 下载protoc代码生成器 编写.proto文件 编译.proto文件 下载protoc代码生成器 protoc可以从Google Protocol Buffers官网下载, 也可以从github ProtocBuffer仓库下载. 仓库 …">
+  <meta name="twitter:image" content="https://hzren.github.io/img/avatar-icon.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@username" />
+  <meta name="twitter:creator" content="@username" />
+  <link href='https://hzren.github.io/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <meta name="generator" content="Hugo 0.109.0">
+  <link rel="alternate" href="https://hzren.github.io/index.xml" type="application/rss+xml" title="Code Mark"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://hzren.github.io/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="https://hzren.github.io/css/highlight.min.css" /><link rel="stylesheet" href="https://hzren.github.io/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">切换导航</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://hzren.github.io">Code Mark</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="文章" href="/">文章</a>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent">代码</a>
+              <div class="navlinks-children">
+                
+                  <a href="/post/2017-03-07-bigimg-sample">Big Image Sample</a>
+                
+                  <a href="/post/2017-03-05-math-sample">Math Sample</a>
+                
+                  <a href="/post/2016-03-08-code-sample">Code Sample</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li>
+              <a title="关于我" href="/page/about/">关于我</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="分类" href="/tags">分类</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    
+      <div class="avatar-container">
+        <div class="avatar-img-border">
+          <a title="Code Mark" href="https://hzren.github.io">
+            <img class="avatar-img" src="https://hzren.github.io/img/avatar-icon.png" alt="Code Mark" />
+          </a>
+        </div>
+      </div>
+    
+
+  </div>
+</nav>
+
+
+
+
+    
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+
+  
+  
+  
+
+
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    
+    <div class="intro-header no-img">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="blog-heading">
+              
+                <h1>Java使用Protocol Buffers</h1>
+              
+              
+                <hr class="small">
+              
+              
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <h2 id="简介">简介</h2>
+<blockquote>
+<p>Protocol Buffers，是Google公司开发的一种数据描述语言，类似于XML能够将结构化数据序列化，可用于数据存储、通信协议等方面。</p>
+</blockquote>
+<h2 id="准备工作">准备工作</h2>
+<ol>
+<li>下载protoc代码生成器</li>
+<li>编写.proto文件</li>
+<li>编译.proto文件</li>
+</ol>
+<h3 id="下载protoc代码生成器">下载protoc代码生成器</h3>
+<p>protoc可以从Google Protocol Buffers官网下载, 也可以从github ProtocBuffer仓库下载.
+<a href="https://github.com/protocolbuffers/protobuf">仓库地址</a></p>
+<p>下载文成后, 编译器位于bin文件夹下面.</p>
+<h3 id="编写protoc文件">编写protoc文件</h3>
+<p>protoc文件有一套固定的语法格式, 当前份protoc2, protoc3两个版本, 官方<a href="https://developers.google.com/protocol-buffers/docs/overview">语法文档地址</a>.</p>
+<p><strong>定义消息类型</strong></p>
+<p>以proto3为例:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">syntax = &#34;proto3&#34;;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">message SearchRequest {
+</span></span><span class="line"><span class="cl">  string query = 1;
+</span></span><span class="line"><span class="cl">  int32 page_number = 2;
+</span></span><span class="line"><span class="cl">  int32 result_per_page = 3;
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></div><p><strong>指定消息字段类型</strong></p>
+<p>在上面的示例中，所有字段都是标量类型：两个整数（page_number和result_per_page）和一个字符串（query）。但是，也可以为字段指定复合类型，包括枚举和其他消息类型。</p>
+<p><strong>指定字段编号</strong></p>
+<p>从上面可以看到，消息定义中的每个字段都有一个唯一的编号。这些数字用于标识字段在消息二进制格式中的位置，一旦消息类型已经被使用了，这些数字就不能再被更改。请注意，1到15范围内的字段号需要一个字节进行编码，包括字段号和字段类型。16到2047范围内的字段号需要两个字节。所以，应该为频繁出现的消息元素保留1到15个字段, 并且为将来可能添加的出现的元素留出一些空间。</p>
+<p><strong>指定字段规则</strong></p>
+<p>消息字段规则有以下三种类型：</p>
+<ul>
+<li>required：格式正确的消息必须正好包含此字段。</li>
+<li>optional：格式良好的消息可以有零个或一个此字段（但不能超过一个）。</li>
+<li>repeated：在格式良好的消息中，此字段可以重复任意次数（包括零）。将保留重复值的顺序。</li>
+</ul>
+<h3 id="编译proto文件">编译.proto文件</h3>
+<p>protoc是一个命令行工具, 一般使用如下:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">protoc --proto_path=src --java_out=build/gen src/foo.proto
+</span></span></code></pre></div><p>更多信息可以参考protoc命令行提示.</p>
+<h2 id="java集成">Java集成</h2>
+<ol>
+<li>添加依赖</li>
+<li>添加maven插件</li>
+<li>生成代码</li>
+<li>编写测试代码</li>
+</ol>
+<h3 id="添加依赖">添加依赖</h3>
+<p>pom文件下添加protocbuf 依赖</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">		&lt;dependency&gt;
+</span></span><span class="line"><span class="cl">			&lt;groupId&gt;com.google.protobuf&lt;/groupId&gt;
+</span></span><span class="line"><span class="cl">			&lt;artifactId&gt;protobuf-java&lt;/artifactId&gt;
+</span></span><span class="line"><span class="cl">			&lt;version&gt;3.11.0&lt;/version&gt;
+</span></span><span class="line"><span class="cl">		&lt;/dependency&gt;
+</span></span><span class="line"><span class="cl">		&lt;dependency&gt;
+</span></span><span class="line"><span class="cl">			&lt;groupId&gt;com.google.protobuf&lt;/groupId&gt;
+</span></span><span class="line"><span class="cl">			&lt;artifactId&gt;protobuf-java-util&lt;/artifactId&gt;
+</span></span><span class="line"><span class="cl">			&lt;version&gt;3.11.0&lt;/version&gt;
+</span></span><span class="line"><span class="cl">		&lt;/dependency&gt;
+</span></span></code></pre></div><h3 id="添加maven插件">添加maven插件</h3>
+<p>也可以不使用maven插件, 使用官方protoc编译出Java代码, 但这样操作比较麻烦, 使用maven插件可以把代码生成过程集成到maven操作中去.</p>
+<p>添加protoc编译插件</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">			&lt;plugin&gt;
+</span></span><span class="line"><span class="cl">				&lt;groupId&gt;com.github.os72&lt;/groupId&gt;
+</span></span><span class="line"><span class="cl">				&lt;artifactId&gt;protoc-jar-maven-plugin&lt;/artifactId&gt;
+</span></span><span class="line"><span class="cl">				&lt;version&gt;3.11.4&lt;/version&gt;
+</span></span><span class="line"><span class="cl">				&lt;executions&gt;
+</span></span><span class="line"><span class="cl">					&lt;execution&gt;
+</span></span><span class="line"><span class="cl">						&lt;phase&gt;generate-sources&lt;/phase&gt;
+</span></span><span class="line"><span class="cl">						&lt;goals&gt;
+</span></span><span class="line"><span class="cl">							&lt;goal&gt;run&lt;/goal&gt;
+</span></span><span class="line"><span class="cl">						&lt;/goals&gt;
+</span></span><span class="line"><span class="cl">						&lt;configuration&gt;
+</span></span><span class="line"><span class="cl">							&lt;addSources&gt;none&lt;/addSources&gt;
+</span></span><span class="line"><span class="cl">							&lt;outputDirectory&gt;src/main/protoc_gen&lt;/outputDirectory&gt;
+</span></span><span class="line"><span class="cl">							&lt;inputDirectories&gt;
+</span></span><span class="line"><span class="cl">								&lt;include&gt;src/main/protobuf&lt;/include&gt;
+</span></span><span class="line"><span class="cl">							&lt;/inputDirectories&gt;
+</span></span><span class="line"><span class="cl">						&lt;/configuration&gt;
+</span></span><span class="line"><span class="cl">					&lt;/execution&gt;
+</span></span><span class="line"><span class="cl">				&lt;/executions&gt;
+</span></span><span class="line"><span class="cl">			&lt;/plugin&gt;
+</span></span></code></pre></div><p>.proto文件位于src/main/protobuf文件夹下面, 生成的代码位于src/man/protoc_gen目录下面.</p>
+<p>maven默认源代码文件夹只有src/man/java, 需要添加src/man/protoc_gen为源代码文件夹.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">			&lt;plugin&gt;
+</span></span><span class="line"><span class="cl">				&lt;groupId&gt;org.codehaus.mojo&lt;/groupId&gt;
+</span></span><span class="line"><span class="cl">				&lt;artifactId&gt;build-helper-maven-plugin&lt;/artifactId&gt;
+</span></span><span class="line"><span class="cl">				&lt;version&gt;3.2.0&lt;/version&gt;
+</span></span><span class="line"><span class="cl">				&lt;executions&gt;
+</span></span><span class="line"><span class="cl">					&lt;execution&gt;
+</span></span><span class="line"><span class="cl">						&lt;id&gt;add-source&lt;/id&gt;
+</span></span><span class="line"><span class="cl">						&lt;phase&gt;initialize&lt;/phase&gt;
+</span></span><span class="line"><span class="cl">						&lt;goals&gt;
+</span></span><span class="line"><span class="cl">							&lt;goal&gt;add-source&lt;/goal&gt;
+</span></span><span class="line"><span class="cl">						&lt;/goals&gt;
+</span></span><span class="line"><span class="cl">						&lt;configuration&gt;
+</span></span><span class="line"><span class="cl">							&lt;sources&gt;
+</span></span><span class="line"><span class="cl">								&lt;source&gt;${basedir}/src/main/java&lt;/source&gt;
+</span></span><span class="line"><span class="cl">								&lt;source&gt;${basedir}/src/main/protoc_gen&lt;/source&gt;
+</span></span><span class="line"><span class="cl">							&lt;/sources&gt;
+</span></span><span class="line"><span class="cl">						&lt;/configuration&gt;
+</span></span><span class="line"><span class="cl">					&lt;/execution&gt;
+</span></span><span class="line"><span class="cl">				&lt;/executions&gt;
+</span></span><span class="line"><span class="cl">			&lt;/plugin&gt;
+</span></span></code></pre></div><p>可以在.gitignore文件夹下面配置忽略src/man/protoc_gen文件夹, 避免多人生成代码产生冲突, 开发打包时直接在所在机器上重新编译生成即可.
+上面protoc-jar-maven-plugin插件配置已经绑定到了maven默认generate-sources生命周期中, 执行mvn compile即可生成代码.</p>
+<p>生成代码:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">mvn clean package
+</span></span></code></pre></div><h2 id="编写测试代码">编写测试代码</h2>
+<p>编写 addressbook.proto</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">syntax</span> <span class="p">=</span> <span class="s">&#34;proto2&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">tutorial</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">option</span> <span class="nx">java_package</span> <span class="p">=</span> <span class="s">&#34;com.example.tutorial&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">option</span> <span class="nx">java_outer_classname</span> <span class="p">=</span> <span class="s">&#34;AddressBookProtos&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">message</span> <span class="nx">Person</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">required</span> <span class="kt">string</span> <span class="nx">name</span> <span class="p">=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">required</span> <span class="kt">int32</span> <span class="nx">id</span> <span class="p">=</span> <span class="mi">2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">optional</span> <span class="kt">string</span> <span class="nx">email</span> <span class="p">=</span> <span class="mi">3</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="nx">enum</span> <span class="nx">PhoneType</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">MOBILE</span> <span class="p">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">HOME</span> <span class="p">=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">WORK</span> <span class="p">=</span> <span class="mi">2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="nx">message</span> <span class="nx">PhoneNumber</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">required</span> <span class="kt">string</span> <span class="nx">number</span> <span class="p">=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">optional</span> <span class="nx">PhoneType</span> <span class="kd">type</span> <span class="p">=</span> <span class="mi">2</span> <span class="p">[</span><span class="k">default</span> <span class="p">=</span> <span class="nx">HOME</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="nx">repeated</span> <span class="nx">PhoneNumber</span> <span class="nx">phones</span> <span class="p">=</span> <span class="mi">4</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">message</span> <span class="nx">AddressBook</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">repeated</span> <span class="nx">Person</span> <span class="nx">people</span> <span class="p">=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>生成代码:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">mvn clean package
+</span></span></code></pre></div><p>编写测试代码:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">com</span><span class="p">.</span><span class="nx">test</span><span class="p">.</span><span class="nx">protobuf</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nx">com</span><span class="p">.</span><span class="nx">example</span><span class="p">.</span><span class="nx">tutorial</span><span class="p">.</span><span class="nx">AddressBookProtos</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nx">com</span><span class="p">.</span><span class="nx">google</span><span class="p">.</span><span class="nx">protobuf</span><span class="p">.</span><span class="nx">InvalidProtocolBufferException</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">public</span> <span class="nx">class</span> <span class="nx">ProtoMainTest</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nx">public</span> <span class="nx">static</span> <span class="nx">void</span> <span class="nf">main</span><span class="p">(</span><span class="nx">String</span><span class="p">[]</span> <span class="nx">args</span><span class="p">)</span> <span class="nx">throws</span> <span class="nx">InvalidProtocolBufferException</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">AddressBookProtos</span><span class="p">.</span><span class="nx">Person</span><span class="p">.</span><span class="nx">Builder</span> <span class="nx">builder</span> <span class="p">=</span> <span class="nx">AddressBookProtos</span><span class="p">.</span><span class="nx">Person</span><span class="p">.</span><span class="nf">newBuilder</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">builder</span><span class="p">.</span><span class="nf">setEmail</span><span class="p">(</span><span class="s">&#34;gaopeng@outlook.com&#34;</span><span class="p">).</span><span class="nf">setId</span><span class="p">(</span><span class="mi">110</span><span class="p">).</span><span class="nf">setName</span><span class="p">(</span><span class="s">&#34;gaopeng&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">AddressBookProtos</span><span class="p">.</span><span class="nx">Person</span> <span class="nx">person</span> <span class="p">=</span> <span class="nx">builder</span><span class="p">.</span><span class="nf">build</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">byte</span><span class="p">[]</span> <span class="nx">bytes</span> <span class="p">=</span> <span class="nx">person</span><span class="p">.</span><span class="nf">toByteArray</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">System</span><span class="p">.</span><span class="nx">out</span><span class="p">.</span><span class="nb">println</span><span class="p">(</span><span class="nx">bytes</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">AddressBookProtos</span><span class="p">.</span><span class="nx">Person</span> <span class="nx">parse</span> <span class="p">=</span> <span class="nx">AddressBookProtos</span><span class="p">.</span><span class="nx">Person</span><span class="p">.</span><span class="nf">parseFrom</span><span class="p">(</span><span class="nx">bytes</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">System</span><span class="p">.</span><span class="nx">out</span><span class="p">.</span><span class="nb">println</span><span class="p">(</span><span class="nx">parse</span><span class="p">.</span><span class="nf">getEmail</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">System</span><span class="p">.</span><span class="nx">out</span><span class="p">.</span><span class="nb">println</span><span class="p">(</span><span class="nx">parse</span><span class="p">.</span><span class="nf">getName</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>程序运行</p>
+
+
+        
+          <div class="blog-tags">
+            
+              <a href="https://hzren.github.io/tags/java/">Java</a>&nbsp;
+            
+          </div>
+        
+
+        
+            <hr/>
+            <section id="social-share">
+              <div class="list-inline footer-links">
+                
+
+<div class="share-box" aria-hidden="true">
+    <ul class="share">
+      
+      <li>
+        <a href="//twitter.com/share?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-09-29-java%25E4%25BD%25BF%25E7%2594%25A8protocol-buffers%2f&amp;text=Java%e4%bd%bf%e7%94%a8Protocol%20Buffers&amp;via=username" target="_blank" title="Share on Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fhzren.github.io%2fblog%2f2020-09-29-java%25E4%25BD%25BF%25E7%2594%25A8protocol-buffers%2f" target="_blank" title="Share on Facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//reddit.com/submit?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-09-29-java%25E4%25BD%25BF%25E7%2594%25A8protocol-buffers%2f&amp;title=Java%e4%bd%bf%e7%94%a8Protocol%20Buffers" target="_blank" title="Share on Reddit">
+          <i class="fab fa-reddit"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-09-29-java%25E4%25BD%25BF%25E7%2594%25A8protocol-buffers%2f&amp;title=Java%e4%bd%bf%e7%94%a8Protocol%20Buffers" target="_blank" title="Share on LinkedIn">
+          <i class="fab fa-linkedin"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-09-29-java%25E4%25BD%25BF%25E7%2594%25A8protocol-buffers%2f&amp;title=Java%e4%bd%bf%e7%94%a8Protocol%20Buffers" target="_blank" title="Share on StumbleUpon">
+          <i class="fab fa-stumbleupon"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-09-29-java%25E4%25BD%25BF%25E7%2594%25A8protocol-buffers%2f&amp;description=Java%e4%bd%bf%e7%94%a8Protocol%20Buffers" target="_blank" title="Share on Pinterest">
+          <i class="fab fa-pinterest"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+  
+
+              </div>
+            </section>
+        
+
+        
+          
+            
+          
+
+          
+                  <h4 class="see-also">也可以看看</h4>
+                  <ul>
+                
+                
+                    <li><a href="/blog/2022-08-03-spring%E5%94%AF%E4%B8%80%E7%BA%A6%E6%9D%9F%E5%BC%82%E5%B8%B8%E7%BB%9F%E4%B8%80%E5%A4%84%E7%90%86/">Spring唯一约束异常统一处理</a></li>
+                
+                    <li><a href="/blog/2021-01-27-arthas%E4%BD%BF%E7%94%A8/">Arthas使用</a></li>
+                
+                    <li><a href="/blog/2021-01-25-jvm/">JVM</a></li>
+                
+                    <li><a href="/blog/2021-01-22-java%E8%AF%AD%E8%A8%80/">Java语言</a></li>
+                
+                    <li><a href="/blog/2020-07-29-spring-component-sacn-%E6%89%AB%E6%8F%8F%E5%8A%A0%E8%BD%BD%E5%85%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90/">Spring component-sacn 扫描加载全流程分析</a></li>
+                
+              </ul>
+
+          
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="https://hzren.github.io/blog/2020-09-14-redis%E5%A4%87%E4%BB%BD/" data-toggle="tooltip" data-placement="top" title="Redis备份">&larr; 前一篇</a>
+            </li>
+          
+          
+            <li class="next">
+              <a href="https://hzren.github.io/blog/2020-12-31-direct-memory-access-dma-%E7%AE%80%E4%BB%8B/" data-toggle="tooltip" data-placement="top" title="DMA 简介">后一篇 &rarr;</a>
+            </li>
+          
+        </ul>
+      
+
+
+      
+        
+        
+      
+
+    </div>
+  </div>
+</div>
+
+      
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+              <li>
+		
+		  <a href="mailto:hzren@outlook.com" title="Email me">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.facebook.com/username" title="Facebook">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-facebook fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://github.com/username" title="GitHub">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://gitlab.com/username" title="GitLab">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-gitlab fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://bitbucket.org/username" title="Bitbucket">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-bitbucket fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://twitter.com/username" title="Twitter">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://username.slack.com/" title="Slack">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-slack fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://reddit.com/u/username" title="Reddit">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-reddit-alien fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://linkedin.com/in/username" title="LinkedIn">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.xing.com/profile/username" title="Xing">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-xing fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://stackoverflow.com/users/XXXXXXX/username" title="StackOverflow">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-stack-overflow fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.snapchat.com/add/username" title="Snapchat">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-snapchat-ghost fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.instagram.com/username" title="Instagram">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-instagram fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.youtube.com/user/username" title="Youtube">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-youtube fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://soundcloud.com/username" title="SoundCloud">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-soundcloud fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://open.spotify.com/user/username" title="Spotify">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-spotify fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://username.bandcamp.com/" title="Bandcamp">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-bandcamp fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://itch.io/profile/username" title="Itch.io">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fas fa-gamepad fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://vk.com/username" title="VK">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-vk fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://paypal.me/username" title="PayPal">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-paypal fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://telegram.me/username" title="Telegram">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-telegram fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://500px.com/username" title="500px">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-500px fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://codepen.io/username" title="CodePen">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-codepen fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.kaggle.com/username" title="kaggle">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-kaggle fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a rel="me"href="https://url" title="Mastodon">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-mastodon fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://weibo.com/username" title="Weibo">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-weibo fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://discord.gg/invite%20code%20%28https://discord.gg/XXXXXXX%29" title="Discord">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-discord fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.strava.com/athletes/userid" title="Strava">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-strava fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+          
+          <li>
+            <a href="" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              <a href="https://hyllo.gitee.io/">renhongzhen</a>
+            
+          
+
+          &nbsp;&bull;&nbsp;&copy;
+          
+            2022
+          
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://hzren.github.io">Code Mark</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          由 <a href="https://gohugo.io">Hugo v0.109.0</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="https://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer><script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script src="https://hzren.github.io/js/main.js"></script>
+<script src="https://hzren.github.io/js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script>
+<script> $(document).ready(function() {$("pre.chroma").css("padding","0");}); </script><script> renderMathInElement(document.body); </script><script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://hzren.github.io/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+
+
+
+    
+  </body>
+</html>
+

@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="zh-cn" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+ 
+
+
+      <title>IP 协议 - </title>
+
+  <meta name="description" content="前言 IP协议，又称网际协议，是整个互联网事实的基石。
+IP地址最核心的概念之一就是IP地址，IP地址用来标识网络上的一台设备；为什么有了MAC地址还需要IP地址呢，因为MAC地址是和硬件绑定在一起的，硬件设备是可以人为位置转移的，一台设备，它可以用在这个世界上的任何地方。
+如果只有MAC地址没有IP地址，一个ISP(电信运营商)下面所链接的设备MAC地址将是无法确定的，毫无规律可言，当一个数据包从一台网络设备发出之后，我们无法确定这个数据包的目标是在哪个国家的哪个地方。所以需要在MAC地址之上虚拟新的一层，IP层，当数据夸网络传输时，我们根据数据包的目的IP地址确定其所在国家的ISP，将其发送过去，目标ISP收到该报文后通过其IP地址分配确定目标设备，将该数据包转发过去。
+在同一个网络中的内部通信并不需要网络层设备(IP地址不是必要条件)，仅仅靠数据链路层(MAC地址)就可以完成相互通信，对于不同的网络之间相互通信则必须借助路由器等三层设备。
+概念 IP协议是网络层最重要的协议之一，IP协议的功能是根据源主机和目的主机的地址来传送数据。为达到此目的，IP协议定义了寻址方法和数据报的封装结构。第一个架构的主要版本为IPv4，目前仍然是广泛使用的互联网协议，IPv6还在推进中。
+IP封装 数据在IP协议层会被封装为数据包。IP协议的特点在于：在传输过程中，主机在传输数据之前，无须预先和目标主机建立好一条特定的“通路”。IP协议是一种“不可靠的”数据包传输机制（也被称作“尽力而为”或“尽最大努力交付”）；也就是说，IP协议不保证数据能准确的传输。数据包在到达的时候可能已经损坏，顺序错乱（与其它一起传送的封包相比），产生冗余包，或者全部丢失。如果应用需要保证可靠性，一般需要采取其他的方法，例如利用IP的上层协议控制。
+IP提供的服务 由于封装带来的抽象机制，IP协议可以在各种各样的网络上工作，例如以太网，ATM，FDDI，Wi-Fi，令牌环等等。每个链路层的实现可能有自己的方法（也有可能是完全没有它自己的方法），把IP地址解析成相应的数据链路地址(MAC地址)。IPv4协议使用地址解析协议（ARP），而IPv6采用邻居发现协议（NDP）。
+可靠性 互联网协议的设计原则，网络基础设施本身就是不可靠的，在传输过程中使用的是节点和连接也是动态的。不存在中央式的衡量机制来跟踪和维护网络状态。为了减少网络的复杂性，大部分网络分布在每个数据传输的终端节点。传输路径中的路由器只是简单地将数据包发送到下一个匹配的目的地址的路由前缀的本地网关。
+基于这种设计，IP协议只提供了尽力传送保证，IP服务是不可靠的。IP协议是一种无连接的协议，相对于面向连接的协议。IP协议允许下列任何故障发生：
+- 数据损坏- 丢失数据包- 重复到来- 数据包传递乱序；意思是，封包A即使在封包B之前发送，B也可能在A之前先抵达。IPv4会在IP层计算和校验签名头和来确保IP数据报头是正确的。校验失败的话这数据包会直接丢弃。在这种情况下不会有任何通知给任一个终端节点。IPv6为了快速传输已经放弃了该功能。
+除了可靠性问题，因为网络组成的多样性和复杂性，数据包在不同的网络路径下传输结果很可能是不一样的，即使网络路径是有效并且可靠的。原因之一是数据链层上的MTU设置。
+IP寻址和路由 IP协议最复杂的就是寻址和路由了。寻址就是如何将IP地址分配给各个终端节点，以及如何划分和组合子网。所有网络端点都需要路由，尤其是网际之间的路由器。路由器通常用内部网关协议（Interior Gateway Protocols，IGPs）和外部网关协议（External Gateway Protocols，EGPs）决定怎样发送IP数据包。
+IGP / 内部网关协议 内部网关协议可分为三类：1) 距离矢量路由协议，2) 连接状态路由协议，3) 高级距离矢量路由协议。
+距离矢量路由协议
+这类协议使用贝尔曼-福特算法（Bellman-Ford）计算路径。在距离-矢量路由协议中，每个路由器并不了解整个网络的拓扑信息。它们只是向其它路由器通告自己的距离、也从其它路由器那里收到类似的通告。每个路由器都通过这种路由通告来传播它的路由表。在之后的通告周期中，各路由器通告其整张路由表。该过程持续至所有路由器的路由表都收敛至一稳定状态为止。
+这类协议具有收敛缓慢的缺点，然而，它们通常容易处理且非常适合小型网络。距离-矢量路由协议的一些例子包括：
+1. 路由信息协议（RIP）2. 内部网关路由协议（IGRP）（注意：勿将内部网关协议IGP与内部网关路由协议IGRP混淆，IGP是本条目所指一类协议，而IGRP是特定的一种路由协议）链路状态路由协议
+在链路状态路由协议中，每个节点都知晓整个网络的拓扑信息。各节点使用自己了解的网络拓扑情况来各自独立地对网络中每个可能的目的地址计算出其最佳的转发地址（下一跳）。所有最佳转发地址汇集到一起构成该节点的完整路由表。
+与距离-矢量路由协议使用的那种每个节点与其相邻节点分享自己的路由表的工作方式不同，链路状态路由协议的工作方式是节点间仅传播用于构造网络连通图所需的信息。
+最初创建这类协议就是为了解决距离-矢量路由协议收敛缓慢的缺点，然而，为此链路状态路由协议会消耗大量的内存与处理器能力。
+链路状态路由协议的例子有：
+1. 开放式最短路径优先协议（OSPF）2. 中间系统到中间系统路由交换协议（IS-IS）高级距离矢量路由协议
+又名混合路由协议或者平衡混合路由协议，是继距离-矢量路由协议与链路状态路由协议之后的又一个内部网关协议，强调了前两者的优点，规避了它们的不足。
+高级距离矢量路由协议的例子有：
+1. 增强型内部网关路由协议（EIGRP）（增强型内部网关路由协议EIGRP是内部网关路由协议IGRP的增强版，EIGRP是Cisco专用协议）">
+  <meta name="author" content="renhongzhen"/><script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "Code Mark",
+    
+    "url": "https:\/\/hzren.github.io"
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "",
+  "url": "https:\/\/hzren.github.io"
+  
+  
+  
+  
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https:\/\/hzren.github.io",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https:\/\/hzren.github.io\/blog\/2020-08-13-ip-%E5%8D%8F%E8%AE%AE\/",
+          "name": "IP 协议"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : "renhongzhen"
+  },
+  "headline": "IP 协议",
+  "description" : "前言 IP协议，又称网际协议，是整个互联网事实的基石。\nIP地址最核心的概念之一就是IP地址，IP地址用来标识网络上的一台设备；为什么有了MAC地址还需要IP地址呢，因为MAC地址是和硬件绑定在一起的，硬件设备是可以人为位置转移的，一台设备，它可以用在这个世界上的任何地方。\n如果只有MAC地址没有IP地址，一个ISP(电信运营商)下面所链接的设备MAC地址将是无法确定的，毫无规律可言，当一个数据包从一台网络设备发出之后，我们无法确定这个数据包的目标是在哪个国家的哪个地方。所以需要在MAC地址之上虚拟新的一层，IP层，当数据夸网络传输时，我们根据数据包的目的IP地址确定其所在国家的ISP，将其发送过去，目标ISP收到该报文后通过其IP地址分配确定目标设备，将该数据包转发过去。\n在同一个网络中的内部通信并不需要网络层设备(IP地址不是必要条件)，仅仅靠数据链路层(MAC地址)就可以完成相互通信，对于不同的网络之间相互通信则必须借助路由器等三层设备。\n概念 IP协议是网络层最重要的协议之一，IP协议的功能是根据源主机和目的主机的地址来传送数据。为达到此目的，IP协议定义了寻址方法和数据报的封装结构。第一个架构的主要版本为IPv4，目前仍然是广泛使用的互联网协议，IPv6还在推进中。\nIP封装 数据在IP协议层会被封装为数据包。IP协议的特点在于：在传输过程中，主机在传输数据之前，无须预先和目标主机建立好一条特定的“通路”。IP协议是一种“不可靠的”数据包传输机制（也被称作“尽力而为”或“尽最大努力交付”）；也就是说，IP协议不保证数据能准确的传输。数据包在到达的时候可能已经损坏，顺序错乱（与其它一起传送的封包相比），产生冗余包，或者全部丢失。如果应用需要保证可靠性，一般需要采取其他的方法，例如利用IP的上层协议控制。\nIP提供的服务 由于封装带来的抽象机制，IP协议可以在各种各样的网络上工作，例如以太网，ATM，FDDI，Wi-Fi，令牌环等等。每个链路层的实现可能有自己的方法（也有可能是完全没有它自己的方法），把IP地址解析成相应的数据链路地址(MAC地址)。IPv4协议使用地址解析协议（ARP），而IPv6采用邻居发现协议（NDP）。\n可靠性 互联网协议的设计原则，网络基础设施本身就是不可靠的，在传输过程中使用的是节点和连接也是动态的。不存在中央式的衡量机制来跟踪和维护网络状态。为了减少网络的复杂性，大部分网络分布在每个数据传输的终端节点。传输路径中的路由器只是简单地将数据包发送到下一个匹配的目的地址的路由前缀的本地网关。\n基于这种设计，IP协议只提供了尽力传送保证，IP服务是不可靠的。IP协议是一种无连接的协议，相对于面向连接的协议。IP协议允许下列任何故障发生：\n- 数据损坏\r- 丢失数据包\r- 重复到来\r- 数据包传递乱序；意思是，封包A即使在封包B之前发送，B也可能在A之前先抵达。\rIPv4会在IP层计算和校验签名头和来确保IP数据报头是正确的。校验失败的话这数据包会直接丢弃。在这种情况下不会有任何通知给任一个终端节点。IPv6为了快速传输已经放弃了该功能。\n除了可靠性问题，因为网络组成的多样性和复杂性，数据包在不同的网络路径下传输结果很可能是不一样的，即使网络路径是有效并且可靠的。原因之一是数据链层上的MTU设置。\nIP寻址和路由 IP协议最复杂的就是寻址和路由了。寻址就是如何将IP地址分配给各个终端节点，以及如何划分和组合子网。所有网络端点都需要路由，尤其是网际之间的路由器。路由器通常用内部网关协议（Interior Gateway Protocols，IGPs）和外部网关协议（External Gateway Protocols，EGPs）决定怎样发送IP数据包。\nIGP \/ 内部网关协议 内部网关协议可分为三类：1) 距离矢量路由协议，2) 连接状态路由协议，3) 高级距离矢量路由协议。\n距离矢量路由协议\n这类协议使用贝尔曼-福特算法（Bellman-Ford）计算路径。在距离-矢量路由协议中，每个路由器并不了解整个网络的拓扑信息。它们只是向其它路由器通告自己的距离、也从其它路由器那里收到类似的通告。每个路由器都通过这种路由通告来传播它的路由表。在之后的通告周期中，各路由器通告其整张路由表。该过程持续至所有路由器的路由表都收敛至一稳定状态为止。\n这类协议具有收敛缓慢的缺点，然而，它们通常容易处理且非常适合小型网络。距离-矢量路由协议的一些例子包括：\n1. 路由信息协议（RIP）\r2. 内部网关路由协议（IGRP）（注意：勿将内部网关协议IGP与内部网关路由协议IGRP混淆，IGP是本条目所指一类协议，而IGRP是特定的一种路由协议）\r链路状态路由协议\n在链路状态路由协议中，每个节点都知晓整个网络的拓扑信息。各节点使用自己了解的网络拓扑情况来各自独立地对网络中每个可能的目的地址计算出其最佳的转发地址（下一跳）。所有最佳转发地址汇集到一起构成该节点的完整路由表。\n与距离-矢量路由协议使用的那种每个节点与其相邻节点分享自己的路由表的工作方式不同，链路状态路由协议的工作方式是节点间仅传播用于构造网络连通图所需的信息。\n最初创建这类协议就是为了解决距离-矢量路由协议收敛缓慢的缺点，然而，为此链路状态路由协议会消耗大量的内存与处理器能力。\n链路状态路由协议的例子有：\n1. 开放式最短路径优先协议（OSPF）\r2. 中间系统到中间系统路由交换协议（IS-IS）\r高级距离矢量路由协议\n又名混合路由协议或者平衡混合路由协议，是继距离-矢量路由协议与链路状态路由协议之后的又一个内部网关协议，强调了前两者的优点，规避了它们的不足。\n高级距离矢量路由协议的例子有：\n1. 增强型内部网关路由协议（EIGRP）（增强型内部网关路由协议EIGRP是内部网关路由协议IGRP的增强版，EIGRP是Cisco专用协议）\r",
+  "inLanguage" : "zh-cn",
+  "wordCount":  58 ,
+  "datePublished" : "2020-08-13T00:00:00",
+  "dateModified" : "2020-08-13T00:00:00",
+  "image" : "https:\/\/hzren.github.io\/img\/avatar-icon.png",
+  "keywords" : [ "IP" ],
+  "mainEntityOfPage" : "https:\/\/hzren.github.io\/blog\/2020-08-13-ip-%E5%8D%8F%E8%AE%AE\/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https:\/\/hzren.github.io",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https:\/\/hzren.github.io\/img\/avatar-icon.png",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
+
+<meta property="og:title" content="IP 协议" />
+<meta property="og:description" content="前言 IP协议，又称网际协议，是整个互联网事实的基石。
+IP地址最核心的概念之一就是IP地址，IP地址用来标识网络上的一台设备；为什么有了MAC地址还需要IP地址呢，因为MAC地址是和硬件绑定在一起的，硬件设备是可以人为位置转移的，一台设备，它可以用在这个世界上的任何地方。
+如果只有MAC地址没有IP地址，一个ISP(电信运营商)下面所链接的设备MAC地址将是无法确定的，毫无规律可言，当一个数据包从一台网络设备发出之后，我们无法确定这个数据包的目标是在哪个国家的哪个地方。所以需要在MAC地址之上虚拟新的一层，IP层，当数据夸网络传输时，我们根据数据包的目的IP地址确定其所在国家的ISP，将其发送过去，目标ISP收到该报文后通过其IP地址分配确定目标设备，将该数据包转发过去。
+在同一个网络中的内部通信并不需要网络层设备(IP地址不是必要条件)，仅仅靠数据链路层(MAC地址)就可以完成相互通信，对于不同的网络之间相互通信则必须借助路由器等三层设备。
+概念 IP协议是网络层最重要的协议之一，IP协议的功能是根据源主机和目的主机的地址来传送数据。为达到此目的，IP协议定义了寻址方法和数据报的封装结构。第一个架构的主要版本为IPv4，目前仍然是广泛使用的互联网协议，IPv6还在推进中。
+IP封装 数据在IP协议层会被封装为数据包。IP协议的特点在于：在传输过程中，主机在传输数据之前，无须预先和目标主机建立好一条特定的“通路”。IP协议是一种“不可靠的”数据包传输机制（也被称作“尽力而为”或“尽最大努力交付”）；也就是说，IP协议不保证数据能准确的传输。数据包在到达的时候可能已经损坏，顺序错乱（与其它一起传送的封包相比），产生冗余包，或者全部丢失。如果应用需要保证可靠性，一般需要采取其他的方法，例如利用IP的上层协议控制。
+IP提供的服务 由于封装带来的抽象机制，IP协议可以在各种各样的网络上工作，例如以太网，ATM，FDDI，Wi-Fi，令牌环等等。每个链路层的实现可能有自己的方法（也有可能是完全没有它自己的方法），把IP地址解析成相应的数据链路地址(MAC地址)。IPv4协议使用地址解析协议（ARP），而IPv6采用邻居发现协议（NDP）。
+可靠性 互联网协议的设计原则，网络基础设施本身就是不可靠的，在传输过程中使用的是节点和连接也是动态的。不存在中央式的衡量机制来跟踪和维护网络状态。为了减少网络的复杂性，大部分网络分布在每个数据传输的终端节点。传输路径中的路由器只是简单地将数据包发送到下一个匹配的目的地址的路由前缀的本地网关。
+基于这种设计，IP协议只提供了尽力传送保证，IP服务是不可靠的。IP协议是一种无连接的协议，相对于面向连接的协议。IP协议允许下列任何故障发生：
+- 数据损坏- 丢失数据包- 重复到来- 数据包传递乱序；意思是，封包A即使在封包B之前发送，B也可能在A之前先抵达。IPv4会在IP层计算和校验签名头和来确保IP数据报头是正确的。校验失败的话这数据包会直接丢弃。在这种情况下不会有任何通知给任一个终端节点。IPv6为了快速传输已经放弃了该功能。
+除了可靠性问题，因为网络组成的多样性和复杂性，数据包在不同的网络路径下传输结果很可能是不一样的，即使网络路径是有效并且可靠的。原因之一是数据链层上的MTU设置。
+IP寻址和路由 IP协议最复杂的就是寻址和路由了。寻址就是如何将IP地址分配给各个终端节点，以及如何划分和组合子网。所有网络端点都需要路由，尤其是网际之间的路由器。路由器通常用内部网关协议（Interior Gateway Protocols，IGPs）和外部网关协议（External Gateway Protocols，EGPs）决定怎样发送IP数据包。
+IGP / 内部网关协议 内部网关协议可分为三类：1) 距离矢量路由协议，2) 连接状态路由协议，3) 高级距离矢量路由协议。
+距离矢量路由协议
+这类协议使用贝尔曼-福特算法（Bellman-Ford）计算路径。在距离-矢量路由协议中，每个路由器并不了解整个网络的拓扑信息。它们只是向其它路由器通告自己的距离、也从其它路由器那里收到类似的通告。每个路由器都通过这种路由通告来传播它的路由表。在之后的通告周期中，各路由器通告其整张路由表。该过程持续至所有路由器的路由表都收敛至一稳定状态为止。
+这类协议具有收敛缓慢的缺点，然而，它们通常容易处理且非常适合小型网络。距离-矢量路由协议的一些例子包括：
+1. 路由信息协议（RIP）2. 内部网关路由协议（IGRP）（注意：勿将内部网关协议IGP与内部网关路由协议IGRP混淆，IGP是本条目所指一类协议，而IGRP是特定的一种路由协议）链路状态路由协议
+在链路状态路由协议中，每个节点都知晓整个网络的拓扑信息。各节点使用自己了解的网络拓扑情况来各自独立地对网络中每个可能的目的地址计算出其最佳的转发地址（下一跳）。所有最佳转发地址汇集到一起构成该节点的完整路由表。
+与距离-矢量路由协议使用的那种每个节点与其相邻节点分享自己的路由表的工作方式不同，链路状态路由协议的工作方式是节点间仅传播用于构造网络连通图所需的信息。
+最初创建这类协议就是为了解决距离-矢量路由协议收敛缓慢的缺点，然而，为此链路状态路由协议会消耗大量的内存与处理器能力。
+链路状态路由协议的例子有：
+1. 开放式最短路径优先协议（OSPF）2. 中间系统到中间系统路由交换协议（IS-IS）高级距离矢量路由协议
+又名混合路由协议或者平衡混合路由协议，是继距离-矢量路由协议与链路状态路由协议之后的又一个内部网关协议，强调了前两者的优点，规避了它们的不足。
+高级距离矢量路由协议的例子有：
+1. 增强型内部网关路由协议（EIGRP）（增强型内部网关路由协议EIGRP是内部网关路由协议IGRP的增强版，EIGRP是Cisco专用协议）">
+<meta property="og:image" content="https://hzren.github.io/img/avatar-icon.png" />
+<meta property="og:url" content="https://hzren.github.io/blog/2020-08-13-ip-%E5%8D%8F%E8%AE%AE/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Code Mark" />
+
+  <meta name="twitter:title" content="IP 协议" />
+  <meta name="twitter:description" content="前言 IP协议，又称网际协议，是整个互联网事实的基石。
+IP地址最核心的概念之一就是IP地址，IP地址用来标识网络上的一台设备；为什么有了MAC地址还需要IP地址呢，因为MAC地址是和硬件绑定在一起的，硬件设备是可以人为位置转移的，一台设备，它可以用在这个世界上的任何地方。
+如果只有MAC地址没有IP地址，一个ISP(电信运营商)下面所链接的设备MAC地址将是无法确定的，毫无规律可言，当一个数据包 …">
+  <meta name="twitter:image" content="https://hzren.github.io/img/avatar-icon.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@username" />
+  <meta name="twitter:creator" content="@username" />
+  <link href='https://hzren.github.io/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <meta name="generator" content="Hugo 0.109.0">
+  <link rel="alternate" href="https://hzren.github.io/index.xml" type="application/rss+xml" title="Code Mark"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://hzren.github.io/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="https://hzren.github.io/css/highlight.min.css" /><link rel="stylesheet" href="https://hzren.github.io/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">切换导航</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://hzren.github.io">Code Mark</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="文章" href="/">文章</a>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent">代码</a>
+              <div class="navlinks-children">
+                
+                  <a href="/post/2017-03-07-bigimg-sample">Big Image Sample</a>
+                
+                  <a href="/post/2017-03-05-math-sample">Math Sample</a>
+                
+                  <a href="/post/2016-03-08-code-sample">Code Sample</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li>
+              <a title="关于我" href="/page/about/">关于我</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="分类" href="/tags">分类</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    
+      <div class="avatar-container">
+        <div class="avatar-img-border">
+          <a title="Code Mark" href="https://hzren.github.io">
+            <img class="avatar-img" src="https://hzren.github.io/img/avatar-icon.png" alt="Code Mark" />
+          </a>
+        </div>
+      </div>
+    
+
+  </div>
+</nav>
+
+
+
+
+    
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+
+  
+  
+  
+
+
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    
+    <div class="intro-header no-img">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="blog-heading">
+              
+                <h1>IP 协议</h1>
+              
+              
+                <hr class="small">
+              
+              
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <h2 id="前言">前言</h2>
+<blockquote>
+<p>IP协议，又称网际协议，是整个互联网事实的基石。</p>
+</blockquote>
+<blockquote>
+<p>IP地址最核心的概念之一就是IP地址，IP地址用来标识网络上的一台设备；为什么有了MAC地址还需要IP地址呢，因为MAC地址是和硬件绑定在一起的，硬件设备是可以人为位置转移的，一台设备，它可以用在这个世界上的任何地方。</p>
+</blockquote>
+<blockquote>
+<p>如果只有MAC地址没有IP地址，一个ISP(电信运营商)下面所链接的设备MAC地址将是无法确定的，毫无规律可言，当一个数据包从一台网络设备发出之后，我们无法确定这个数据包的目标是在哪个国家的哪个地方。所以需要在MAC地址之上虚拟新的一层，IP层，当数据夸网络传输时，我们根据数据包的目的IP地址确定其所在国家的ISP，将其发送过去，目标ISP收到该报文后通过其IP地址分配确定目标设备，将该数据包转发过去。</p>
+</blockquote>
+<blockquote>
+<p><strong>在同一个网络中的内部通信并不需要网络层设备(IP地址不是必要条件)，仅仅靠数据链路层(MAC地址)就可以完成相互通信，对于不同的网络之间相互通信则必须借助路由器等三层设备。</strong></p>
+</blockquote>
+<h2 id="概念">概念</h2>
+<blockquote>
+<p>IP协议是网络层最重要的协议之一，IP协议的功能是根据源主机和目的主机的地址来传送数据。为达到此目的，IP协议定义了寻址方法和数据报的封装结构。第一个架构的主要版本为IPv4，目前仍然是广泛使用的互联网协议，IPv6还在推进中。</p>
+</blockquote>
+<h2 id="ip封装">IP封装</h2>
+<blockquote>
+<p>数据在IP协议层会被封装为数据包。IP协议的特点在于：在传输过程中，主机在传输数据之前，无须预先和目标主机建立好一条特定的“通路”。IP协议是一种“不可靠的”数据包传输机制（也被称作“尽力而为”或“尽最大努力交付”）；也就是说，IP协议不保证数据能准确的传输。数据包在到达的时候可能已经损坏，顺序错乱（与其它一起传送的封包相比），产生冗余包，或者全部丢失。如果应用需要保证可靠性，一般需要采取其他的方法，例如利用IP的上层协议控制。</p>
+</blockquote>
+<h2 id="ip提供的服务">IP提供的服务</h2>
+<blockquote>
+<p>由于封装带来的抽象机制，IP协议可以在各种各样的网络上工作，例如以太网，ATM，FDDI，Wi-Fi，令牌环等等。每个链路层的实现可能有自己的方法（也有可能是完全没有它自己的方法），把IP地址解析成相应的数据链路地址(MAC地址)。IPv4协议使用地址解析协议（ARP），而IPv6采用邻居发现协议（NDP）。</p>
+</blockquote>
+<h2 id="可靠性">可靠性</h2>
+<blockquote>
+<p>互联网协议的设计原则，网络基础设施本身就是不可靠的，在传输过程中使用的是节点和连接也是动态的。不存在中央式的衡量机制来跟踪和维护网络状态。为了减少网络的复杂性，大部分网络分布在每个数据传输的终端节点。<strong>传输路径中的路由器只是简单地将数据包发送到下一个匹配的目的地址的路由前缀的本地网关。</strong></p>
+</blockquote>
+<p>基于这种设计，IP协议只提供了尽力传送保证，IP服务是不可靠的。IP协议是一种无连接的协议，相对于面向连接的协议。IP协议允许下列任何故障发生：</p>
+<pre><code> - 数据损坏
+ - 丢失数据包
+ - 重复到来
+ - 数据包传递乱序；意思是，封包A即使在封包B之前发送，B也可能在A之前先抵达。
+</code></pre>
+<p>IPv4会在IP层计算和校验签名头和来确保IP数据报头是正确的。校验失败的话这数据包会直接丢弃。在这种情况下不会有任何通知给任一个终端节点。IPv6为了快速传输已经放弃了该功能。</p>
+<p>除了可靠性问题，因为网络组成的多样性和复杂性，数据包在不同的网络路径下传输结果很可能是不一样的，即使网络路径是有效并且可靠的。原因之一是数据链层上的MTU设置。</p>
+<h2 id="ip寻址和路由">IP寻址和路由</h2>
+<blockquote>
+<p>IP协议最复杂的就是寻址和路由了。寻址就是如何将IP地址分配给各个终端节点，以及如何划分和组合子网。所有网络端点都需要路由，尤其是网际之间的路由器。路由器通常用内部网关协议（Interior Gateway Protocols，IGPs）和外部网关协议（External Gateway Protocols，EGPs）决定怎样发送IP数据包。</p>
+</blockquote>
+<h3 id="igp--内部网关协议">IGP / 内部网关协议</h3>
+<p>内部网关协议可分为三类：1) 距离矢量路由协议，2) 连接状态路由协议，3) 高级距离矢量路由协议。</p>
+<p><strong>距离矢量路由协议</strong></p>
+<p>这类协议使用贝尔曼-福特算法（Bellman-Ford）计算路径。在距离-矢量路由协议中，每个路由器并不了解整个网络的拓扑信息。它们只是向其它路由器通告自己的距离、也从其它路由器那里收到类似的通告。每个路由器都通过这种路由通告来传播它的路由表。在之后的通告周期中，各路由器通告其整张路由表。该过程持续至所有路由器的路由表都收敛至一稳定状态为止。</p>
+<p>这类协议具有收敛缓慢的缺点，然而，它们通常容易处理且非常适合小型网络。距离-矢量路由协议的一些例子包括：</p>
+<pre><code>1. 路由信息协议（RIP）
+2. 内部网关路由协议（IGRP）（注意：勿将内部网关协议IGP与内部网关路由协议IGRP混淆，IGP是本条目所指一类协议，而IGRP是特定的一种路由协议）
+</code></pre>
+<p><strong>链路状态路由协议</strong></p>
+<p>在链路状态路由协议中，每个节点都知晓整个网络的拓扑信息。各节点使用自己了解的网络拓扑情况来各自独立地对网络中每个可能的目的地址计算出其最佳的转发地址（下一跳）。所有最佳转发地址汇集到一起构成该节点的完整路由表。</p>
+<p>与距离-矢量路由协议使用的那种每个节点与其相邻节点分享自己的路由表的工作方式不同，链路状态路由协议的工作方式是节点间仅传播用于构造网络连通图所需的信息。</p>
+<p>最初创建这类协议就是为了解决距离-矢量路由协议收敛缓慢的缺点，然而，为此链路状态路由协议会消耗大量的内存与处理器能力。</p>
+<p>链路状态路由协议的例子有：</p>
+<pre><code>1. 开放式最短路径优先协议（OSPF）
+2. 中间系统到中间系统路由交换协议（IS-IS）
+</code></pre>
+<p><strong>高级距离矢量路由协议</strong></p>
+<p>又名混合路由协议或者平衡混合路由协议，是继距离-矢量路由协议与链路状态路由协议之后的又一个内部网关协议，强调了前两者的优点，规避了它们的不足。</p>
+<p>高级距离矢量路由协议的例子有：</p>
+<pre><code>1. 增强型内部网关路由协议（EIGRP）（增强型内部网关路由协议EIGRP是内部网关路由协议IGRP的增强版，EIGRP是Cisco专用协议）
+</code></pre>
+
+
+        
+          <div class="blog-tags">
+            
+              <a href="https://hzren.github.io/tags/ip/">IP</a>&nbsp;
+            
+          </div>
+        
+
+        
+            <hr/>
+            <section id="social-share">
+              <div class="list-inline footer-links">
+                
+
+<div class="share-box" aria-hidden="true">
+    <ul class="share">
+      
+      <li>
+        <a href="//twitter.com/share?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-08-13-ip-%25E5%258D%258F%25E8%25AE%25AE%2f&amp;text=IP%20%e5%8d%8f%e8%ae%ae&amp;via=username" target="_blank" title="Share on Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fhzren.github.io%2fblog%2f2020-08-13-ip-%25E5%258D%258F%25E8%25AE%25AE%2f" target="_blank" title="Share on Facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//reddit.com/submit?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-08-13-ip-%25E5%258D%258F%25E8%25AE%25AE%2f&amp;title=IP%20%e5%8d%8f%e8%ae%ae" target="_blank" title="Share on Reddit">
+          <i class="fab fa-reddit"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-08-13-ip-%25E5%258D%258F%25E8%25AE%25AE%2f&amp;title=IP%20%e5%8d%8f%e8%ae%ae" target="_blank" title="Share on LinkedIn">
+          <i class="fab fa-linkedin"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-08-13-ip-%25E5%258D%258F%25E8%25AE%25AE%2f&amp;title=IP%20%e5%8d%8f%e8%ae%ae" target="_blank" title="Share on StumbleUpon">
+          <i class="fab fa-stumbleupon"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-08-13-ip-%25E5%258D%258F%25E8%25AE%25AE%2f&amp;description=IP%20%e5%8d%8f%e8%ae%ae" target="_blank" title="Share on Pinterest">
+          <i class="fab fa-pinterest"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+  
+
+              </div>
+            </section>
+        
+
+        
+          
+            
+          
+
+          
+                  <h4 class="see-also">也可以看看</h4>
+                  <ul>
+                
+                
+                    <li><a href="/blog/2020-08-13-ipv4-%E4%B8%8E-ipv6-%E5%8C%BA%E5%88%AB/">IPv4 与 IPv6 区别</a></li>
+                
+                    <li><a href="/blog/2020-08-13-ipv6-%E5%8D%8F%E8%AE%AE/">IPv6 协议</a></li>
+                
+                    <li><a href="/blog/2020-08-13-ipv4-%E5%8D%8F%E8%AE%AE/">IPv4 协议</a></li>
+                
+              </ul>
+
+          
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="https://hzren.github.io/blog/2020-08-11-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%BD%91%E7%BB%9C%E5%B1%82/" data-toggle="tooltip" data-placement="top" title="计算机网络 - 网络层">&larr; 前一篇</a>
+            </li>
+          
+          
+            <li class="next">
+              <a href="https://hzren.github.io/blog/2020-08-13-ipv4-%E5%8D%8F%E8%AE%AE/" data-toggle="tooltip" data-placement="top" title="IPv4 协议">后一篇 &rarr;</a>
+            </li>
+          
+        </ul>
+      
+
+
+      
+        
+        
+      
+
+    </div>
+  </div>
+</div>
+
+      
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+              <li>
+		
+		  <a href="mailto:hzren@outlook.com" title="Email me">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.facebook.com/username" title="Facebook">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-facebook fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://github.com/username" title="GitHub">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://gitlab.com/username" title="GitLab">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-gitlab fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://bitbucket.org/username" title="Bitbucket">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-bitbucket fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://twitter.com/username" title="Twitter">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://username.slack.com/" title="Slack">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-slack fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://reddit.com/u/username" title="Reddit">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-reddit-alien fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://linkedin.com/in/username" title="LinkedIn">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.xing.com/profile/username" title="Xing">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-xing fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://stackoverflow.com/users/XXXXXXX/username" title="StackOverflow">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-stack-overflow fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.snapchat.com/add/username" title="Snapchat">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-snapchat-ghost fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.instagram.com/username" title="Instagram">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-instagram fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.youtube.com/user/username" title="Youtube">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-youtube fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://soundcloud.com/username" title="SoundCloud">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-soundcloud fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://open.spotify.com/user/username" title="Spotify">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-spotify fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://username.bandcamp.com/" title="Bandcamp">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-bandcamp fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://itch.io/profile/username" title="Itch.io">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fas fa-gamepad fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://vk.com/username" title="VK">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-vk fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://paypal.me/username" title="PayPal">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-paypal fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://telegram.me/username" title="Telegram">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-telegram fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://500px.com/username" title="500px">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-500px fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://codepen.io/username" title="CodePen">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-codepen fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.kaggle.com/username" title="kaggle">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-kaggle fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a rel="me"href="https://url" title="Mastodon">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-mastodon fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://weibo.com/username" title="Weibo">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-weibo fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://discord.gg/invite%20code%20%28https://discord.gg/XXXXXXX%29" title="Discord">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-discord fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.strava.com/athletes/userid" title="Strava">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-strava fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+          
+          <li>
+            <a href="" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              <a href="https://hyllo.gitee.io/">renhongzhen</a>
+            
+          
+
+          &nbsp;&bull;&nbsp;&copy;
+          
+            2022
+          
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://hzren.github.io">Code Mark</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          由 <a href="https://gohugo.io">Hugo v0.109.0</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="https://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer><script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script src="https://hzren.github.io/js/main.js"></script>
+<script src="https://hzren.github.io/js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script>
+<script> $(document).ready(function() {$("pre.chroma").css("padding","0");}); </script><script> renderMathInElement(document.body); </script><script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://hzren.github.io/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+
+
+
+    
+  </body>
+</html>
+

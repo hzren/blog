@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Docker on Code Mark</title>
+    <link>https://hzren.github.io/tags/docker/</link>
+    <description>Recent content in Docker on Code Mark</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <managingEditor>hzren@outlook.com (renhongzhen)</managingEditor>
+    <webMaster>hzren@outlook.com (renhongzhen)</webMaster>
+    <lastBuildDate>Tue, 12 Jan 2021 10:43:21 +0800</lastBuildDate><atom:link href="https://hzren.github.io/tags/docker/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>容器网络</title>
+      <link>https://hzren.github.io/blog/2021-01-12-%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C/</link>
+      <pubDate>Tue, 12 Jan 2021 10:43:21 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2021-01-12-%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C/</guid>
+      <description>容器网络的核心是和物理网络实现网络隔离，物理网络对于容器来说为虚拟的，不可见的。
+概念 Overlay / 覆盖网络
+覆盖网络（Overlay network）是一种建立在另一网络之上的计算机网络。
+覆盖网络中的节点可以被认为是通过虚拟或逻辑链接相连，其中每个链接对应一条路径（Path）。节点之间也可能通过下层网络中的多个物理连接实现相连。
+Flannel Flannel有UDP和VXLAN两种方案
+使用UDP实现Overlay网络 Flannel的覆盖网络：Flannel另创建了一个网络100.96.0.0/16，它是一个更大的网络，可以容纳2个¹⁶（65536）地址，它覆盖所有kubernetes节点，每个pod将在这个范围内分配一个地址。
+在主机docker网络中：在每个主机中，flannel为该主机中的所有pod分配了一个100.96.x.0/24网络，它可以容纳2⁸（256）个地址。docker网桥docker0将使用此网络创建新容器。
+通过这种设计，每个容器都有自己的IP地址，都属于覆盖子网100.96.0.0/16。同一主机内的容器可以通过docker网桥docker0相互通信。
+为了在主机间与覆盖网络中的其他容器进行通信，flannel使用内核路由表和UDP封装来实现它，下面几节将对此进行解释。
+发包过程 假设节点1中IP地址为100.96.1.2的容器（我们称之为container-1）想要连接到节点2中IP地址为100.96.2.3的容器（我们称之为container-2）:
+第一个container-1创建一个src:100.96.1.2-&amp;gt;dst:100.96.2.3的IP数据包，该数据包将直接被发送到容器的网关-docker0网桥。
+在每个主机中，flannel会运行一个名为flanneld的守护进程，flanneld会在内核的路由表中创建一些路由规则，节点1的路由表一般是这样的：
+admin@ip-172-20-33-102:~$ ip route default via 172.20.32.1 dev eth0 100.96.0.0/16 dev flannel0 proto kernel scope link src 100.96.1.0 100.96.1.0/24 dev docker0 proto kernel scope link src 100.96.1.1 172.20.32.0/19 dev eth0 proto kernel scope link src 172.20.33.102 如上所见，包的目的地址100.96.2.3落在更大的覆盖网络100.96.0.0/16中，因此它符合第二条规则100.96.0.0/16 dev flannel0 proto kernel scope link src 100.96.1.0，现在根据路由规则内核把包发送到flannel0虚拟网卡。
+100.96.0.0/16 dev flannel0 proto kernel scope link src 100.</description>
+    </item>
+    
+    <item>
+      <title>docker容器内进程的启动</title>
+      <link>https://hzren.github.io/blog/2020-07-27-docker%E5%AE%B9%E5%99%A8%E5%86%85%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%90%AF%E5%8A%A8/</link>
+      <pubDate>Mon, 27 Jul 2020 15:30:26 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2020-07-27-docker%E5%AE%B9%E5%99%A8%E5%86%85%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%90%AF%E5%8A%A8/</guid>
+      <description>CMD 容器启动命令 CMD 指令的格式和 RUN 相似，也是两种格式：
+shell 格式：CMD &amp;lt;命令&amp;gt; exec 格式：CMD [&amp;quot;可执行文件&amp;quot;, &amp;quot;参数1&amp;quot;, &amp;quot;参数2&amp;quot;...] 参数列表格式：CMD [&amp;quot;参数1&amp;quot;, &amp;quot;参数2&amp;quot;...]。在指定了 ENTRYPOINT 指令后，用 CMD 指定具体的参数。 之前介绍容器的时候曾经说过，Docker 不是虚拟机，容器就是进程。既然是进程，那么在启动容器的时候，需要指定所运行的程序及参数。CMD 指令就是用于指定默认的容器主进程的启动命令的。
+在运行时可以指定新的命令来替代镜像设置中的这个默认命令，比如，ubuntu 镜像默认的 CMD 是 /bin/bash，如果我们直接 docker run -it ubuntu 的话，会直接进入 bash。我们也可以在运行时指定运行别的命令，如 docker run -it ubuntu cat /etc/os-release。这就是用 cat /etc/os-release 命令替换了默认的 /bin/bash 命令了，输出了系统版本信息。
+在指令格式上，一般推荐使用 exec 格式，这类格式在解析时会被解析为 JSON 数组，因此一定要使用双引号 &amp;quot;，而不要使用单引号。
+如果使用 shell 格式的话，实际的命令会被包装为 sh -c 的参数的形式进行执行。比如：
+CMD echo $HOME 在实际执行中，会将其变更为：
+CMD [ &amp;#34;sh&amp;#34;, &amp;#34;-c&amp;#34;, &amp;#34;echo $HOME&amp;#34; ] 这就是为什么我们可以使用环境变量的原因，因为这些环境变量会被 shell 进行解析处理。</description>
+    </item>
+    
+  </channel>
+</rss>

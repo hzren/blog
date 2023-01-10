@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="zh-cn" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+ 
+
+
+      <title>计算机网络 - 物理层 - </title>
+
+  <meta name="description" content="物理层的基本概念 物理层的主要任务描述为确定与传输媒体的接口的一些特性 机械特性 指明接口所用接线器的形状和尺寸、引线数目和排列、固定和锁定装置等等。 电气特性 指明在接口电缆的各条线上出现的电压的范围。 功能特性 指明某条线上出现的某一电平的电压表示何种意义。 过程特性 指明对于不同功能的各种可能事件的出现顺序。 物理层基本工作内容 物理层利用传输介质为通信的两端建立、管理和释放物理链接，实现比特流的透明传输，保证比特流正确的传输到对端。物理层中承载的是比特流单位是比特（bit）。
+物理层都有那些协议 电话网络modems-V.92 EIARS-232，EIA-422，EIA-423，RS-449，RS-485 Ethernet physical layerIncluding10BASE-T，10BASE2，10BASE5，100BASE-TX，100BASE-FX。100BASE-T，1000BASE-T，1000BASE-SX还有其他类型 Varieties of 802.11Wi-Fi物理层 DSL ISDN T1 and otherT-carrierlinks， and E1 and otherE-carrierlinks SONET/SDH Optical Transport Network（OTN） GSMUm air interface物理层 Bluetooth物理层 IEEE 1394 interface TransferJet物理层 Etherloop ARINC 818航空电子数字视频总线 G.hn/G.9960物理层 N bus（controller area network）物理层 理层协议就分为两类，点对点通信线路物理层协议和广播通信线路物理层协议，其中广播通信线路又分为有线通信线路和无线通信线路，有线通信线路就是咱们常说的网线形式的网络，无线通信线路就是WIFI。有线通讯不容易窃听,无线通讯的数据很容易被窃听到，以无线通讯的报文基本上都是需要在底层链路做加密的。
+数据通信的基础知识 数据通信系统的模型 据传输按照使用的信道数量可以分为串行通信和并行通信
+串行通信：将一个字符的二进制代码按从低位到高位顺序传输，传输中需要建立一个信道。 并行通信：将一个字符的二进制代码同时通过8条信道同时传输，每发送一个字符都需要建立8条信道，成本较高。 有关信道的几个基本概念 单向通信（单工通信）——只能有一个方向的通信而没有反方向的交互。 双向交替通信（半双工通信）——通信的双方都可以发送信息，但不能双方同时发送(当然也就不能同时接收)。 双向同时通信（全双工通信）——通信的双方可以同时发送和接收信息。 几种最基本的调制方法
+调幅(AM)：载波的振幅随基带数字信号而变化。 调频(FM)：载波的频率随基带数字信号而变化。 调相(PM) ：载波的初始相位随基带数字信号而变化。 物理层下面的传输媒体 导向传输媒体
+双绞线 屏蔽双绞线 STP (Shielded Twisted Pair) 无屏蔽双绞线 UTP (Unshielded Twisted Pair) 同轴电缆 50 Ω同轴电缆 75 Ω 同轴电缆 光缆 光纤的工作原理 光线在纤芯中传输的方式是不断地全反射 非导向传输媒体">
+  <meta name="author" content="renhongzhen"/><script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "Code Mark",
+    
+    "url": "https:\/\/hzren.github.io"
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "",
+  "url": "https:\/\/hzren.github.io"
+  
+  
+  
+  
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https:\/\/hzren.github.io",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https:\/\/hzren.github.io\/blog\/2020-08-10-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%89%A9%E7%90%86%E5%B1%82\/",
+          "name": "计算机网络 物理层"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : "renhongzhen"
+  },
+  "headline": "计算机网络 - 物理层",
+  "description" : "物理层的基本概念 物理层的主要任务描述为确定与传输媒体的接口的一些特性 机械特性 指明接口所用接线器的形状和尺寸、引线数目和排列、固定和锁定装置等等。 电气特性 指明在接口电缆的各条线上出现的电压的范围。 功能特性 指明某条线上出现的某一电平的电压表示何种意义。 过程特性 指明对于不同功能的各种可能事件的出现顺序。 物理层基本工作内容 物理层利用传输介质为通信的两端建立、管理和释放物理链接，实现比特流的透明传输，保证比特流正确的传输到对端。物理层中承载的是比特流单位是比特（bit）。\n物理层都有那些协议 电话网络modems-V.92 EIARS-232，EIA-422，EIA-423，RS-449，RS-485 Ethernet physical layerIncluding10BASE-T，10BASE2，10BASE5，100BASE-TX，100BASE-FX。100BASE-T，1000BASE-T，1000BASE-SX还有其他类型 Varieties of 802.11Wi-Fi物理层 DSL ISDN T1 and otherT-carrierlinks， and E1 and otherE-carrierlinks SONET\/SDH Optical Transport Network（OTN） GSMUm air interface物理层 Bluetooth物理层 IEEE 1394 interface TransferJet物理层 Etherloop ARINC 818航空电子数字视频总线 G.hn\/G.9960物理层 N bus（controller area network）物理层 理层协议就分为两类，点对点通信线路物理层协议和广播通信线路物理层协议，其中广播通信线路又分为有线通信线路和无线通信线路，有线通信线路就是咱们常说的网线形式的网络，无线通信线路就是WIFI。有线通讯不容易窃听,无线通讯的数据很容易被窃听到，以无线通讯的报文基本上都是需要在底层链路做加密的。\n数据通信的基础知识 数据通信系统的模型 据传输按照使用的信道数量可以分为串行通信和并行通信\n串行通信：将一个字符的二进制代码按从低位到高位顺序传输，传输中需要建立一个信道。 并行通信：将一个字符的二进制代码同时通过8条信道同时传输，每发送一个字符都需要建立8条信道，成本较高。 有关信道的几个基本概念 单向通信（单工通信）——只能有一个方向的通信而没有反方向的交互。 双向交替通信（半双工通信）——通信的双方都可以发送信息，但不能双方同时发送(当然也就不能同时接收)。 双向同时通信（全双工通信）——通信的双方可以同时发送和接收信息。 几种最基本的调制方法\n调幅(AM)：载波的振幅随基带数字信号而变化。 调频(FM)：载波的频率随基带数字信号而变化。 调相(PM) ：载波的初始相位随基带数字信号而变化。 物理层下面的传输媒体 导向传输媒体\n双绞线 屏蔽双绞线 STP (Shielded Twisted Pair) 无屏蔽双绞线 UTP (Unshielded Twisted Pair) 同轴电缆 50 Ω同轴电缆 75 Ω 同轴电缆 光缆 光纤的工作原理 光线在纤芯中传输的方式是不断地全反射 非导向传输媒体",
+  "inLanguage" : "zh-cn",
+  "wordCount":  153 ,
+  "datePublished" : "2020-08-10T18:59:45",
+  "dateModified" : "2020-08-10T18:59:45",
+  "image" : "https:\/\/hzren.github.io\/img\/avatar-icon.png",
+  "keywords" : [ "Network" ],
+  "mainEntityOfPage" : "https:\/\/hzren.github.io\/blog\/2020-08-10-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%89%A9%E7%90%86%E5%B1%82\/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https:\/\/hzren.github.io",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https:\/\/hzren.github.io\/img\/avatar-icon.png",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
+
+<meta property="og:title" content="计算机网络 - 物理层" />
+<meta property="og:description" content="物理层的基本概念 物理层的主要任务描述为确定与传输媒体的接口的一些特性 机械特性 指明接口所用接线器的形状和尺寸、引线数目和排列、固定和锁定装置等等。 电气特性 指明在接口电缆的各条线上出现的电压的范围。 功能特性 指明某条线上出现的某一电平的电压表示何种意义。 过程特性 指明对于不同功能的各种可能事件的出现顺序。 物理层基本工作内容 物理层利用传输介质为通信的两端建立、管理和释放物理链接，实现比特流的透明传输，保证比特流正确的传输到对端。物理层中承载的是比特流单位是比特（bit）。
+物理层都有那些协议 电话网络modems-V.92 EIARS-232，EIA-422，EIA-423，RS-449，RS-485 Ethernet physical layerIncluding10BASE-T，10BASE2，10BASE5，100BASE-TX，100BASE-FX。100BASE-T，1000BASE-T，1000BASE-SX还有其他类型 Varieties of 802.11Wi-Fi物理层 DSL ISDN T1 and otherT-carrierlinks， and E1 and otherE-carrierlinks SONET/SDH Optical Transport Network（OTN） GSMUm air interface物理层 Bluetooth物理层 IEEE 1394 interface TransferJet物理层 Etherloop ARINC 818航空电子数字视频总线 G.hn/G.9960物理层 N bus（controller area network）物理层 理层协议就分为两类，点对点通信线路物理层协议和广播通信线路物理层协议，其中广播通信线路又分为有线通信线路和无线通信线路，有线通信线路就是咱们常说的网线形式的网络，无线通信线路就是WIFI。有线通讯不容易窃听,无线通讯的数据很容易被窃听到，以无线通讯的报文基本上都是需要在底层链路做加密的。
+数据通信的基础知识 数据通信系统的模型 据传输按照使用的信道数量可以分为串行通信和并行通信
+串行通信：将一个字符的二进制代码按从低位到高位顺序传输，传输中需要建立一个信道。 并行通信：将一个字符的二进制代码同时通过8条信道同时传输，每发送一个字符都需要建立8条信道，成本较高。 有关信道的几个基本概念 单向通信（单工通信）——只能有一个方向的通信而没有反方向的交互。 双向交替通信（半双工通信）——通信的双方都可以发送信息，但不能双方同时发送(当然也就不能同时接收)。 双向同时通信（全双工通信）——通信的双方可以同时发送和接收信息。 几种最基本的调制方法
+调幅(AM)：载波的振幅随基带数字信号而变化。 调频(FM)：载波的频率随基带数字信号而变化。 调相(PM) ：载波的初始相位随基带数字信号而变化。 物理层下面的传输媒体 导向传输媒体
+双绞线 屏蔽双绞线 STP (Shielded Twisted Pair) 无屏蔽双绞线 UTP (Unshielded Twisted Pair) 同轴电缆 50 Ω同轴电缆 75 Ω 同轴电缆 光缆 光纤的工作原理 光线在纤芯中传输的方式是不断地全反射 非导向传输媒体">
+<meta property="og:image" content="https://hzren.github.io/img/avatar-icon.png" />
+<meta property="og:url" content="https://hzren.github.io/blog/2020-08-10-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%89%A9%E7%90%86%E5%B1%82/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Code Mark" />
+
+  <meta name="twitter:title" content="计算机网络 - 物理层" />
+  <meta name="twitter:description" content="物理层的基本概念 物理层的主要任务描述为确定与传输媒体的接口的一些特性 机械特性 指明接口所用接线器的形状和尺寸、引线数目和排列、固定和锁定装置等等。 电气特性 指明在接口电缆的各条线上出现的电压的范围。 功能特性 指明某条线上出现的某一电平的电压表示何种意义。 过程特性 指明对于不同功能的各种可能事件的出现顺序。 物理层基本工作内容 物理层利用传输介质为通信的两端建立、管理和释放物理链接，实现比 …">
+  <meta name="twitter:image" content="https://hzren.github.io/img/avatar-icon.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@username" />
+  <meta name="twitter:creator" content="@username" />
+  <link href='https://hzren.github.io/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <meta name="generator" content="Hugo 0.109.0">
+  <link rel="alternate" href="https://hzren.github.io/index.xml" type="application/rss+xml" title="Code Mark"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://hzren.github.io/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="https://hzren.github.io/css/highlight.min.css" /><link rel="stylesheet" href="https://hzren.github.io/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">切换导航</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://hzren.github.io">Code Mark</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="文章" href="/">文章</a>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent">代码</a>
+              <div class="navlinks-children">
+                
+                  <a href="/post/2017-03-07-bigimg-sample">Big Image Sample</a>
+                
+                  <a href="/post/2017-03-05-math-sample">Math Sample</a>
+                
+                  <a href="/post/2016-03-08-code-sample">Code Sample</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li>
+              <a title="关于我" href="/page/about/">关于我</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="分类" href="/tags">分类</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    
+      <div class="avatar-container">
+        <div class="avatar-img-border">
+          <a title="Code Mark" href="https://hzren.github.io">
+            <img class="avatar-img" src="https://hzren.github.io/img/avatar-icon.png" alt="Code Mark" />
+          </a>
+        </div>
+      </div>
+    
+
+  </div>
+</nav>
+
+
+
+
+    
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+
+  
+  
+  
+
+
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    
+    <div class="intro-header no-img">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="blog-heading">
+              
+                <h1>计算机网络 - 物理层</h1>
+              
+              
+                <hr class="small">
+              
+              
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <h2 id="物理层的基本概念">物理层的基本概念</h2>
+<h3 id="物理层的主要任务描述为确定与传输媒体的接口的一些特性">物理层的主要任务描述为确定与传输媒体的接口的一些特性</h3>
+<ul>
+<li>机械特性    指明接口所用接线器的形状和尺寸、引线数目和排列、固定和锁定装置等等。</li>
+<li>电气特性    指明在接口电缆的各条线上出现的电压的范围。</li>
+<li>功能特性    指明某条线上出现的某一电平的电压表示何种意义。</li>
+<li>过程特性    指明对于不同功能的各种可能事件的出现顺序。</li>
+</ul>
+<h3 id="物理层基本工作内容">物理层基本工作内容</h3>
+<blockquote>
+<p>物理层利用传输介质为通信的两端建立、管理和释放物理链接，实现比特流的透明传输，保证比特流正确的传输到对端。物理层中承载的是比特流单位是比特（bit）。</p>
+</blockquote>
+<h3 id="物理层都有那些协议">物理层都有那些协议</h3>
+<ol>
+<li>电话网络modems-V.92</li>
+<li>EIARS-232，EIA-422，EIA-423，RS-449，RS-485</li>
+<li>Ethernet physical layerIncluding10BASE-T，10BASE2，10BASE5，100BASE-TX，100BASE-FX。100BASE-T，1000BASE-T，1000BASE-SX还有其他类型</li>
+<li>Varieties of 802.11Wi-Fi物理层</li>
+<li>DSL</li>
+<li>ISDN</li>
+<li>T1 and otherT-carrierlinks， and E1 and otherE-carrierlinks</li>
+<li>SONET/SDH</li>
+<li>Optical Transport Network（OTN）</li>
+<li>GSMUm air interface物理层</li>
+<li>Bluetooth物理层</li>
+<li>IEEE 1394 interface</li>
+<li>TransferJet物理层</li>
+<li>Etherloop
+ARINC 818航空电子数字视频总线</li>
+<li>G.hn/G.9960物理层</li>
+<li>N bus（controller area network）物理层</li>
+</ol>
+<blockquote>
+<p>理层协议就分为两类，点对点通信线路物理层协议和广播通信线路物理层协议，其中广播通信线路又分为有线通信线路和无线通信线路，有线通信线路就是咱们常说的网线形式的网络，无线通信线路就是WIFI。有线通讯不容易窃听,无线通讯的数据很容易被窃听到，以无线通讯的报文基本上都是需要在底层链路做加密的。</p>
+</blockquote>
+<h2 id="数据通信的基础知识">数据通信的基础知识</h2>
+<h3 id="数据通信系统的模型">数据通信系统的模型</h3>
+<p><strong>据传输按照使用的信道数量可以分为串行通信和并行通信</strong></p>
+<blockquote>
+<ol>
+<li>串行通信：将一个字符的二进制代码按从低位到高位顺序传输，传输中需要建立一个信道。</li>
+<li>并行通信：将一个字符的二进制代码同时通过8条信道同时传输，每发送一个字符都需要建立8条信道，成本较高。</li>
+</ol>
+</blockquote>
+<h3 id="有关信道的几个基本概念">有关信道的几个基本概念</h3>
+<blockquote>
+<ul>
+<li>单向通信（单工通信）——只能有一个方向的通信而没有反方向的交互。</li>
+<li>双向交替通信（半双工通信）——通信的双方都可以发送信息，但不能双方同时发送(当然也就不能同时接收)。</li>
+<li>双向同时通信（全双工通信）——通信的双方可以同时发送和接收信息。</li>
+</ul>
+</blockquote>
+<p><strong>几种最基本的调制方法</strong></p>
+<blockquote>
+<ul>
+<li>调幅(AM)：载波的振幅随基带数字信号而变化。</li>
+<li>调频(FM)：载波的频率随基带数字信号而变化。</li>
+<li>调相(PM) ：载波的初始相位随基带数字信号而变化。</li>
+</ul>
+</blockquote>
+<h2 id="物理层下面的传输媒体">物理层下面的传输媒体</h2>
+<p><strong>导向传输媒体</strong></p>
+<ul>
+<li>双绞线
+<ul>
+<li>屏蔽双绞线 STP (Shielded Twisted Pair)</li>
+<li>无屏蔽双绞线 UTP (Unshielded Twisted Pair)</li>
+</ul>
+</li>
+<li>同轴电缆
+<ul>
+<li>50 Ω同轴电缆</li>
+<li>75 Ω 同轴电缆</li>
+</ul>
+</li>
+<li>光缆
+<ul>
+<li>光纤的工作原理
+<ul>
+<li>光线在纤芯中传输的方式是不断地全反射</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>非导向传输媒体</strong></p>
+<ul>
+<li>无线传输所使用的频段很广。</li>
+<li>短波通信主要是靠电离层的反射，但短波信道的通信质量较差。</li>
+<li>微波在空间主要是直线传播。
+<ul>
+<li>卫星通信</li>
+<li>地面微波接力通信</li>
+</ul>
+</li>
+</ul>
+<h2 id="信道复用技术">信道复用技术</h2>
+<p>** 频分复用 FDM(Frequency Division Multiplexing) **</p>
+<blockquote>
+<p>用户在分配到一定的频带后，在通信过程中自始至终都占用这个频带。</p>
+</blockquote>
+<p>** 时分复用TDM(Time Division Multiplexing) **</p>
+<blockquote>
+<p>时分复用则是将时间划分为一段段等长的时分复用帧（TDM 帧）。每一个时分复用的用户在每一个 TDM 帧中占用固定序号的时隙。</p>
+</blockquote>
+<p>** 统计时分复用 STDM(Statistic TDM)  **</p>
+<blockquote>
+<p>是对时分复用的一种改进，不固定每个用户在时分复用帧中的位置，只要有数据就集中起来组成统计时分复用帧然后发送。</p>
+</blockquote>
+<p>** 波分复用 WDM(Wavelength Division Multiplexing)  **</p>
+<blockquote>
+<p>光的频分复用。由于光的频率很高，因此习惯上用波长而不是频率来表示所使用的光载波。</p>
+</blockquote>
+<p>** 码分复用 CDM(Code Division Multiplexing)  **
+* 常用的名词是码分多址 CDMA     (Code Division Multiple Access)。
+* 各用户使用经过特殊挑选的不同码型，因此彼此不会造成干扰。
+* 这种系统发送的信号有很强的抗干扰能力，其频谱类似于白噪声，不易被敌人发现。
+* 每一个比特时间划分为 m 个短的间隔，称为码片(chip)。</p>
+<h3 id="总结">总结</h3>
+<p><strong>物理层（Physical Layer）是计算机网络OSI模型中最低的一层，也是最基本的一层。简单的说，网络在物理层面确保原始的数据可在各种物理媒体上传输。物理层规定：为传输数据，需要物理链路与裝置的建立、维持、拆除，並具有机械的、电子的、功能的、规范的特性。</strong></p>
+<p>物理层连mac地址都不关心，最具有代表性的物理层设备就是HUB， 只做信号的放大。
+简而言之，物理层只做两件事情：</p>
+<blockquote>
+<ul>
+<li>调制：将数字信号转换为模拟信号</li>
+<li>解调：将模拟信号转换为数字信号</li>
+</ul>
+</blockquote>
+
+
+        
+          <div class="blog-tags">
+            
+              <a href="https://hzren.github.io/tags/network/">Network</a>&nbsp;
+            
+          </div>
+        
+
+        
+            <hr/>
+            <section id="social-share">
+              <div class="list-inline footer-links">
+                
+
+<div class="share-box" aria-hidden="true">
+    <ul class="share">
+      
+      <li>
+        <a href="//twitter.com/share?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-08-10-%25E8%25AE%25A1%25E7%25AE%2597%25E6%259C%25BA%25E7%25BD%2591%25E7%25BB%259C-%25E7%2589%25A9%25E7%2590%2586%25E5%25B1%2582%2f&amp;text=%e8%ae%a1%e7%ae%97%e6%9c%ba%e7%bd%91%e7%bb%9c%20-%20%e7%89%a9%e7%90%86%e5%b1%82&amp;via=username" target="_blank" title="Share on Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fhzren.github.io%2fblog%2f2020-08-10-%25E8%25AE%25A1%25E7%25AE%2597%25E6%259C%25BA%25E7%25BD%2591%25E7%25BB%259C-%25E7%2589%25A9%25E7%2590%2586%25E5%25B1%2582%2f" target="_blank" title="Share on Facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//reddit.com/submit?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-08-10-%25E8%25AE%25A1%25E7%25AE%2597%25E6%259C%25BA%25E7%25BD%2591%25E7%25BB%259C-%25E7%2589%25A9%25E7%2590%2586%25E5%25B1%2582%2f&amp;title=%e8%ae%a1%e7%ae%97%e6%9c%ba%e7%bd%91%e7%bb%9c%20-%20%e7%89%a9%e7%90%86%e5%b1%82" target="_blank" title="Share on Reddit">
+          <i class="fab fa-reddit"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-08-10-%25E8%25AE%25A1%25E7%25AE%2597%25E6%259C%25BA%25E7%25BD%2591%25E7%25BB%259C-%25E7%2589%25A9%25E7%2590%2586%25E5%25B1%2582%2f&amp;title=%e8%ae%a1%e7%ae%97%e6%9c%ba%e7%bd%91%e7%bb%9c%20-%20%e7%89%a9%e7%90%86%e5%b1%82" target="_blank" title="Share on LinkedIn">
+          <i class="fab fa-linkedin"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-08-10-%25E8%25AE%25A1%25E7%25AE%2597%25E6%259C%25BA%25E7%25BD%2591%25E7%25BB%259C-%25E7%2589%25A9%25E7%2590%2586%25E5%25B1%2582%2f&amp;title=%e8%ae%a1%e7%ae%97%e6%9c%ba%e7%bd%91%e7%bb%9c%20-%20%e7%89%a9%e7%90%86%e5%b1%82" target="_blank" title="Share on StumbleUpon">
+          <i class="fab fa-stumbleupon"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-08-10-%25E8%25AE%25A1%25E7%25AE%2597%25E6%259C%25BA%25E7%25BD%2591%25E7%25BB%259C-%25E7%2589%25A9%25E7%2590%2586%25E5%25B1%2582%2f&amp;description=%e8%ae%a1%e7%ae%97%e6%9c%ba%e7%bd%91%e7%bb%9c%20-%20%e7%89%a9%e7%90%86%e5%b1%82" target="_blank" title="Share on Pinterest">
+          <i class="fab fa-pinterest"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+  
+
+              </div>
+            </section>
+        
+
+        
+          
+            
+          
+
+          
+                  <h4 class="see-also">也可以看看</h4>
+                  <ul>
+                
+                
+                    <li><a href="/blog/2021-01-19-linux%E7%BD%91%E7%BB%9C/">Linux网络</a></li>
+                
+                    <li><a href="/blog/2021-01-13-%E8%B7%AF%E7%94%B1%E6%9D%A1%E7%9B%AE/">路由条目</a></li>
+                
+                    <li><a href="/blog/2021-01-12-%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C/">容器网络</a></li>
+                
+                    <li><a href="/blog/2021-01-06-%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E5%88%B0%E5%85%AC%E7%BD%91_%E5%85%AC%E7%BD%91%E5%AF%BC%E5%86%85%E7%BD%91%E7%9A%84%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E8%BF%87%E7%A8%8B/">一次内网到公网_公网导内网的数据链路过程</a></li>
+                
+                    <li><a href="/blog/2020-08-19-tcp-udp-%E6%80%BB%E7%BB%93/">TCP / UDP 总结</a></li>
+                
+              </ul>
+
+          
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="https://hzren.github.io/blog/2020-08-07-markdown-%E8%AF%AD%E6%B3%95/" data-toggle="tooltip" data-placement="top" title="Markdown 语法">&larr; 前一篇</a>
+            </li>
+          
+          
+            <li class="next">
+              <a href="https://hzren.github.io/blog/2020-08-11-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%BD%91%E7%BB%9C%E5%B1%82/" data-toggle="tooltip" data-placement="top" title="计算机网络 - 网络层">后一篇 &rarr;</a>
+            </li>
+          
+        </ul>
+      
+
+
+      
+        
+        
+      
+
+    </div>
+  </div>
+</div>
+
+      
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+              <li>
+		
+		  <a href="mailto:hzren@outlook.com" title="Email me">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.facebook.com/username" title="Facebook">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-facebook fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://github.com/username" title="GitHub">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://gitlab.com/username" title="GitLab">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-gitlab fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://bitbucket.org/username" title="Bitbucket">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-bitbucket fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://twitter.com/username" title="Twitter">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://username.slack.com/" title="Slack">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-slack fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://reddit.com/u/username" title="Reddit">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-reddit-alien fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://linkedin.com/in/username" title="LinkedIn">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.xing.com/profile/username" title="Xing">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-xing fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://stackoverflow.com/users/XXXXXXX/username" title="StackOverflow">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-stack-overflow fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.snapchat.com/add/username" title="Snapchat">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-snapchat-ghost fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.instagram.com/username" title="Instagram">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-instagram fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.youtube.com/user/username" title="Youtube">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-youtube fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://soundcloud.com/username" title="SoundCloud">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-soundcloud fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://open.spotify.com/user/username" title="Spotify">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-spotify fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://username.bandcamp.com/" title="Bandcamp">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-bandcamp fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://itch.io/profile/username" title="Itch.io">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fas fa-gamepad fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://vk.com/username" title="VK">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-vk fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://paypal.me/username" title="PayPal">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-paypal fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://telegram.me/username" title="Telegram">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-telegram fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://500px.com/username" title="500px">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-500px fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://codepen.io/username" title="CodePen">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-codepen fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.kaggle.com/username" title="kaggle">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-kaggle fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a rel="me"href="https://url" title="Mastodon">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-mastodon fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://weibo.com/username" title="Weibo">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-weibo fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://discord.gg/invite%20code%20%28https://discord.gg/XXXXXXX%29" title="Discord">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-discord fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.strava.com/athletes/userid" title="Strava">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-strava fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+          
+          <li>
+            <a href="" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              <a href="https://hyllo.gitee.io/">renhongzhen</a>
+            
+          
+
+          &nbsp;&bull;&nbsp;&copy;
+          
+            2022
+          
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://hzren.github.io">Code Mark</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          由 <a href="https://gohugo.io">Hugo v0.109.0</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="https://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer><script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script src="https://hzren.github.io/js/main.js"></script>
+<script src="https://hzren.github.io/js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script>
+<script> $(document).ready(function() {$("pre.chroma").css("padding","0");}); </script><script> renderMathInElement(document.body); </script><script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://hzren.github.io/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+
+
+
+    
+  </body>
+</html>
+

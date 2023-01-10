@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="zh-cn" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+ 
+
+
+      <title>容器网络 - </title>
+
+  <meta name="description" content="容器网络的核心是和物理网络实现网络隔离，物理网络对于容器来说为虚拟的，不可见的。
+概念 Overlay / 覆盖网络
+覆盖网络（Overlay network）是一种建立在另一网络之上的计算机网络。
+覆盖网络中的节点可以被认为是通过虚拟或逻辑链接相连，其中每个链接对应一条路径（Path）。节点之间也可能通过下层网络中的多个物理连接实现相连。
+Flannel Flannel有UDP和VXLAN两种方案
+使用UDP实现Overlay网络 Flannel的覆盖网络：Flannel另创建了一个网络100.96.0.0/16，它是一个更大的网络，可以容纳2个¹⁶（65536）地址，它覆盖所有kubernetes节点，每个pod将在这个范围内分配一个地址。
+在主机docker网络中：在每个主机中，flannel为该主机中的所有pod分配了一个100.96.x.0/24网络，它可以容纳2⁸（256）个地址。docker网桥docker0将使用此网络创建新容器。
+通过这种设计，每个容器都有自己的IP地址，都属于覆盖子网100.96.0.0/16。同一主机内的容器可以通过docker网桥docker0相互通信。
+为了在主机间与覆盖网络中的其他容器进行通信，flannel使用内核路由表和UDP封装来实现它，下面几节将对此进行解释。
+发包过程 假设节点1中IP地址为100.96.1.2的容器（我们称之为container-1）想要连接到节点2中IP地址为100.96.2.3的容器（我们称之为container-2）:
+第一个container-1创建一个src:100.96.1.2-&gt;dst:100.96.2.3的IP数据包，该数据包将直接被发送到容器的网关-docker0网桥。
+在每个主机中，flannel会运行一个名为flanneld的守护进程，flanneld会在内核的路由表中创建一些路由规则，节点1的路由表一般是这样的：
+admin@ip-172-20-33-102:~$ ip route default via 172.20.32.1 dev eth0 100.96.0.0/16 dev flannel0 proto kernel scope link src 100.96.1.0 100.96.1.0/24 dev docker0 proto kernel scope link src 100.96.1.1 172.20.32.0/19 dev eth0 proto kernel scope link src 172.20.33.102 如上所见，包的目的地址100.96.2.3落在更大的覆盖网络100.96.0.0/16中，因此它符合第二条规则100.96.0.0/16 dev flannel0 proto kernel scope link src 100.96.1.0，现在根据路由规则内核把包发送到flannel0虚拟网卡。
+100.96.0.0/16 dev flannel0 proto kernel scope link src 100.">
+  <meta name="author" content="renhongzhen"/><script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "Code Mark",
+    
+    "url": "https:\/\/hzren.github.io"
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "",
+  "url": "https:\/\/hzren.github.io"
+  
+  
+  
+  
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https:\/\/hzren.github.io",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https:\/\/hzren.github.io\/blog\/2021-01-12-%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C\/",
+          "name": "容器网络"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : "renhongzhen"
+  },
+  "headline": "容器网络",
+  "description" : "容器网络的核心是和物理网络实现网络隔离，物理网络对于容器来说为虚拟的，不可见的。\n概念 Overlay \/ 覆盖网络\n覆盖网络（Overlay network）是一种建立在另一网络之上的计算机网络。\n覆盖网络中的节点可以被认为是通过虚拟或逻辑链接相连，其中每个链接对应一条路径（Path）。节点之间也可能通过下层网络中的多个物理连接实现相连。\nFlannel Flannel有UDP和VXLAN两种方案\n使用UDP实现Overlay网络 Flannel的覆盖网络：Flannel另创建了一个网络100.96.0.0\/16，它是一个更大的网络，可以容纳2个¹⁶（65536）地址，它覆盖所有kubernetes节点，每个pod将在这个范围内分配一个地址。\n在主机docker网络中：在每个主机中，flannel为该主机中的所有pod分配了一个100.96.x.0\/24网络，它可以容纳2⁸（256）个地址。docker网桥docker0将使用此网络创建新容器。\n通过这种设计，每个容器都有自己的IP地址，都属于覆盖子网100.96.0.0\/16。同一主机内的容器可以通过docker网桥docker0相互通信。\n为了在主机间与覆盖网络中的其他容器进行通信，flannel使用内核路由表和UDP封装来实现它，下面几节将对此进行解释。\n发包过程 假设节点1中IP地址为100.96.1.2的容器（我们称之为container-1）想要连接到节点2中IP地址为100.96.2.3的容器（我们称之为container-2）:\n第一个container-1创建一个src:100.96.1.2-\u0026gt;dst:100.96.2.3的IP数据包，该数据包将直接被发送到容器的网关-docker0网桥。\n在每个主机中，flannel会运行一个名为flanneld的守护进程，flanneld会在内核的路由表中创建一些路由规则，节点1的路由表一般是这样的：\nadmin@ip-172-20-33-102:~$ ip route default via 172.20.32.1 dev eth0 100.96.0.0\/16 dev flannel0 proto kernel scope link src 100.96.1.0 100.96.1.0\/24 dev docker0 proto kernel scope link src 100.96.1.1 172.20.32.0\/19 dev eth0 proto kernel scope link src 172.20.33.102 如上所见，包的目的地址100.96.2.3落在更大的覆盖网络100.96.0.0\/16中，因此它符合第二条规则100.96.0.0\/16 dev flannel0 proto kernel scope link src 100.96.1.0，现在根据路由规则内核把包发送到flannel0虚拟网卡。\n100.96.0.0\/16 dev flannel0 proto kernel scope link src 100.",
+  "inLanguage" : "zh-cn",
+  "wordCount":  203 ,
+  "datePublished" : "2021-01-12T10:43:21",
+  "dateModified" : "2021-01-12T10:43:21",
+  "image" : "https:\/\/hzren.github.io\/img\/avatar-icon.png",
+  "keywords" : [ "Network, Docker" ],
+  "mainEntityOfPage" : "https:\/\/hzren.github.io\/blog\/2021-01-12-%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C\/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https:\/\/hzren.github.io",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https:\/\/hzren.github.io\/img\/avatar-icon.png",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
+
+<meta property="og:title" content="容器网络" />
+<meta property="og:description" content="容器网络的核心是和物理网络实现网络隔离，物理网络对于容器来说为虚拟的，不可见的。
+概念 Overlay / 覆盖网络
+覆盖网络（Overlay network）是一种建立在另一网络之上的计算机网络。
+覆盖网络中的节点可以被认为是通过虚拟或逻辑链接相连，其中每个链接对应一条路径（Path）。节点之间也可能通过下层网络中的多个物理连接实现相连。
+Flannel Flannel有UDP和VXLAN两种方案
+使用UDP实现Overlay网络 Flannel的覆盖网络：Flannel另创建了一个网络100.96.0.0/16，它是一个更大的网络，可以容纳2个¹⁶（65536）地址，它覆盖所有kubernetes节点，每个pod将在这个范围内分配一个地址。
+在主机docker网络中：在每个主机中，flannel为该主机中的所有pod分配了一个100.96.x.0/24网络，它可以容纳2⁸（256）个地址。docker网桥docker0将使用此网络创建新容器。
+通过这种设计，每个容器都有自己的IP地址，都属于覆盖子网100.96.0.0/16。同一主机内的容器可以通过docker网桥docker0相互通信。
+为了在主机间与覆盖网络中的其他容器进行通信，flannel使用内核路由表和UDP封装来实现它，下面几节将对此进行解释。
+发包过程 假设节点1中IP地址为100.96.1.2的容器（我们称之为container-1）想要连接到节点2中IP地址为100.96.2.3的容器（我们称之为container-2）:
+第一个container-1创建一个src:100.96.1.2-&gt;dst:100.96.2.3的IP数据包，该数据包将直接被发送到容器的网关-docker0网桥。
+在每个主机中，flannel会运行一个名为flanneld的守护进程，flanneld会在内核的路由表中创建一些路由规则，节点1的路由表一般是这样的：
+admin@ip-172-20-33-102:~$ ip route default via 172.20.32.1 dev eth0 100.96.0.0/16 dev flannel0 proto kernel scope link src 100.96.1.0 100.96.1.0/24 dev docker0 proto kernel scope link src 100.96.1.1 172.20.32.0/19 dev eth0 proto kernel scope link src 172.20.33.102 如上所见，包的目的地址100.96.2.3落在更大的覆盖网络100.96.0.0/16中，因此它符合第二条规则100.96.0.0/16 dev flannel0 proto kernel scope link src 100.96.1.0，现在根据路由规则内核把包发送到flannel0虚拟网卡。
+100.96.0.0/16 dev flannel0 proto kernel scope link src 100.">
+<meta property="og:image" content="https://hzren.github.io/img/avatar-icon.png" />
+<meta property="og:url" content="https://hzren.github.io/blog/2021-01-12-%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Code Mark" />
+
+  <meta name="twitter:title" content="容器网络" />
+  <meta name="twitter:description" content="容器网络的核心是和物理网络实现网络隔离，物理网络对于容器来说为虚拟的，不可见的。
+概念 Overlay / 覆盖网络
+覆盖网络（Overlay network）是一种建立在另一网络之上的计算机网络。
+覆盖网络中的节点可以被认为是通过虚拟或逻辑链接相连，其中每个链接对应一条路径（Path）。节点之间也可能通过下层网络中的多个物理连接实现相连。
+Flannel Flannel有UDP和VXLAN两种方 …">
+  <meta name="twitter:image" content="https://hzren.github.io/img/avatar-icon.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@username" />
+  <meta name="twitter:creator" content="@username" />
+  <link href='https://hzren.github.io/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <meta name="generator" content="Hugo 0.109.0">
+  <link rel="alternate" href="https://hzren.github.io/index.xml" type="application/rss+xml" title="Code Mark"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://hzren.github.io/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="https://hzren.github.io/css/highlight.min.css" /><link rel="stylesheet" href="https://hzren.github.io/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">切换导航</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://hzren.github.io">Code Mark</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="文章" href="/">文章</a>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent">代码</a>
+              <div class="navlinks-children">
+                
+                  <a href="/post/2017-03-07-bigimg-sample">Big Image Sample</a>
+                
+                  <a href="/post/2017-03-05-math-sample">Math Sample</a>
+                
+                  <a href="/post/2016-03-08-code-sample">Code Sample</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li>
+              <a title="关于我" href="/page/about/">关于我</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="分类" href="/tags">分类</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    
+      <div class="avatar-container">
+        <div class="avatar-img-border">
+          <a title="Code Mark" href="https://hzren.github.io">
+            <img class="avatar-img" src="https://hzren.github.io/img/avatar-icon.png" alt="Code Mark" />
+          </a>
+        </div>
+      </div>
+    
+
+  </div>
+</nav>
+
+
+
+
+    
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+
+  
+  
+  
+
+
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    
+    <div class="intro-header no-img">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="blog-heading">
+              
+                <h1>容器网络</h1>
+              
+              
+                <hr class="small">
+              
+              
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <blockquote>
+<p>容器网络的核心是和物理网络实现网络隔离，物理网络对于容器来说为虚拟的，不可见的。</p>
+</blockquote>
+<h2 id="概念">概念</h2>
+<p><strong>Overlay / 覆盖网络</strong></p>
+<blockquote>
+<p>覆盖网络（Overlay network）是一种建立在另一网络之上的计算机网络。</p>
+</blockquote>
+<p>覆盖网络中的节点可以被认为是通过虚拟或逻辑链接相连，其中每个链接对应一条路径（Path）。节点之间也可能通过下层网络中的多个物理连接实现相连。</p>
+<h2 id="flannel">Flannel</h2>
+<p>Flannel有UDP和VXLAN两种方案</p>
+<h3 id="使用udp实现overlay网络">使用UDP实现Overlay网络</h3>
+<p>Flannel的覆盖网络：Flannel另创建了一个网络<!-- raw HTML omitted -->100.96.0.0/16<!-- raw HTML omitted -->，它是一个更大的网络，可以容纳2个¹⁶（65536）地址，它覆盖所有kubernetes节点，每个pod将在这个范围内分配一个地址。</p>
+<p>在主机docker网络中：在每个主机中，flannel为该主机中的所有pod分配了一个100.96.x.0/24网络，它可以容纳2⁸（256）个地址。docker网桥docker0将使用此网络创建新容器。</p>
+<p>通过这种设计，每个容器都有自己的IP地址，都属于覆盖子网<!-- raw HTML omitted -->100.96.0.0/16<!-- raw HTML omitted -->。同一主机内的容器可以通过docker网桥docker0相互通信。</p>
+<p>为了在主机间与覆盖网络中的其他容器进行通信，flannel使用内核路由表和UDP封装来实现它，下面几节将对此进行解释。</p>
+<p><img src="/static/attachment/20210112/20200112-udp.png" alt="使用UDP"></p>
+<h4 id="发包过程">发包过程</h4>
+<p>假设节点1中IP地址为<!-- raw HTML omitted -->100.96.1.2<!-- raw HTML omitted -->的容器（我们称之为container-1）想要连接到节点2中IP地址为<!-- raw HTML omitted -->100.96.2.3<!-- raw HTML omitted -->的容器（我们称之为container-2）:</p>
+<p>第一个container-1创建一个<!-- raw HTML omitted -->src:100.96.1.2-&gt;dst:100.96.2.3<!-- raw HTML omitted -->的IP数据包，该数据包将直接被发送到容器的网关-docker0网桥。</p>
+<p>在每个主机中，flannel会运行一个名为flanneld的守护进程，flanneld会在内核的路由表中创建一些路由规则，节点1的路由表一般是这样的：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">admin@ip-172-20-33-102:~$ ip route
+</span></span><span class="line"><span class="cl">default via 172.20.32.1 dev eth0
+</span></span><span class="line"><span class="cl">100.96.0.0/16 dev flannel0  proto kernel  scope link  src 100.96.1.0
+</span></span><span class="line"><span class="cl">100.96.1.0/24 dev docker0  proto kernel  scope link  src 100.96.1.1
+</span></span><span class="line"><span class="cl">172.20.32.0/19 dev eth0  proto kernel  scope link  src 172.20.33.102
+</span></span></code></pre></div><p>如上所见，包的目的地址<!-- raw HTML omitted -->100.96.2.3<!-- raw HTML omitted -->落在更大的覆盖网络<!-- raw HTML omitted -->100.96.0.0/16<!-- raw HTML omitted -->中，因此它符合第二条规则<code>100.96.0.0/16 dev flannel0  proto kernel  scope link  src 100.96.1.0</code>，现在根据路由规则内核把包发送到flannel0虚拟网卡。</p>
+<blockquote>
+<p><code>100.96.0.0/16 dev flannel0  proto kernel  scope link  src 100.96.1.0</code>代表目的IP在<code>100.96.0.0/16</code>的包会经flannel0(网口)由内核发送出去，如果数据包没有源IP，会添加源IP <code>100.96.1.0</code></p>
+</blockquote>
+<p>flanneld守护进程创建的flannel0是一个TUN设备，TUN是一个在linux内核层面实现的软件接口，它可以在用户程序和内核之间传递原始的IP数据包。它在两个方向工作：</p>
+<ul>
+<li>
+<p>当flanneld守护进程向flannel0设备写入IP数据包时，数据包将被直接发送到内核，内核将根据其路由表对数据包进行路由</p>
+</li>
+<li>
+<p>当一个IP包到达内核，路由表说它应该被路由到flannel0设备时，内核将把包直接发送到创建这个设备的进程，也就是flanneld守护进程</p>
+</li>
+</ul>
+<p>flannel会在etcd中存储子网和实际IP的映射关系，当flanneld进程收到内核发送到TUN设备的数据包时，flannel会根据映射关系获取到实际的目标IP：<code>100.96.2.3</code>。</p>
+<p>flannel在etcd服务中存储的子网到主机的映射信息我们可以使用etcdctl命令查看它：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">admin@ip-172-20-33-102:~$ etcdctl ls /coreos.com/network/subnets
+</span></span><span class="line"><span class="cl">/coreos.com/network/subnets/100.96.1.0-24
+</span></span><span class="line"><span class="cl">/coreos.com/network/subnets/100.96.2.0-24
+</span></span><span class="line"><span class="cl">/coreos.com/network/subnets/100.96.3.0-24admin@ip-172-20-33-102:~$ etcdctl get /coreos.com/network/subnets/100.96.2.0-24
+</span></span><span class="line"><span class="cl">{&#34;PublicIP&#34;:&#34;172.20.54.98&#34;}
+</span></span></code></pre></div><p>现在flanneld知道了目标地址，它将原始的IP包包装成一个UDP包，用它自己的主机的IP作为源地址，目标主机的IP作为目标地址。在每台主机上，flanneld进程都会监听一个默认的UDP端口：8285。所以它只需要将UDP包的目的端口设置为8285，然后通过主机网口发送。为什么是UDP呢？因为不想在flanneld之间建立两两连接，而UDP没有连接的概念，任何一台机器都能发给另一台。</p>
+<h4 id="收报过程">收报过程</h4>
+<p>UDP数据包到达目标主机后，内核的IP堆栈会将数据包发送到监听UDP端口8285flanneld进程。flanneld解析出容器生成的原始IP包，然后将此包写入TUN设备flannel0，该包将直接传递到内核，因为TUN就是这样工作的。</p>
+<p>与节点1相同，路由表将决定此数据包应该去哪里，让我们看看节点2的路由表：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">admin@ip-172-20-54-98:~$ ip route
+</span></span><span class="line"><span class="cl">default via 172.20.32.1 dev eth0
+</span></span><span class="line"><span class="cl">100.96.0.0/16 dev flannel0  proto kernel  scope link  src 100.96.2.0
+</span></span><span class="line"><span class="cl">100.96.2.0/24 dev docker0  proto kernel  scope link  src 100.96.2.1
+</span></span><span class="line"><span class="cl">172.20.32.0/19 dev eth0  proto kernel  scope link  src 172.20.54.98
+</span></span></code></pre></div><p>IP包的目标地址是<code>100.96.2.3</code>，内核将采用最精确的匹配，也就是第三条规则。数据包将被发送到docker0设备。由于docker0是一个网桥设备，并且该主机中的所有容器都连接到该网桥，因此最终目标容器2将看到并接收数据包。</p>
+<p><img src="https://github.com/coreos/flannel/blob/master/packet-01.png" alt="Flannel官方说明"></p>
+<p><strong>上面的过程连通性没有问题，但是由于经理多次内核态 / 用户态的切换，所以性能差了一些</strong>。</p>
+<h2 id="calico">Calico</h2>
+<p>Calico网络的大概思路，即不走Overlay网络，不引入另外的网络性能损耗，而是将转发全部用三层网络的路由转发来实现</p>
+<p><img src="/static/attachment/20210112/20200112-vxlan.jpg" alt="网络拓扑图"></p>
+<p><strong>Calico网络的转发细节</strong></p>
+<p>容器A1的IP地址为172.17.8.2/32，这里注意，不是/24，而是/32，将容器A1作为一个单点的局域网了。</p>
+<p>容器A1里面的默认路由，Calico配置得比较有技巧。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">default via 169.254.1.1 dev eth0 
+</span></span><span class="line"><span class="cl">169.254.1.1 dev eth0 scope link
+</span></span></code></pre></div><p>这个IP地址169.254.1.1是默认的网关，但是整个拓扑图中没有一张网卡是这个地址。那如何到达这个地址呢？</p>
+<p>前面我们讲网关的原理的时候说过，当一台机器要访问网关的时候，首先会通过ARP获得网关的MAC地址，然后将目标MAC变为网关的MAC，而网关的IP地址不会在任何网络包头里面出现，也就是说，没有人在乎这个地址具体是什么，只要能找到对应的MAC，响应ARP就可以了。</p>
+<p>ARP本地有缓存，通过ip neigh命令可以查看。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">169.254.1.1 dev eth0 lladdr ee:ee:ee:ee:ee:ee STALE
+</span></span></code></pre></div><p>这个MAC地址是Calico硬塞进去的，但是没有关系，它能响应ARP，于是发出的包的目标MAC就是这个MAC地址。</p>
+<p>在物理机A上查看所有网卡的MAC地址的时候，我们会发现veth1就是这个MAC地址。所以容器A1里发出的网络包，第一跳就是这个veth1这个网卡，也就到达了物理机A这个路由器。</p>
+<p>在物理机A上有三条路由规则，分别是去两个本机的容器的路由，以及去172.17.9.0/24，下一跳为物理机B。</p>
+<p>在物理机A上有三条路由规则，分别是去两个本机的容器的路由，以及去172.17.9.0/24，下一跳为物理机B。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">172.17.8.2 dev veth1 scope link 
+</span></span><span class="line"><span class="cl">172.17.8.3 dev veth2 scope link 
+</span></span><span class="line"><span class="cl">172.17.9.0/24 via 192.168.100.101 dev eth0 proto bird onlink
+</span></span></code></pre></div><p>同理，物理机B上也有三条路由规则，分别是去两个本机的容器的路由，以及去172.17.8.0/24，下一跳为物理机A。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">172.17.9.2 dev veth1 scope link 
+</span></span><span class="line"><span class="cl">172.17.9.3 dev veth2 scope link 
+</span></span><span class="line"><span class="cl">172.17.8.0/24 via 192.168.100.100 dev eth0 proto bird onlink
+</span></span></code></pre></div><p><img src="/static/attachment/20210112/calico2.jpg" alt=""></p>
+<p>在这里，物理机化身为路由器，通过路由器上的路由规则，将包转发到目的地。在这个过程中，没有隧道封装解封装，仅仅是单纯的路由转发，性能会好很多。</p>
+<p>在Calico中，每个Node上运行一个软件BIRD，作为BGP的客户端，或者叫作BGP Speaker，将“如何到达我这个Node，访问我这个Node上的容器”的路由信息广播出去。所有Node上的BGP Speaker 都互相建立连接，就形成了全互连的情况，这样每当路由有所变化的时候，所有节点就都能够收到了。</p>
+
+
+        
+          <div class="blog-tags">
+            
+              <a href="https://hzren.github.io/tags/network/">Network</a>&nbsp;
+            
+              <a href="https://hzren.github.io/tags/docker/">Docker</a>&nbsp;
+            
+          </div>
+        
+
+        
+            <hr/>
+            <section id="social-share">
+              <div class="list-inline footer-links">
+                
+
+<div class="share-box" aria-hidden="true">
+    <ul class="share">
+      
+      <li>
+        <a href="//twitter.com/share?url=https%3a%2f%2fhzren.github.io%2fblog%2f2021-01-12-%25E5%25AE%25B9%25E5%2599%25A8%25E7%25BD%2591%25E7%25BB%259C%2f&amp;text=%e5%ae%b9%e5%99%a8%e7%bd%91%e7%bb%9c&amp;via=username" target="_blank" title="Share on Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fhzren.github.io%2fblog%2f2021-01-12-%25E5%25AE%25B9%25E5%2599%25A8%25E7%25BD%2591%25E7%25BB%259C%2f" target="_blank" title="Share on Facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//reddit.com/submit?url=https%3a%2f%2fhzren.github.io%2fblog%2f2021-01-12-%25E5%25AE%25B9%25E5%2599%25A8%25E7%25BD%2591%25E7%25BB%259C%2f&amp;title=%e5%ae%b9%e5%99%a8%e7%bd%91%e7%bb%9c" target="_blank" title="Share on Reddit">
+          <i class="fab fa-reddit"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fhzren.github.io%2fblog%2f2021-01-12-%25E5%25AE%25B9%25E5%2599%25A8%25E7%25BD%2591%25E7%25BB%259C%2f&amp;title=%e5%ae%b9%e5%99%a8%e7%bd%91%e7%bb%9c" target="_blank" title="Share on LinkedIn">
+          <i class="fab fa-linkedin"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fhzren.github.io%2fblog%2f2021-01-12-%25E5%25AE%25B9%25E5%2599%25A8%25E7%25BD%2591%25E7%25BB%259C%2f&amp;title=%e5%ae%b9%e5%99%a8%e7%bd%91%e7%bb%9c" target="_blank" title="Share on StumbleUpon">
+          <i class="fab fa-stumbleupon"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fhzren.github.io%2fblog%2f2021-01-12-%25E5%25AE%25B9%25E5%2599%25A8%25E7%25BD%2591%25E7%25BB%259C%2f&amp;description=%e5%ae%b9%e5%99%a8%e7%bd%91%e7%bb%9c" target="_blank" title="Share on Pinterest">
+          <i class="fab fa-pinterest"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+  
+
+              </div>
+            </section>
+        
+
+        
+          
+            
+          
+
+          
+                  <h4 class="see-also">也可以看看</h4>
+                  <ul>
+                
+                
+                    <li><a href="/blog/2021-01-19-linux%E7%BD%91%E7%BB%9C/">Linux网络</a></li>
+                
+                    <li><a href="/blog/2021-01-13-%E8%B7%AF%E7%94%B1%E6%9D%A1%E7%9B%AE/">路由条目</a></li>
+                
+                    <li><a href="/blog/2021-01-06-%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E5%88%B0%E5%85%AC%E7%BD%91_%E5%85%AC%E7%BD%91%E5%AF%BC%E5%86%85%E7%BD%91%E7%9A%84%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E8%BF%87%E7%A8%8B/">一次内网到公网_公网导内网的数据链路过程</a></li>
+                
+                    <li><a href="/blog/2020-08-19-tcp-udp-%E6%80%BB%E7%BB%93/">TCP / UDP 总结</a></li>
+                
+                    <li><a href="/blog/2020-08-18-icmp-ping-traceroute/">ICMP Ping traceroute</a></li>
+                
+              </ul>
+
+          
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="https://hzren.github.io/blog/2021-01-06-%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E5%88%B0%E5%85%AC%E7%BD%91_%E5%85%AC%E7%BD%91%E5%AF%BC%E5%86%85%E7%BD%91%E7%9A%84%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E8%BF%87%E7%A8%8B/" data-toggle="tooltip" data-placement="top" title="一次内网到公网_公网导内网的数据链路过程">&larr; 前一篇</a>
+            </li>
+          
+          
+            <li class="next">
+              <a href="https://hzren.github.io/blog/2021-01-13-%E8%B7%AF%E7%94%B1%E6%9D%A1%E7%9B%AE/" data-toggle="tooltip" data-placement="top" title="路由条目">后一篇 &rarr;</a>
+            </li>
+          
+        </ul>
+      
+
+
+      
+        
+        
+      
+
+    </div>
+  </div>
+</div>
+
+      
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+              <li>
+		
+		  <a href="mailto:hzren@outlook.com" title="Email me">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.facebook.com/username" title="Facebook">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-facebook fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://github.com/username" title="GitHub">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://gitlab.com/username" title="GitLab">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-gitlab fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://bitbucket.org/username" title="Bitbucket">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-bitbucket fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://twitter.com/username" title="Twitter">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://username.slack.com/" title="Slack">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-slack fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://reddit.com/u/username" title="Reddit">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-reddit-alien fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://linkedin.com/in/username" title="LinkedIn">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.xing.com/profile/username" title="Xing">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-xing fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://stackoverflow.com/users/XXXXXXX/username" title="StackOverflow">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-stack-overflow fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.snapchat.com/add/username" title="Snapchat">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-snapchat-ghost fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.instagram.com/username" title="Instagram">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-instagram fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.youtube.com/user/username" title="Youtube">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-youtube fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://soundcloud.com/username" title="SoundCloud">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-soundcloud fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://open.spotify.com/user/username" title="Spotify">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-spotify fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://username.bandcamp.com/" title="Bandcamp">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-bandcamp fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://itch.io/profile/username" title="Itch.io">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fas fa-gamepad fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://vk.com/username" title="VK">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-vk fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://paypal.me/username" title="PayPal">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-paypal fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://telegram.me/username" title="Telegram">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-telegram fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://500px.com/username" title="500px">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-500px fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://codepen.io/username" title="CodePen">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-codepen fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.kaggle.com/username" title="kaggle">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-kaggle fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a rel="me"href="https://url" title="Mastodon">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-mastodon fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://weibo.com/username" title="Weibo">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-weibo fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://discord.gg/invite%20code%20%28https://discord.gg/XXXXXXX%29" title="Discord">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-discord fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.strava.com/athletes/userid" title="Strava">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-strava fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+          
+          <li>
+            <a href="" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              <a href="https://hyllo.gitee.io/">renhongzhen</a>
+            
+          
+
+          &nbsp;&bull;&nbsp;&copy;
+          
+            2022
+          
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://hzren.github.io">Code Mark</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          由 <a href="https://gohugo.io">Hugo v0.109.0</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="https://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer><script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script src="https://hzren.github.io/js/main.js"></script>
+<script src="https://hzren.github.io/js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script>
+<script> $(document).ready(function() {$("pre.chroma").css("padding","0");}); </script><script> renderMathInElement(document.body); </script><script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://hzren.github.io/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+
+
+
+    
+  </body>
+</html>
+

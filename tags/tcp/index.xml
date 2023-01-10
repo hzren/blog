@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>TCP on Code Mark</title>
+    <link>https://hzren.github.io/tags/tcp/</link>
+    <description>Recent content in TCP on Code Mark</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <managingEditor>hzren@outlook.com (renhongzhen)</managingEditor>
+    <webMaster>hzren@outlook.com (renhongzhen)</webMaster>
+    <lastBuildDate>Wed, 19 Aug 2020 15:04:38 +0800</lastBuildDate><atom:link href="https://hzren.github.io/tags/tcp/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>TCP / UDP 总结</title>
+      <link>https://hzren.github.io/blog/2020-08-19-tcp-udp-%E6%80%BB%E7%BB%93/</link>
+      <pubDate>Wed, 19 Aug 2020 15:04:38 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2020-08-19-tcp-udp-%E6%80%BB%E7%BB%93/</guid>
+      <description>send()最大可以接受多少字节的数据？ 函数层面无限制，超过缓冲区大小函数会block
+TCP接到send()发送的字节，会立马保持原封不动发送吗？ 不确定！
+TCP会先将这些数据放在自己的仓库（发送缓冲区），至于什么时候发，每次发多少，已经不是应用层所能左右的了。什么时候发，一次发多少取决于不同算法，有RCP_NODELAY配置，有MSS限制TCP分组最大长度。
+TCP是基于字节流发送，可能将用户的一次数据发送砍成多个segment发送，也可能将多次应用层的发送合并在一个segment发送。而决定TCP一次最大能发segment的大小则和MSS有关，而MSS最终和MTU有关。
+分片是非常不利的选择，当前网络所做的很多努力都是极力避免分片！
+TCP MSS真的可以避免分片吗？ TCP连接的双方依据本地物理链路的MTU，按照以上的公式计算出本地的MSS，然后双方交换各自的MSS，双方会选择两者中小的MSS来继续通信。但有没有想过，如果路径中的MTU比连接双方的MTU都小，是不是分片就无法避免了？答案是肯定的！
+这个时候必须分片，不分片就会丢，这是DF = 1的状况，需要给源主机发送ICMP消息，问题是ICMP消息能到达源主机吗？如果不能到达，通信就会断，即使TCP有重传机制。
+能到达源主机，源的TCP意识到这一点，会将重传的报文重新切片，重新发送，这没有什么问题，只是耽误一点时间而已。
+DF = 0时，可以直接分片，尽管耗费很多分片的资源，到达目的地再重组，也要耗费一点资源。
+问题是，没有端口号的分片，经过安全设备时，可能会遇到障碍，这同样会造成通信的障碍。
+看，一旦分片造成多大的麻烦，麻烦意味着CPU资源的耗费，为了避免这些不必要的动作，只要不分片，一切都会变的简单。
+UDP UDP是块式消息，UDP本身没有任何分片的能力，也没有任何重传的能力，这些能力需要依赖应用层、IP层。
+计算机网络发展到今天，大家已经形成了一个共识，如果用户的数据确实需要分片传输，务必保证分片的动作由应用层来完成，到达目的地由应用层将字节流，再整理成有意义的消息块。
+TCP丢包 路由器或交换机，一旦TCP流量暴力来袭时，会尽最大能力转发流量，如果流量持续增长，流量流速&amp;gt; 物理线路速率，用缓存将多余的流量缓存在队列里，一旦线路空闲，再发送出去。
+但如果多余的流量&amp;gt; 缓存的空间，无法容纳的流量将会统统丢弃，cisco官方的名词称之为尾丢( Tail Drop)。
+所以缓存只能应付临时的突发流量（Burst Traffic）, 只要多余的突发流量&amp;lt;= 缓存空间，就不会丢弃。
+但是缓存无法应付诸如TCP 指数增长流量，唯一的办法就是尾丢。
+网络接口出方向的 ”out dircard”是正常的，TCP slow start算法就是依靠丢包来实现的，至于哪里要丢，取决于端到端哪条链路的可用带宽最小，记住可用带宽不是接口的最大带宽，可用带宽是真正可以利用的带宽。
+因为两将军问题，在TCP协议中，谁是字节数据的owner，谁才对字节数据负责！数据的接收方并不需要为字节数据负责，被动确认（Passive ACK）一次即可。</description>
+    </item>
+    
+    <item>
+      <title>TCP协议</title>
+      <link>https://hzren.github.io/blog/2020-08-14-tcp%E5%8D%8F%E8%AE%AE/</link>
+      <pubDate>Fri, 14 Aug 2020 14:46:06 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2020-08-14-tcp%E5%8D%8F%E8%AE%AE/</guid>
+      <description>传输控制协议（缩写：TCP）是一种面向连接的、可靠的、基于字节流的传输层通信协议，由IETF的RFC 793定义。在计算机网络OSI模型中，它处于第四层传输层，同用户数据报协议（UDP）位于同一层。
+应用层向TCP层发送用于网络间传输的、用8位字节表示的数据流，然后TCP把数据流分割成适当长度的报文段（通常受链接数据链路层的最大传输单元（MTU）限制）。之后TCP把结果包传给IP层，由它来透过网络将包传送给接收端实体的TCP层。
+TCP为了保证不发生丢包，就给每个包一个序号，同时序号也保证了传送到接收端实体的包的按序接收。然后接收端实体对已成功收到的包发回一个相应的确认信息（ACK）；如果发送端实体在合理的往返时延（RTT）内未收到确认，那么对应的数据包就被假设为已丢失并进行重传。TCP用一个校验和函数来检验数据是否有错误，在发送和接收时都要计算校验和。
+概念 数据在TCP层称为流（Stream），数据分组称为分段（Segment）。作为比较，数据在IP层称为Datagram，数据分组称为分片（Fragment）。 UDP 中分组称为Message。
+运行方式 一个完整的TCP链接分为三个阶段：连接建立(connection establishment)、数据传送（data transfer）和连接终止（connection termination）。操作系统将TCP连接抽象为套接字表示的本地端点（local end-point）作为编程接口给程序使用。在TCP链接的生命期周期内，本地端点会经历一系列的状态改变。
+数据包结构 链接建立 TCP协议经过三次握手建立链接:
+1. 客户端通过向服务器端发送一个SYN来建立一个主动打开，作为三次握手的一部分。客户端把这段连接的序号设定为随机数A。2. 服务器端应当为一个合法的SYN回送一个SYN/ACK。ACK的确认码应为A+1，SYN/ACK包本身又有一个随机产生的序号B。3. 最后，客户端再发送一个ACK。此时包的序号被设定为A+1，而ACK的确认码则为B+1。当服务端收到这个ACK的时候，就完成了三次握手，并进入了连接建立状态。在第二步，服务器确认自己能收到客户端的数据包 在第三步，客户端收到服务器端的数据包，客户端确认服务器能收到自己的数据包，自己也能收到服务器的数据包 服务器端还不确定客户端是否能收到自己发送的数据包，所以服务器一定要等收到客户端发来的第二个ACK应答才真正建立链接 如果服务器端在收到了客户端的SYN后回了SYN-ACK后客户端掉线了，服务器端没有收到客户端回来的ACK，那么，这个连接就处于一个中间状态，既没有成功，也没有失败。这个时候,服务器端会在一定时间内重发SYN-ACK。在Linux下，默认重试次数为5次，重试的间隔时间从1s开始每次都翻倍，5次的重试时间间隔为1s, 2s, 4s, 8s, 16s，总共31s，第5次发出后还要等32s才知道第5次也超时了，所以，总共需要 1s + 2s + 4s+ 8s+ 16s + 32s = 63s，服务器端才会断开这个连接。可以使用三个TCP参数来调整行为：tcp_synack_retries 减少重试次数；tcp_max_syn_backlog，增大SYN连接数；tcp_abort_on_overflow在检查到 backlog 队列已满时，直接发 RST 包给客户端终止此连接,此时客户端程序会收到 104 Connection reset by peer 错误。
+TCP_FASTOPEN 控制server socket 接收链接。
+TCP_FASTOPEN_CONNECT 控制socket发起链接。
+为什么是三次握手？
+三次以上的握手是没意义的，因为没办法给每个对方发来的数据包都做确认，这样就陷入了确认包的死循环当中。三次握手的 三次握手的核心是通讯双方都明确自身能收到对方发来的数据包，对方能收到自己发来的数据包
+绑定端口 主机在收到一个TCP包时，使用两端的IP地址与端口号来标识这个TCP包属于哪个TCP链接。主机使用一张表来存储所有的session，表中的每条称作Transmission Control Block（TCB），tcb结构上包括链接的源端口、源IP，目的端口、目的ip、序号、应答序号、对方窗口大小、己方窗口大小、tcp状态、tcp输入/输出队列、应用层输出队列、tcp的重传变量等。
+服务器端的链接数量是无限的，只受内存的限制。客户端的连接数量，在Linux kernel 4.2 之前由于在发送第一个SYN到服务器之前需要先分配一个随机空闲的端口，理论上最大链接数受限于端口数据量，最大65k。从Linux 4.</description>
+    </item>
+    
+  </channel>
+</rss>

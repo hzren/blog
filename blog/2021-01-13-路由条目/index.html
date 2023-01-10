@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="zh-cn" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+ 
+
+
+      <title>路由条目 - </title>
+
+  <meta name="description" content="ip route命令的输出解释。
+获取工具 ip命令包含在net-tools包中，可以通过安装net-tools包获得该命令。
+常见用法 执行man ip route
+IP-ROUTE(8) Linux IP-ROUTE(8) NAME ip-route - routing table management SYNOPSIS ip [ ip-OPTIONS ] route { COMMAND | help } ip route { list | flush } SELECTOR ip route save SELECTOR ip route restore ip route get ADDRESS [ from ADDRESS iif STRING ] [ oif STRING ] [ tos TOS ] ip route { add | del | change | append | replace } ROUTE SELECTOR := [ root PREFIX ] [ match PREFIX ] [ exact PREFIX ] [ table TABLE_ID ] [ proto RTPROTO ] [ type TYPE ] [ scope SCOPE ] ROUTE := NODE_SPEC [ INFO_SPEC ] NODE_SPEC := [ TYPE ] PREFIX [ tos TOS ] [ table TABLE_ID ] [ proto RTPROTO ] [ scope SCOPE ] [ metric METRIC ] INFO_SPEC := NH OPTIONS FLAGS [ nexthop NH ] .">
+  <meta name="author" content="renhongzhen"/><script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "Code Mark",
+    
+    "url": "https:\/\/hzren.github.io"
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "",
+  "url": "https:\/\/hzren.github.io"
+  
+  
+  
+  
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https:\/\/hzren.github.io",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https:\/\/hzren.github.io\/blog\/2021-01-13-%E8%B7%AF%E7%94%B1%E6%9D%A1%E7%9B%AE\/",
+          "name": "路由条目"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : "renhongzhen"
+  },
+  "headline": "路由条目",
+  "description" : "ip route命令的输出解释。\n获取工具 ip命令包含在net-tools包中，可以通过安装net-tools包获得该命令。\n常见用法 执行man ip route\nIP-ROUTE(8) Linux IP-ROUTE(8) NAME ip-route - routing table management SYNOPSIS ip [ ip-OPTIONS ] route { COMMAND | help } ip route { list | flush } SELECTOR ip route save SELECTOR ip route restore ip route get ADDRESS [ from ADDRESS iif STRING ] [ oif STRING ] [ tos TOS ] ip route { add | del | change | append | replace } ROUTE SELECTOR := [ root PREFIX ] [ match PREFIX ] [ exact PREFIX ] [ table TABLE_ID ] [ proto RTPROTO ] [ type TYPE ] [ scope SCOPE ] ROUTE := NODE_SPEC [ INFO_SPEC ] NODE_SPEC := [ TYPE ] PREFIX [ tos TOS ] [ table TABLE_ID ] [ proto RTPROTO ] [ scope SCOPE ] [ metric METRIC ] INFO_SPEC := NH OPTIONS FLAGS [ nexthop NH ] .",
+  "inLanguage" : "zh-cn",
+  "wordCount":  628 ,
+  "datePublished" : "2021-01-13T10:13:06",
+  "dateModified" : "2021-01-13T10:13:06",
+  "image" : "https:\/\/hzren.github.io\/img\/avatar-icon.png",
+  "keywords" : [ "Network" ],
+  "mainEntityOfPage" : "https:\/\/hzren.github.io\/blog\/2021-01-13-%E8%B7%AF%E7%94%B1%E6%9D%A1%E7%9B%AE\/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https:\/\/hzren.github.io",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https:\/\/hzren.github.io\/img\/avatar-icon.png",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
+
+<meta property="og:title" content="路由条目" />
+<meta property="og:description" content="ip route命令的输出解释。
+获取工具 ip命令包含在net-tools包中，可以通过安装net-tools包获得该命令。
+常见用法 执行man ip route
+IP-ROUTE(8) Linux IP-ROUTE(8) NAME ip-route - routing table management SYNOPSIS ip [ ip-OPTIONS ] route { COMMAND | help } ip route { list | flush } SELECTOR ip route save SELECTOR ip route restore ip route get ADDRESS [ from ADDRESS iif STRING ] [ oif STRING ] [ tos TOS ] ip route { add | del | change | append | replace } ROUTE SELECTOR := [ root PREFIX ] [ match PREFIX ] [ exact PREFIX ] [ table TABLE_ID ] [ proto RTPROTO ] [ type TYPE ] [ scope SCOPE ] ROUTE := NODE_SPEC [ INFO_SPEC ] NODE_SPEC := [ TYPE ] PREFIX [ tos TOS ] [ table TABLE_ID ] [ proto RTPROTO ] [ scope SCOPE ] [ metric METRIC ] INFO_SPEC := NH OPTIONS FLAGS [ nexthop NH ] .">
+<meta property="og:image" content="https://hzren.github.io/img/avatar-icon.png" />
+<meta property="og:url" content="https://hzren.github.io/blog/2021-01-13-%E8%B7%AF%E7%94%B1%E6%9D%A1%E7%9B%AE/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Code Mark" />
+
+  <meta name="twitter:title" content="路由条目" />
+  <meta name="twitter:description" content="ip route命令的输出解释。
+获取工具 ip命令包含在net-tools包中，可以通过安装net-tools包获得该命令。
+常见用法 执行man ip route
+IP-ROUTE(8) Linux IP-ROUTE(8) NAME ip-route - routing table management SYNOPSIS ip [ ip-OPTIONS ] route { COMMAND | …">
+  <meta name="twitter:image" content="https://hzren.github.io/img/avatar-icon.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@username" />
+  <meta name="twitter:creator" content="@username" />
+  <link href='https://hzren.github.io/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <meta name="generator" content="Hugo 0.109.0">
+  <link rel="alternate" href="https://hzren.github.io/index.xml" type="application/rss+xml" title="Code Mark"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://hzren.github.io/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="https://hzren.github.io/css/highlight.min.css" /><link rel="stylesheet" href="https://hzren.github.io/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">切换导航</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://hzren.github.io">Code Mark</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="文章" href="/">文章</a>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent">代码</a>
+              <div class="navlinks-children">
+                
+                  <a href="/post/2017-03-07-bigimg-sample">Big Image Sample</a>
+                
+                  <a href="/post/2017-03-05-math-sample">Math Sample</a>
+                
+                  <a href="/post/2016-03-08-code-sample">Code Sample</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li>
+              <a title="关于我" href="/page/about/">关于我</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="分类" href="/tags">分类</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    
+      <div class="avatar-container">
+        <div class="avatar-img-border">
+          <a title="Code Mark" href="https://hzren.github.io">
+            <img class="avatar-img" src="https://hzren.github.io/img/avatar-icon.png" alt="Code Mark" />
+          </a>
+        </div>
+      </div>
+    
+
+  </div>
+</nav>
+
+
+
+
+    
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+
+  
+  
+  
+
+
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    
+    <div class="intro-header no-img">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="blog-heading">
+              
+                <h1>路由条目</h1>
+              
+              
+                <hr class="small">
+              
+              
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <blockquote>
+<p><code>ip route</code>命令的输出解释。</p>
+</blockquote>
+<h3 id="获取工具">获取工具</h3>
+<p><code>ip</code>命令包含在<code>net-tools</code>包中，可以通过安装<code>net-tools</code>包获得该命令。</p>
+<h3 id="常见用法">常见用法</h3>
+<p>执行<code>man ip route</code></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">IP-ROUTE(8)                                             Linux                                             IP-ROUTE(8)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME
+</span></span><span class="line"><span class="cl">       ip-route - routing table management
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">SYNOPSIS
+</span></span><span class="line"><span class="cl">       ip [ ip-OPTIONS ] route  { COMMAND | help }
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">       ip route { list | flush } SELECTOR
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">       ip route save SELECTOR
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">       ip route restore
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">       ip route get ADDRESS [ from ADDRESS iif STRING  ] [ oif STRING ] [ tos TOS ]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">       ip route { add | del | change | append | replace } ROUTE
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">       SELECTOR := [ root PREFIX ] [ match PREFIX ] [ exact PREFIX ] [ table TABLE_ID ] [ proto RTPROTO ] [ type TYPE
+</span></span><span class="line"><span class="cl">               ] [ scope SCOPE ]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">       ROUTE := NODE_SPEC [ INFO_SPEC ]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">       NODE_SPEC := [ TYPE ] PREFIX [ tos TOS ] [ table TABLE_ID ] [ proto RTPROTO ] [ scope SCOPE ] [ metric METRIC
+</span></span><span class="line"><span class="cl">               ]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">       INFO_SPEC := NH OPTIONS FLAGS [ nexthop NH ] ...
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">       NH := [ via ADDRESS ] [ dev STRING ] [ weight NUMBER ] NHFLAGS
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">       OPTIONS := FLAGS [ mtu NUMBER ] [ advmss NUMBER ] [ rtt TIME ] [ rttvar TIME ] [ reordering NUMBER ] [ window
+</span></span><span class="line"><span class="cl">               NUMBER ] [ cwnd NUMBER ] [ ssthresh REALM ] [ realms REALM ] [ rto_min TIME ] [ initcwnd NUMBER ] [
+</span></span><span class="line"><span class="cl">               initrwnd NUMBER ] [ features FEATURES ] [ quickack BOOL ] [ congctl NAME ] [ expires TIME ]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">       TYPE := [ unicast | local | broadcast | multicast | throw | unreachable | prohibit | blackhole | nat ]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">       TABLE_ID := [ local| main | default | all | NUMBER ]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">       SCOPE := [ host | link | global | NUMBER ]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">       NHFLAGS := [ onlink | pervasive ]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">       RTPROTO := [ kernel | boot | static | NUMBER ]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">       FEATURES := [ ecn | ]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">DESCRIPTION
+</span></span></code></pre></div><h3 id="输出说明">输出说明</h3>
+<p>典型的路由条目输出包括了源IP，目的IP，网关IP，scope，dev和type六个要素。路由表的输出是和本地网络配置息息相关的。</p>
+<p>我们先看下机器的网络配置，<code>ifconfig</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">docker0: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500
+</span></span><span class="line"><span class="cl">        inet 172.17.0.1  netmask 255.255.0.0  broadcast 172.17.255.255
+</span></span><span class="line"><span class="cl">        inet6 fe80::42:39ff:feba:18fa  prefixlen 64  scopeid 0x20&lt;link&gt;
+</span></span><span class="line"><span class="cl">        ether 02:42:39:ba:18:fa  txqueuelen 0  (Ethernet)
+</span></span><span class="line"><span class="cl">        RX packets 1296  bytes 98915 (96.5 KiB)
+</span></span><span class="line"><span class="cl">        RX errors 0  dropped 0  overruns 0  frame 0
+</span></span><span class="line"><span class="cl">        TX packets 10015  bytes 12493021 (11.9 MiB)
+</span></span><span class="line"><span class="cl">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">docker_gwbridge: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500
+</span></span><span class="line"><span class="cl">        inet 172.19.0.1  netmask 255.255.0.0  broadcast 172.19.255.255
+</span></span><span class="line"><span class="cl">        inet6 fe80::42:9dff:fe1b:fcd9  prefixlen 64  scopeid 0x20&lt;link&gt;
+</span></span><span class="line"><span class="cl">        ether 02:42:9d:1b:fc:d9  txqueuelen 0  (Ethernet)
+</span></span><span class="line"><span class="cl">        RX packets 1296  bytes 98915 (96.5 KiB)
+</span></span><span class="line"><span class="cl">        RX errors 0  dropped 0  overruns 0  frame 0
+</span></span><span class="line"><span class="cl">        TX packets 10015  bytes 12493021 (11.9 MiB)
+</span></span><span class="line"><span class="cl">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">ens192: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500
+</span></span><span class="line"><span class="cl">        inet 10.0.3.88  netmask 255.255.255.0  broadcast 10.0.3.255
+</span></span><span class="line"><span class="cl">        inet6 fe80::b876:4d07:ed7d:e86b  prefixlen 64  scopeid 0x20&lt;link&gt;
+</span></span><span class="line"><span class="cl">        inet6 fe80::79ca:1267:2268:b41  prefixlen 64  scopeid 0x20&lt;link&gt;
+</span></span><span class="line"><span class="cl">        inet6 fe80::e1af:f2de:94d7:f04  prefixlen 64  scopeid 0x20&lt;link&gt;
+</span></span><span class="line"><span class="cl">        ether 00:50:56:91:36:31  txqueuelen 1000  (Ethernet)
+</span></span><span class="line"><span class="cl">        RX packets 2531278364  bytes 854110593055 (795.4 GiB)
+</span></span><span class="line"><span class="cl">        RX errors 1  dropped 835  overruns 0  frame 0
+</span></span><span class="line"><span class="cl">        TX packets 2140489573  bytes 769284076086 (716.4 GiB)
+</span></span><span class="line"><span class="cl">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">lo: flags=73&lt;UP,LOOPBACK,RUNNING&gt;  mtu 65536
+</span></span><span class="line"><span class="cl">        inet 127.0.0.1  netmask 255.0.0.0
+</span></span><span class="line"><span class="cl">        inet6 ::1  prefixlen 128  scopeid 0x10&lt;host&gt;
+</span></span><span class="line"><span class="cl">        loop  txqueuelen 1000  (Local Loopback)
+</span></span><span class="line"><span class="cl">        RX packets 1778401  bytes 89162800 (85.0 MiB)
+</span></span><span class="line"><span class="cl">        RX errors 0  dropped 0  overruns 0  frame 0
+</span></span><span class="line"><span class="cl">        TX packets 1778401  bytes 89162800 (85.0 MiB)
+</span></span><span class="line"><span class="cl">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+</span></span></code></pre></div><p>这台机器上，一共有一个物理网卡-ens192，docker0是一个虚拟网卡，用来处理容器内的网络请求，docker_gwbridge是docker网关，用来处理本机的上容器之间的通讯。</p>
+<p>注意本机IP是<code>10.0.3.88</code>。</p>
+<p>可以通过<code>ip route show</code>查看本机路由表:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">default via 10.0.3.1 dev ens192 proto static metric 100 
+</span></span><span class="line"><span class="cl">10.0.3.0/24 dev ens192 proto kernel scope link src 10.0.3.88 metric 100 
+</span></span><span class="line"><span class="cl">172.17.0.0/16 dev docker0 proto kernel scope link src 172.17.0.1 
+</span></span><span class="line"><span class="cl">172.19.0.0/16 dev docker_gwbridge proto kernel scope link src 172.19.0.1 
+</span></span></code></pre></div><p>每行代表一条路由条目。每条路由条目里关键字含义是这样的：</p>
+<ol>
+<li><code>default</code>代表默认路由</li>
+<li><code>via</code>代表经过哪个网关转发，后面跟的是网关IP地址</li>
+<li><code>dev</code> 代表经过ens192这个网络接口进行发送</li>
+<li><code>proto</code>代表这条路由条目是由谁添加的，一般有<code>proto kernel</code>和<code>proto dhcp</code>两种</li>
+<li><code>scope</code>是一个更小程度的约束，指明了该路由在什么场景下才有效。也是用于约束目的地址的。</li>
+<li><code>src</code>当选择该路由条目时，发送的数据包会以该IP作为源IP。如果进程没有bind一个源地址，将会使用这里src域里面的源地址作为数据包的源地址进行发送。但是如果进程提前bind了，命中了这个条目，就仍然会使用进程bind的源地址作为数据包的源地址。这里的src只是一个建议的作用。</li>
+</ol>
+<p>我们针对每条路由条目进行下解释。</p>
+<blockquote>
+<p><code>default via 10.0.3.1 dev ens192 proto static metric 100 </code></p>
+</blockquote>
+<p>默认路由规则，默认清空下，数据包经网关<code>10.0.3.1</code>进行转发，经<code>ens192</code>网口发送数据包。</p>
+<blockquote>
+<p><code>10.0.3.0/24 dev ens192 proto kernel scope link src 10.0.3.88 metric 100</code></p>
+</blockquote>
+<p>数据包目的地是<code>10.0.3.0/24</code>网段，源端IP是<code>10.0.3.88</code>(本机)的数据包经<code>ens192</code>网口发送</p>
+<blockquote>
+<p><code>172.17.0.0/16 dev docker0 proto kernel scope link src 172.17.0.1 </code></p>
+</blockquote>
+<p>数据包目的地在<code>172.17.0.0/16</code>，由<code>docker0</code>网口发送，数据包源IP设置为<code>172.17.0.1</code></p>
+<blockquote>
+<p>172.19.0.0/16 dev docker_gwbridge proto kernel scope link src 172.19.0.1</p>
+</blockquote>
+<p>释义同上</p>
+<p><strong>需要理解的是，路由表和网络设备是两个实体，路由表在决策的时候，由路由表看到的网络设备是独立于路由表存在的。他们是并行的关系，先要查询了路由表，找到满足路由表的路由条目，才有可能按照条目约定的路由路径去找到对应的设备。路由过程并不是发生在设备逻辑的内部，而是外部。所以实际上给设备添加了一个IP地址的时候，同时生成的路由条目实际上是两个操作被在上层进行了组合。技术上，完全可以分别的添加IP地址和路由条目，上面也说了这个添加的路由条目可以被删除，然后再次添加回去</strong></p>
+
+
+        
+          <div class="blog-tags">
+            
+              <a href="https://hzren.github.io/tags/network/">Network</a>&nbsp;
+            
+          </div>
+        
+
+        
+            <hr/>
+            <section id="social-share">
+              <div class="list-inline footer-links">
+                
+
+<div class="share-box" aria-hidden="true">
+    <ul class="share">
+      
+      <li>
+        <a href="//twitter.com/share?url=https%3a%2f%2fhzren.github.io%2fblog%2f2021-01-13-%25E8%25B7%25AF%25E7%2594%25B1%25E6%259D%25A1%25E7%259B%25AE%2f&amp;text=%e8%b7%af%e7%94%b1%e6%9d%a1%e7%9b%ae&amp;via=username" target="_blank" title="Share on Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fhzren.github.io%2fblog%2f2021-01-13-%25E8%25B7%25AF%25E7%2594%25B1%25E6%259D%25A1%25E7%259B%25AE%2f" target="_blank" title="Share on Facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//reddit.com/submit?url=https%3a%2f%2fhzren.github.io%2fblog%2f2021-01-13-%25E8%25B7%25AF%25E7%2594%25B1%25E6%259D%25A1%25E7%259B%25AE%2f&amp;title=%e8%b7%af%e7%94%b1%e6%9d%a1%e7%9b%ae" target="_blank" title="Share on Reddit">
+          <i class="fab fa-reddit"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fhzren.github.io%2fblog%2f2021-01-13-%25E8%25B7%25AF%25E7%2594%25B1%25E6%259D%25A1%25E7%259B%25AE%2f&amp;title=%e8%b7%af%e7%94%b1%e6%9d%a1%e7%9b%ae" target="_blank" title="Share on LinkedIn">
+          <i class="fab fa-linkedin"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fhzren.github.io%2fblog%2f2021-01-13-%25E8%25B7%25AF%25E7%2594%25B1%25E6%259D%25A1%25E7%259B%25AE%2f&amp;title=%e8%b7%af%e7%94%b1%e6%9d%a1%e7%9b%ae" target="_blank" title="Share on StumbleUpon">
+          <i class="fab fa-stumbleupon"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fhzren.github.io%2fblog%2f2021-01-13-%25E8%25B7%25AF%25E7%2594%25B1%25E6%259D%25A1%25E7%259B%25AE%2f&amp;description=%e8%b7%af%e7%94%b1%e6%9d%a1%e7%9b%ae" target="_blank" title="Share on Pinterest">
+          <i class="fab fa-pinterest"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+  
+
+              </div>
+            </section>
+        
+
+        
+          
+            
+          
+
+          
+                  <h4 class="see-also">也可以看看</h4>
+                  <ul>
+                
+                
+                    <li><a href="/blog/2021-01-19-linux%E7%BD%91%E7%BB%9C/">Linux网络</a></li>
+                
+                    <li><a href="/blog/2021-01-12-%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C/">容器网络</a></li>
+                
+                    <li><a href="/blog/2021-01-06-%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E5%88%B0%E5%85%AC%E7%BD%91_%E5%85%AC%E7%BD%91%E5%AF%BC%E5%86%85%E7%BD%91%E7%9A%84%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E8%BF%87%E7%A8%8B/">一次内网到公网_公网导内网的数据链路过程</a></li>
+                
+                    <li><a href="/blog/2020-08-19-tcp-udp-%E6%80%BB%E7%BB%93/">TCP / UDP 总结</a></li>
+                
+                    <li><a href="/blog/2020-08-18-icmp-ping-traceroute/">ICMP Ping traceroute</a></li>
+                
+              </ul>
+
+          
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="https://hzren.github.io/blog/2021-01-12-%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C/" data-toggle="tooltip" data-placement="top" title="容器网络">&larr; 前一篇</a>
+            </li>
+          
+          
+            <li class="next">
+              <a href="https://hzren.github.io/blog/2021-01-14-%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2/" data-toggle="tooltip" data-placement="top" title="上下文切换">后一篇 &rarr;</a>
+            </li>
+          
+        </ul>
+      
+
+
+      
+        
+        
+      
+
+    </div>
+  </div>
+</div>
+
+      
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+              <li>
+		
+		  <a href="mailto:hzren@outlook.com" title="Email me">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.facebook.com/username" title="Facebook">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-facebook fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://github.com/username" title="GitHub">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://gitlab.com/username" title="GitLab">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-gitlab fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://bitbucket.org/username" title="Bitbucket">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-bitbucket fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://twitter.com/username" title="Twitter">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://username.slack.com/" title="Slack">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-slack fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://reddit.com/u/username" title="Reddit">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-reddit-alien fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://linkedin.com/in/username" title="LinkedIn">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.xing.com/profile/username" title="Xing">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-xing fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://stackoverflow.com/users/XXXXXXX/username" title="StackOverflow">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-stack-overflow fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.snapchat.com/add/username" title="Snapchat">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-snapchat-ghost fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.instagram.com/username" title="Instagram">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-instagram fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.youtube.com/user/username" title="Youtube">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-youtube fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://soundcloud.com/username" title="SoundCloud">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-soundcloud fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://open.spotify.com/user/username" title="Spotify">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-spotify fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://username.bandcamp.com/" title="Bandcamp">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-bandcamp fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://itch.io/profile/username" title="Itch.io">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fas fa-gamepad fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://vk.com/username" title="VK">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-vk fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://paypal.me/username" title="PayPal">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-paypal fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://telegram.me/username" title="Telegram">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-telegram fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://500px.com/username" title="500px">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-500px fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://codepen.io/username" title="CodePen">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-codepen fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.kaggle.com/username" title="kaggle">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-kaggle fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a rel="me"href="https://url" title="Mastodon">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-mastodon fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://weibo.com/username" title="Weibo">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-weibo fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://discord.gg/invite%20code%20%28https://discord.gg/XXXXXXX%29" title="Discord">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-discord fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.strava.com/athletes/userid" title="Strava">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-strava fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+          
+          <li>
+            <a href="" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              <a href="https://hyllo.gitee.io/">renhongzhen</a>
+            
+          
+
+          &nbsp;&bull;&nbsp;&copy;
+          
+            2022
+          
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://hzren.github.io">Code Mark</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          由 <a href="https://gohugo.io">Hugo v0.109.0</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="https://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer><script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script src="https://hzren.github.io/js/main.js"></script>
+<script src="https://hzren.github.io/js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script>
+<script> $(document).ready(function() {$("pre.chroma").css("padding","0");}); </script><script> renderMathInElement(document.body); </script><script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://hzren.github.io/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+
+
+
+    
+  </body>
+</html>
+

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>NoSQL on Code Mark</title>
+    <link>https://hzren.github.io/tags/nosql/</link>
+    <description>Recent content in NoSQL on Code Mark</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <managingEditor>hzren@outlook.com (renhongzhen)</managingEditor>
+    <webMaster>hzren@outlook.com (renhongzhen)</webMaster>
+    <lastBuildDate>Mon, 14 Sep 2020 16:39:56 +0800</lastBuildDate><atom:link href="https://hzren.github.io/tags/nosql/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Redis备份</title>
+      <link>https://hzren.github.io/blog/2020-09-14-redis%E5%A4%87%E4%BB%BD/</link>
+      <pubDate>Mon, 14 Sep 2020 16:39:56 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2020-09-14-redis%E5%A4%87%E4%BB%BD/</guid>
+      <description>| 导语 本文详细分析redis持久化的俩种模式的详细流程
+一. 概述redis持久化的俩种模式 随着redis越来越流行，使用者不在仅仅满足其只是一个内存数据库，同时也期望其能将内存数据落磁盘，这样重启服务就不会导致缓存数据丢失了
+redis持久化有俩种模式模式，分别如下:
+rdb(默认) aof 二. rdb持久化模式 1.rdb持久化核心思路 获取当前内存快照并将快照数据保存到磁盘实现当前数据全量备份
+2.rdb持久化难点 (1)如何获取当前内存数据快照 redis利用linux fork子进程后( cow机制:https://juejin.im/post/5bd96bcaf265da396b72f855 )子进程拥有父进程的内存快照来获取内存快照
+(2)保存数据落盘时io操作阻塞其他请求 redis rdb持久化落盘操作只在独立的子进程中进行不会影响到主进程中的其他请求
+3.rdb持久化触发条件 (1)rdb持久化为redis开启的默认持久化方式，可通过配置文件灵活配置，默认如下
+save 900 1 //15分钟内有一条数据写入时触发rdb持久化 save 300 10 //5分钟内有10条数据写入时触发rdb持久化 save 60 10000 //1分钟内有10000条数据写入时触发rdb持久化 (2)除了默认触发之外，我们也可以通过redis客户端发送命令主动触发rdb持久化，具体命令如下：
+&amp;gt;save //主进程执行rdb持久化操作 &amp;gt;bgsave //生成后台进程执行rdb持久化(默认方式) 4.rdb持久化数据安全性 疑问: rdb持久化模式下，当机器宕机，会丢失多少数据？
+答: 从最近一次rdb保存到宕机时的数据都会丢失
+5.rdb持久化核心源码(bgsave为例) int rdbSaveBackground(char *filename, rdbSaveInfo *rsi) { pid_t childpid; long long start; //如果已经存在aof重写进程或rdb持久化进程则返回错误 if (server.aof_child_pid != -1 || server.rdb_child_pid != -1) return C_ERR; server.dirty_before_bgsave = server.</description>
+    </item>
+    
+  </channel>
+</rss>

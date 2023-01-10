@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="zh-cn" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+ 
+
+
+      <title>Redis备份 - </title>
+
+  <meta name="description" content="| 导语 本文详细分析redis持久化的俩种模式的详细流程
+一. 概述redis持久化的俩种模式 随着redis越来越流行，使用者不在仅仅满足其只是一个内存数据库，同时也期望其能将内存数据落磁盘，这样重启服务就不会导致缓存数据丢失了
+redis持久化有俩种模式模式，分别如下:
+rdb(默认) aof 二. rdb持久化模式 1.rdb持久化核心思路 获取当前内存快照并将快照数据保存到磁盘实现当前数据全量备份
+2.rdb持久化难点 (1)如何获取当前内存数据快照 redis利用linux fork子进程后( cow机制:https://juejin.im/post/5bd96bcaf265da396b72f855 )子进程拥有父进程的内存快照来获取内存快照
+(2)保存数据落盘时io操作阻塞其他请求 redis rdb持久化落盘操作只在独立的子进程中进行不会影响到主进程中的其他请求
+3.rdb持久化触发条件 (1)rdb持久化为redis开启的默认持久化方式，可通过配置文件灵活配置，默认如下
+save 900 1 //15分钟内有一条数据写入时触发rdb持久化 save 300 10 //5分钟内有10条数据写入时触发rdb持久化 save 60 10000 //1分钟内有10000条数据写入时触发rdb持久化 (2)除了默认触发之外，我们也可以通过redis客户端发送命令主动触发rdb持久化，具体命令如下：
+&gt;save //主进程执行rdb持久化操作 &gt;bgsave //生成后台进程执行rdb持久化(默认方式) 4.rdb持久化数据安全性 疑问: rdb持久化模式下，当机器宕机，会丢失多少数据？
+答: 从最近一次rdb保存到宕机时的数据都会丢失
+5.rdb持久化核心源码(bgsave为例) int rdbSaveBackground(char *filename, rdbSaveInfo *rsi) { pid_t childpid; long long start; //如果已经存在aof重写进程或rdb持久化进程则返回错误 if (server.aof_child_pid != -1 || server.rdb_child_pid != -1) return C_ERR; server.dirty_before_bgsave = server.">
+  <meta name="author" content="renhongzhen"/><script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "Code Mark",
+    
+    "url": "https:\/\/hzren.github.io"
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "",
+  "url": "https:\/\/hzren.github.io"
+  
+  
+  
+  
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https:\/\/hzren.github.io",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https:\/\/hzren.github.io\/blog\/2020-09-14-redis%E5%A4%87%E4%BB%BD\/",
+          "name": "Redis备份"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : "renhongzhen"
+  },
+  "headline": "Redis备份",
+  "description" : "| 导语 本文详细分析redis持久化的俩种模式的详细流程\n一. 概述redis持久化的俩种模式 随着redis越来越流行，使用者不在仅仅满足其只是一个内存数据库，同时也期望其能将内存数据落磁盘，这样重启服务就不会导致缓存数据丢失了\nredis持久化有俩种模式模式，分别如下:\nrdb(默认) aof 二. rdb持久化模式 1.rdb持久化核心思路 获取当前内存快照并将快照数据保存到磁盘实现当前数据全量备份\n2.rdb持久化难点 (1)如何获取当前内存数据快照 redis利用linux fork子进程后( cow机制:https:\/\/juejin.im\/post\/5bd96bcaf265da396b72f855 )子进程拥有父进程的内存快照来获取内存快照\n(2)保存数据落盘时io操作阻塞其他请求 redis rdb持久化落盘操作只在独立的子进程中进行不会影响到主进程中的其他请求\n3.rdb持久化触发条件 (1)rdb持久化为redis开启的默认持久化方式，可通过配置文件灵活配置，默认如下\nsave 900 1 \/\/15分钟内有一条数据写入时触发rdb持久化 save 300 10 \/\/5分钟内有10条数据写入时触发rdb持久化 save 60 10000 \/\/1分钟内有10000条数据写入时触发rdb持久化 (2)除了默认触发之外，我们也可以通过redis客户端发送命令主动触发rdb持久化，具体命令如下：\n\u0026gt;save \/\/主进程执行rdb持久化操作 \u0026gt;bgsave \/\/生成后台进程执行rdb持久化(默认方式) 4.rdb持久化数据安全性 疑问: rdb持久化模式下，当机器宕机，会丢失多少数据？\n答: 从最近一次rdb保存到宕机时的数据都会丢失\n5.rdb持久化核心源码(bgsave为例) int rdbSaveBackground(char *filename, rdbSaveInfo *rsi) { pid_t childpid; long long start; \/\/如果已经存在aof重写进程或rdb持久化进程则返回错误 if (server.aof_child_pid != -1 || server.rdb_child_pid != -1) return C_ERR; server.dirty_before_bgsave = server.",
+  "inLanguage" : "zh-cn",
+  "wordCount":  209 ,
+  "datePublished" : "2020-09-14T16:39:56",
+  "dateModified" : "2020-09-14T16:39:56",
+  "image" : "https:\/\/hzren.github.io\/img\/avatar-icon.png",
+  "keywords" : [ "Redis, NoSQL" ],
+  "mainEntityOfPage" : "https:\/\/hzren.github.io\/blog\/2020-09-14-redis%E5%A4%87%E4%BB%BD\/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https:\/\/hzren.github.io",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https:\/\/hzren.github.io\/img\/avatar-icon.png",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
+
+<meta property="og:title" content="Redis备份" />
+<meta property="og:description" content="| 导语 本文详细分析redis持久化的俩种模式的详细流程
+一. 概述redis持久化的俩种模式 随着redis越来越流行，使用者不在仅仅满足其只是一个内存数据库，同时也期望其能将内存数据落磁盘，这样重启服务就不会导致缓存数据丢失了
+redis持久化有俩种模式模式，分别如下:
+rdb(默认) aof 二. rdb持久化模式 1.rdb持久化核心思路 获取当前内存快照并将快照数据保存到磁盘实现当前数据全量备份
+2.rdb持久化难点 (1)如何获取当前内存数据快照 redis利用linux fork子进程后( cow机制:https://juejin.im/post/5bd96bcaf265da396b72f855 )子进程拥有父进程的内存快照来获取内存快照
+(2)保存数据落盘时io操作阻塞其他请求 redis rdb持久化落盘操作只在独立的子进程中进行不会影响到主进程中的其他请求
+3.rdb持久化触发条件 (1)rdb持久化为redis开启的默认持久化方式，可通过配置文件灵活配置，默认如下
+save 900 1 //15分钟内有一条数据写入时触发rdb持久化 save 300 10 //5分钟内有10条数据写入时触发rdb持久化 save 60 10000 //1分钟内有10000条数据写入时触发rdb持久化 (2)除了默认触发之外，我们也可以通过redis客户端发送命令主动触发rdb持久化，具体命令如下：
+&gt;save //主进程执行rdb持久化操作 &gt;bgsave //生成后台进程执行rdb持久化(默认方式) 4.rdb持久化数据安全性 疑问: rdb持久化模式下，当机器宕机，会丢失多少数据？
+答: 从最近一次rdb保存到宕机时的数据都会丢失
+5.rdb持久化核心源码(bgsave为例) int rdbSaveBackground(char *filename, rdbSaveInfo *rsi) { pid_t childpid; long long start; //如果已经存在aof重写进程或rdb持久化进程则返回错误 if (server.aof_child_pid != -1 || server.rdb_child_pid != -1) return C_ERR; server.dirty_before_bgsave = server.">
+<meta property="og:image" content="https://hzren.github.io/img/avatar-icon.png" />
+<meta property="og:url" content="https://hzren.github.io/blog/2020-09-14-redis%E5%A4%87%E4%BB%BD/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Code Mark" />
+
+  <meta name="twitter:title" content="Redis备份" />
+  <meta name="twitter:description" content="| 导语 本文详细分析redis持久化的俩种模式的详细流程
+一. 概述redis持久化的俩种模式 随着redis越来越流行，使用者不在仅仅满足其只是一个内存数据库，同时也期望其能将内存数据落磁盘，这样重启服务就不会导致缓存数据丢失了
+redis持久化有俩种模式模式，分别如下:
+rdb(默认) aof 二. rdb持久化模式 1.rdb持久化核心思路 获取当前内存快照并将快照数据保存到磁盘实现当前数 …">
+  <meta name="twitter:image" content="https://hzren.github.io/img/avatar-icon.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@username" />
+  <meta name="twitter:creator" content="@username" />
+  <link href='https://hzren.github.io/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <meta name="generator" content="Hugo 0.109.0">
+  <link rel="alternate" href="https://hzren.github.io/index.xml" type="application/rss+xml" title="Code Mark"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://hzren.github.io/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="https://hzren.github.io/css/highlight.min.css" /><link rel="stylesheet" href="https://hzren.github.io/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">切换导航</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://hzren.github.io">Code Mark</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="文章" href="/">文章</a>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent">代码</a>
+              <div class="navlinks-children">
+                
+                  <a href="/post/2017-03-07-bigimg-sample">Big Image Sample</a>
+                
+                  <a href="/post/2017-03-05-math-sample">Math Sample</a>
+                
+                  <a href="/post/2016-03-08-code-sample">Code Sample</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li>
+              <a title="关于我" href="/page/about/">关于我</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="分类" href="/tags">分类</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    
+      <div class="avatar-container">
+        <div class="avatar-img-border">
+          <a title="Code Mark" href="https://hzren.github.io">
+            <img class="avatar-img" src="https://hzren.github.io/img/avatar-icon.png" alt="Code Mark" />
+          </a>
+        </div>
+      </div>
+    
+
+  </div>
+</nav>
+
+
+
+
+    
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+
+  
+  
+  
+
+
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    
+    <div class="intro-header no-img">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="blog-heading">
+              
+                <h1>Redis备份</h1>
+              
+              
+                <hr class="small">
+              
+              
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <p>| 导语 本文详细分析redis持久化的俩种模式的详细流程</p>
+<h2 id="一-概述redis持久化的俩种模式">一. 概述redis持久化的俩种模式</h2>
+<p>随着redis越来越流行，使用者不在仅仅满足其只是一个内存数据库，同时也期望其能将内存数据落磁盘，这样重启服务就不会导致缓存数据丢失了</p>
+<p>redis持久化有俩种模式模式，分别如下:</p>
+<ol>
+<li>rdb(默认)</li>
+<li>aof</li>
+</ol>
+<h2 id="二-rdb持久化模式">二. rdb持久化模式</h2>
+<h3 id="1rdb持久化核心思路">1.rdb持久化核心思路</h3>
+<p>获取当前内存快照并将快照数据保存到磁盘实现当前数据全量备份</p>
+<h3 id="2rdb持久化难点">2.rdb持久化难点</h3>
+<h4 id="1如何获取当前内存数据快照">(1)如何获取当前内存数据快照</h4>
+<p>redis利用linux fork子进程后( cow机制:https://juejin.im/post/5bd96bcaf265da396b72f855 )子进程拥有父进程的内存快照来获取内存快照</p>
+<h4 id="2保存数据落盘时io操作阻塞其他请求">(2)保存数据落盘时io操作阻塞其他请求</h4>
+<p>redis rdb持久化落盘操作只在独立的子进程中进行不会影响到主进程中的其他请求</p>
+<h3 id="3rdb持久化触发条件">3.rdb持久化触发条件</h3>
+<p>(1)rdb持久化为redis开启的默认持久化方式，可通过配置文件灵活配置，默认如下</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">save 900 1          //15分钟内有一条数据写入时触发rdb持久化
+</span></span><span class="line"><span class="cl">save 300 10        //5分钟内有10条数据写入时触发rdb持久化
+</span></span><span class="line"><span class="cl">save 60 10000     //1分钟内有10000条数据写入时触发rdb持久化
+</span></span></code></pre></div><p>(2)除了默认触发之外，我们也可以通过redis客户端发送命令主动触发rdb持久化，具体命令如下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&gt;save          //主进程执行rdb持久化操作
+</span></span><span class="line"><span class="cl">&gt;bgsave      //生成后台进程执行rdb持久化(默认方式)
+</span></span></code></pre></div><h3 id="4rdb持久化数据安全性">4.rdb持久化数据安全性</h3>
+<p>疑问: rdb持久化模式下，当机器宕机，会丢失多少数据？</p>
+<p>答: 从最近一次rdb保存到宕机时的数据都会丢失</p>
+<h3 id="5rdb持久化核心源码bgsave为例">5.rdb持久化核心源码(bgsave为例)</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">int rdbSaveBackground(char *filename, rdbSaveInfo *rsi) {
+</span></span><span class="line"><span class="cl">    pid_t childpid;
+</span></span><span class="line"><span class="cl">    long long start;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    //如果已经存在aof重写进程或rdb持久化进程则返回错误
+</span></span><span class="line"><span class="cl">    if (server.aof_child_pid != -1 || server.rdb_child_pid != -1) return C_ERR;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    server.dirty_before_bgsave = server.dirty;
+</span></span><span class="line"><span class="cl">    server.lastbgsave_try = time(NULL);
+</span></span><span class="line"><span class="cl">    //打开与子进程的进程间通信管道(用于子进程完成持久化后给父进程发送消息)
+</span></span><span class="line"><span class="cl">    openChildInfoPipe();
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    start = ustime();
+</span></span><span class="line"><span class="cl">    if ((childpid = fork()) == 0) {
+</span></span><span class="line"><span class="cl">        int retval;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        //子进程
+</span></span><span class="line"><span class="cl">        //关闭监听的连接
+</span></span><span class="line"><span class="cl">        closeListeningSockets(0);   
+</span></span><span class="line"><span class="cl">        //设置子进程名字
+</span></span><span class="line"><span class="cl">        redisSetProcTitle(&#34;redis-rdb-bgsave&#34;);  
+</span></span><span class="line"><span class="cl">        //保存全量内存信息
+</span></span><span class="line"><span class="cl">        retval = rdbSave(filename,rsi);        
+</span></span><span class="line"><span class="cl">        if (retval == C_OK) {
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            //发送cow内存大小信息给父进程
+</span></span><span class="line"><span class="cl">            sendChildInfo(CHILD_INFO_TYPE_RDB);   
+</span></span><span class="line"><span class="cl">        }
+</span></span><span class="line"><span class="cl">        //退出rdb持久化对应进程
+</span></span><span class="line"><span class="cl">        exitFromChild((retval == C_OK) ? 0 : 1);
+</span></span><span class="line"><span class="cl">    } else {
+</span></span><span class="line"><span class="cl">        //父进程
+</span></span><span class="line"><span class="cl">        //统计fork进程花费的时间，当redis占用过多内存空间fork进程可能会很慢
+</span></span><span class="line"><span class="cl">        server.stat_fork_time = ustime()-start;
+</span></span><span class="line"><span class="cl">        server.stat_fork_rate = (double) zmalloc_used_memory() * 1000000 / server.stat_fork_time / (1024*1024*1024); /* GB per second. */
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        server.rdb_save_time_start = time(NULL);
+</span></span><span class="line"><span class="cl">        server.rdb_child_pid = childpid;
+</span></span><span class="line"><span class="cl">        server.rdb_child_type = RDB_CHILD_TYPE_DISK;
+</span></span><span class="line"><span class="cl">        //重新设置dict是否可以执行resize操作标志
+</span></span><span class="line"><span class="cl">        updateDictResizePolicy();
+</span></span><span class="line"><span class="cl">        return C_OK;
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    return C_OK;
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></div><h2 id="三-aof持久化模式">三. aof持久化模式</h2>
+<h3 id="1aof持久化核心思路">1.aof持久化核心思路</h3>
+<p>将服务器收到的更新命令直接写入文件尾部，恢复时直接重放文件中命令即可</p>
+<h3 id="2aof持久化难点">2.aof持久化难点</h3>
+<p>(1)aof文件由于赘余数据，会变得很庞大(占用磁盘空间、重启load数据变慢)
+redis会定期重写aof文件(下文中会详细介绍)，抛弃赘余</p>
+<p>(2)保存数据到aof文件落盘时io操作阻塞其他请求
+redis aof文件写入在主线程，比较耗时的刷盘操作(fsync)则由专门的异步线程来处理，保证主线程不被io阻塞</p>
+<h3 id="3aof持久化文件格式">3.aof持久化文件格式</h3>
+<p>aof持久化直接将redis命令协议写入</p>
+<h3 id="4aof持久化触发条件">4.aof持久化触发条件</h3>
+<p>redis默认不开启aof持久化方式，可通过修改如下配置开启</p>
+<p>appendonly yes #yes开启no关闭
+aof持久化刷盘频率控制</p>
+<h1 id="appendfsync-always--每次命令都刷盘">appendfsync always  //每次命令都刷盘</h1>
+<p>appendfsync everysec //每秒刷盘一次(默认)</p>
+<h1 id="appendfsync-no--从不刷盘由内核去刷盘">appendfsync no  //从不刷盘，由内核去刷盘</h1>
+<h3 id="5aof持久化对redis性能影响">5.aof持久化对redis性能影响</h3>
+<p>疑问: aof持久化涉及磁盘io操作(write数据到aof文件)，那么该操作是否会严重影响redis吞吐量?</p>
+<p>答: 在aof文件追加过程中，write调用是在redis主线程内，而fsync(将文件数据从内核缓存区buffer中真正写入磁盘)控制刷盘却是在一个独立的后台线程中来完成，所以并不需要担心开启aof会十分影响redis性能</p>
+<h3 id="6aof文件重写">6.aof文件重写</h3>
+<p>(1)aof重写解决的问题</p>
+<p>aof文件重写是为了解决aof命令添加持久化模式下，会有大量赘余命令(比如设置一个k-v，之后又删除)导致aof文件过大。不仅浪费系统资源(主要是磁盘)，而且会导致load数据到内存重放变慢</p>
+<p>(2)aof重写核心原理</p>
+<p>aof重写过程会有大量io操作，所以redis会像写rdb文件一样为其分配一个独立的进程去执行重写。重写的过程中redis会将新完成的命令写入一段临时buf。当aof重写完成，将buf中的命令数据批量写入aof文件中</p>
+<p>我们知道aof重写是去掉赘余命令(例如先增加后删除)，如果通过原文件内容去逐一进行逻辑计算找出赘余必然会耗费大量计算和存储资源。redis是通过直接将当前内存k-v数据拼装成命令协议格式并写入aof文件，如此便十分优雅的去掉原aof文件中的赘余命令</p>
+<p>(3)aof重写客户端触发命令:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&gt;bgrewriteaofCommand
+</span></span></code></pre></div><h3 id="7aof持久化的安全性">7.aof持久化的安全性</h3>
+<p>疑问: aof持久化模式下，机器宕机，最多丢失多少数据</p>
+<p>答:aof根据appendfsync配置的不同，丢失数据情况分别如下:</p>
+<p>对于always参数，由于刷盘并不是每次更新命令都执行一次，而是一次epollwait触发后只批量执行一次。故其也会丢失数据</p>
+<p>everysec虽然是每s执行一次刷盘，理论上最大丢失1s数据，但是由于在刷盘过程中有个特殊逻辑，当某次刷盘前，判断刷盘线程已在工作(处理之前的刷盘任务)，则本次刷盘延后2s。故该模式下最大丢失其实是2s的数据量</p>
+<p>no啥时候刷盘，完全有内核管理，对应用系统来说存在很大的不确定性，故很难评估其数据安全性</p>
+<h2 id="四-rdb持久化在恢复过程中会比aof快很多么">四. rdb持久化在恢复过程中会比aof快很多么？</h2>
+<p>网上各种资料显示，rdb在恢复过程中会优于aof文件。事实也的确如此，因为aof文件中会存在大量赘余命令，当然会恢复的慢。但是不要忘了，aof文件可是会定期重写(刚重写后同样没赘余)的，如果是刚重写后不久的aof文件，那么其恢复就不会相对rdb慢很多了(理论分析)。所以可以说只要我们重写aof的频次不低，那么aof恢复就不怕他相较rdb有明显的速度差异</p>
+<h2 id="五-总结">五. 总结</h2>
+<p>通过全文对rdb和aof持久化的详细说明，相信你在工程上能根据实际业务场景选择出最合适的持久化方式了，这也是作者写本文的初衷。</p>
+<p>fork完成之后父子进程对数据的修改互不影响。参考man文档</p>
+<p><img src="/static/man-fork.png" alt=""></p>
+<p>原文
+<img src="/static/redis-persitence.png" alt=""></p>
+
+
+        
+          <div class="blog-tags">
+            
+              <a href="https://hzren.github.io/tags/redis/">Redis</a>&nbsp;
+            
+              <a href="https://hzren.github.io/tags/nosql/">NoSQL</a>&nbsp;
+            
+          </div>
+        
+
+        
+            <hr/>
+            <section id="social-share">
+              <div class="list-inline footer-links">
+                
+
+<div class="share-box" aria-hidden="true">
+    <ul class="share">
+      
+      <li>
+        <a href="//twitter.com/share?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-09-14-redis%25E5%25A4%2587%25E4%25BB%25BD%2f&amp;text=Redis%e5%a4%87%e4%bb%bd&amp;via=username" target="_blank" title="Share on Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fhzren.github.io%2fblog%2f2020-09-14-redis%25E5%25A4%2587%25E4%25BB%25BD%2f" target="_blank" title="Share on Facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//reddit.com/submit?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-09-14-redis%25E5%25A4%2587%25E4%25BB%25BD%2f&amp;title=Redis%e5%a4%87%e4%bb%bd" target="_blank" title="Share on Reddit">
+          <i class="fab fa-reddit"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-09-14-redis%25E5%25A4%2587%25E4%25BB%25BD%2f&amp;title=Redis%e5%a4%87%e4%bb%bd" target="_blank" title="Share on LinkedIn">
+          <i class="fab fa-linkedin"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-09-14-redis%25E5%25A4%2587%25E4%25BB%25BD%2f&amp;title=Redis%e5%a4%87%e4%bb%bd" target="_blank" title="Share on StumbleUpon">
+          <i class="fab fa-stumbleupon"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-09-14-redis%25E5%25A4%2587%25E4%25BB%25BD%2f&amp;description=Redis%e5%a4%87%e4%bb%bd" target="_blank" title="Share on Pinterest">
+          <i class="fab fa-pinterest"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+  
+
+              </div>
+            </section>
+        
+
+        
+          
+            
+          
+
+          
+                  <h4 class="see-also">也可以看看</h4>
+                  <ul>
+                
+                
+                    <li><a href="/blog/2020-08-06-redis%E5%93%A8%E5%85%B5%E6%A8%A1%E5%BC%8F%E6%A6%82%E8%A6%81/">Redis哨兵模式概要</a></li>
+                
+              </ul>
+
+          
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="https://hzren.github.io/blog/2020-08-28-centos-%E5%AE%89%E8%A3%85-hadoop/" data-toggle="tooltip" data-placement="top" title="centos 安装 hadoop">&larr; 前一篇</a>
+            </li>
+          
+          
+            <li class="next">
+              <a href="https://hzren.github.io/blog/2020-09-29-java%E4%BD%BF%E7%94%A8protocol-buffers/" data-toggle="tooltip" data-placement="top" title="Java使用Protocol Buffers">后一篇 &rarr;</a>
+            </li>
+          
+        </ul>
+      
+
+
+      
+        
+        
+      
+
+    </div>
+  </div>
+</div>
+
+      
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+              <li>
+		
+		  <a href="mailto:hzren@outlook.com" title="Email me">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.facebook.com/username" title="Facebook">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-facebook fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://github.com/username" title="GitHub">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://gitlab.com/username" title="GitLab">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-gitlab fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://bitbucket.org/username" title="Bitbucket">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-bitbucket fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://twitter.com/username" title="Twitter">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://username.slack.com/" title="Slack">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-slack fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://reddit.com/u/username" title="Reddit">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-reddit-alien fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://linkedin.com/in/username" title="LinkedIn">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.xing.com/profile/username" title="Xing">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-xing fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://stackoverflow.com/users/XXXXXXX/username" title="StackOverflow">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-stack-overflow fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.snapchat.com/add/username" title="Snapchat">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-snapchat-ghost fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.instagram.com/username" title="Instagram">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-instagram fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.youtube.com/user/username" title="Youtube">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-youtube fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://soundcloud.com/username" title="SoundCloud">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-soundcloud fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://open.spotify.com/user/username" title="Spotify">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-spotify fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://username.bandcamp.com/" title="Bandcamp">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-bandcamp fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://itch.io/profile/username" title="Itch.io">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fas fa-gamepad fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://vk.com/username" title="VK">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-vk fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://paypal.me/username" title="PayPal">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-paypal fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://telegram.me/username" title="Telegram">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-telegram fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://500px.com/username" title="500px">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-500px fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://codepen.io/username" title="CodePen">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-codepen fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.kaggle.com/username" title="kaggle">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-kaggle fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a rel="me"href="https://url" title="Mastodon">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-mastodon fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://weibo.com/username" title="Weibo">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-weibo fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://discord.gg/invite%20code%20%28https://discord.gg/XXXXXXX%29" title="Discord">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-discord fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.strava.com/athletes/userid" title="Strava">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-strava fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+          
+          <li>
+            <a href="" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              <a href="https://hyllo.gitee.io/">renhongzhen</a>
+            
+          
+
+          &nbsp;&bull;&nbsp;&copy;
+          
+            2022
+          
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://hzren.github.io">Code Mark</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          由 <a href="https://gohugo.io">Hugo v0.109.0</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="https://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer><script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script src="https://hzren.github.io/js/main.js"></script>
+<script src="https://hzren.github.io/js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script>
+<script> $(document).ready(function() {$("pre.chroma").css("padding","0");}); </script><script> renderMathInElement(document.body); </script><script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://hzren.github.io/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+
+
+
+    
+  </body>
+</html>
+

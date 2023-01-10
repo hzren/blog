@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="zh-cn" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+ 
+
+
+      <title>Java语言 - </title>
+
+  <meta name="description" content="引用类型 不同的引用类型，主要体现的是对象不同的可达性（reachable）状态和对垃圾收集的影响
+强引用（&ldquo;Strong&rdquo; Reference），就是我们最常见的普通对象引用，只要还有强引用指向一个对象，就能表明对象还“活着”，垃圾收集器不会碰这种对象。对于一个普通的对象，如果没有其他的引用关系，只要超过了引用的作用域或者显式地将相应（强）引用赋值为null，就是可以被垃圾收集的了，当然具体回收时机还是要看垃圾收集策略。
+软引用（SoftReference），是一种相对强引用弱化一些的引用，可以让对象豁免一些垃圾收集，只有当JVM认为内存不足时，才会去试图回收软引用指向的对象。JVM会确保在抛出OutOfMemoryError之前，清理软引用指向的对象。软引用通常用来实现内存敏感的缓存，如果还有空闲内存，就可以暂时保留缓存，当内存不足时清理掉，这样就保证了使用缓存的同时，不会耗尽内存。
+**弱引用（WeakReference）**并不能使对象豁免垃圾收集，仅仅是提供一种访问在弱引用状态下对象的途径。这就可以用来构建一种没有特定约束的关系，比如，维护一种非强制性的映射关系，如果试图获取时对象还在，就使用它，否则重现实例化。它同样是很多缓存实现的选择。对于幻象引用，有时候也翻译成虚引用，你不能通过它访问对象。
+**幻象引用 (PhantomReference)**仅仅是提供了一种确保对象被fnalize以后，做某些事情的机制，比如，通常用来做所谓的Post-Mortem清理机制，我在专栏上一讲中介绍的Java平台自身Cleaner机制等，也有人利用幻象引用监控对象的创建和销毁。
+如何工作 这是JDK在语言层面提供的一种可以和GC打交道的机制。如果手动创建ReferenceQueue，一定要对ReferenceQueue里对象就行消非，不然OOM了要。
+操过过程：
+创建引用对象时需要指定引用队列(ReferenceQueue)。 JVM在调用finalize()方法后，会把对象的引用放入构造器传入的引用队列(ReferenceQueue) 通过判断该引用对象是否入队列来确定对象是否已被垃圾回收(入队时，可能已回收，也可能没回收，当前该对象已不可达) 详细逻辑参照java.lang.ref.Reference文档。
+生命周期：
+Java定义的不同可达性级别（reachability level），具体如下：
+强可达（Strongly Reachable），就是当一个对象可以有一个或多个线程可以不通过各种引用访问到的情况。比如，我们新创建一个对象，那么创建它的线程对它就是强可达。 软可达（Softly Reachable），就是当我们只能通过软引用才能访问到对象的状态。 弱可达（Weakly Reachable），类似前面提到的，就是无法通过强引用或者软引用访问，只能通过弱引用访问时的状态。这是十分临近fnalize状态的时机，当弱引用被清除的时候，就符合fnalize的条件了。 幻象可达（Phantom Reachable），上面流程图已经很直观了，就是没有强、软、弱引用关联，并且fnalize过了，只有幻象引用指向这个对象的时候。 不可达（unreachable），意味着对象可以被清除了。判断对象可达性，是JVM垃圾收集器决定如何处理对象的一部分考虑。 引用队列（ReferenceQueue）
+JVM会在特定时机将引用enqueue到队列里，我们可以从队列里获取引用（remove方法在这里实际是有获取的意思）进行相关后续逻辑。尤其是幻象引用，get方法只返回null，如果再不指定引用队列，基本就没有意义了。看看下面的示例代码。利用引用队列，我们可以在对象处于相应状态时（对于幻象引用，就是前面说的被fnalize了，处于幻象可达状态），执行后期处理逻辑。
+字符串 在Java9之前的历史版本中，它是使用char数组来存数据的，这样非常直接。但是Java中的char是两个bytes大小，拉丁语系语言的字符，根本就不需要太宽的char，这样无区别的实现就造成了一定的浪费。
+在Java 9中，引入了Compact Strings的设计，对字符串进行了大刀阔斧的改进。将数据存储方式从char数组，改变为一个byte数组加上一个标识编码的所谓coder，并且将相关字符串操作类都进行了修改。另外，所有相关的Intrinsic之类也都进行了重写，以保证没有任何性能损失。虽然底层实现发生了这么大的改变，但是Java字符串的行为并没有任何大的变化，所以这个特性对于绝大部分应用来说是透明的，绝大部分情况不需要修改已有代码。当然，在极端情况下，字符串也出现了一些能力退化，比如最大字符串的大小。
+AOP JDK 动态代理，基于接口
+cglib 可以基于类，在代理方法执行前后处理一些事情。Spring的cglib方式的事务注解代理，先根据目标类生成代理类并实例化代理对象，把目标对象作为一个属性设置到代理对象上。在需要注入目标类的地方注入代理生成的子类对象。在代码执行过程中：
+调用到代理类中重写的代理方法 代理方法内调用到目标类目标方法 目标方法如果调用了自身方法，这时候会出问题，代理类是通过在目标对象上调用目标方法来执行的，并不是通过super.方法名这种形式，所以是调用不到代理方法的。
+基本类型 int / integer Java 5中新增了静态工厂方法valueOf，在调用它的时候会利用一个缓存机制，带来了明显的性能改进。按照Javadoc，这个值默认缓存是-128到127之间。
+Boolean 在 Java 虚拟机规范中，boolean 类型则被映射成 int 类型。具体来说，“true”被映射为整数 1，而“false”被映射为整数 0。这个编码规则约束了 Java 字节码的具体实现。
+原子更新 AtomicLong 在支持CAS的机器上，通过CAS指令更新，在不支持的机器上，加锁更新。
+原子更新通过封装类实现：
+AtomicLongFieldUpdater中代码：
+/** * Creates and returns an updater for objects with the given field.">
+  <meta name="author" content="renhongzhen"/><script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "Code Mark",
+    
+    "url": "https:\/\/hzren.github.io"
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "",
+  "url": "https:\/\/hzren.github.io"
+  
+  
+  
+  
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https:\/\/hzren.github.io",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https:\/\/hzren.github.io\/blog\/2021-01-22-java%E8%AF%AD%E8%A8%80\/",
+          "name": "Java语言"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : "renhongzhen"
+  },
+  "headline": "Java语言",
+  "description" : "引用类型 不同的引用类型，主要体现的是对象不同的可达性（reachable）状态和对垃圾收集的影响\n强引用（\u0026ldquo;Strong\u0026rdquo; Reference），就是我们最常见的普通对象引用，只要还有强引用指向一个对象，就能表明对象还“活着”，垃圾收集器不会碰这种对象。对于一个普通的对象，如果没有其他的引用关系，只要超过了引用的作用域或者显式地将相应（强）引用赋值为null，就是可以被垃圾收集的了，当然具体回收时机还是要看垃圾收集策略。\n软引用（SoftReference），是一种相对强引用弱化一些的引用，可以让对象豁免一些垃圾收集，只有当JVM认为内存不足时，才会去试图回收软引用指向的对象。JVM会确保在抛出OutOfMemoryError之前，清理软引用指向的对象。软引用通常用来实现内存敏感的缓存，如果还有空闲内存，就可以暂时保留缓存，当内存不足时清理掉，这样就保证了使用缓存的同时，不会耗尽内存。\n**弱引用（WeakReference）**并不能使对象豁免垃圾收集，仅仅是提供一种访问在弱引用状态下对象的途径。这就可以用来构建一种没有特定约束的关系，比如，维护一种非强制性的映射关系，如果试图获取时对象还在，就使用它，否则重现实例化。它同样是很多缓存实现的选择。对于幻象引用，有时候也翻译成虚引用，你不能通过它访问对象。\n**幻象引用 (PhantomReference)**仅仅是提供了一种确保对象被fnalize以后，做某些事情的机制，比如，通常用来做所谓的Post-Mortem清理机制，我在专栏上一讲中介绍的Java平台自身Cleaner机制等，也有人利用幻象引用监控对象的创建和销毁。\n如何工作 这是JDK在语言层面提供的一种可以和GC打交道的机制。如果手动创建ReferenceQueue，一定要对ReferenceQueue里对象就行消非，不然OOM了要。\n操过过程：\n创建引用对象时需要指定引用队列(ReferenceQueue)。 JVM在调用finalize()方法后，会把对象的引用放入构造器传入的引用队列(ReferenceQueue) 通过判断该引用对象是否入队列来确定对象是否已被垃圾回收(入队时，可能已回收，也可能没回收，当前该对象已不可达) 详细逻辑参照java.lang.ref.Reference文档。\n生命周期：\nJava定义的不同可达性级别（reachability level），具体如下：\n强可达（Strongly Reachable），就是当一个对象可以有一个或多个线程可以不通过各种引用访问到的情况。比如，我们新创建一个对象，那么创建它的线程对它就是强可达。 软可达（Softly Reachable），就是当我们只能通过软引用才能访问到对象的状态。 弱可达（Weakly Reachable），类似前面提到的，就是无法通过强引用或者软引用访问，只能通过弱引用访问时的状态。这是十分临近fnalize状态的时机，当弱引用被清除的时候，就符合fnalize的条件了。 幻象可达（Phantom Reachable），上面流程图已经很直观了，就是没有强、软、弱引用关联，并且fnalize过了，只有幻象引用指向这个对象的时候。 不可达（unreachable），意味着对象可以被清除了。判断对象可达性，是JVM垃圾收集器决定如何处理对象的一部分考虑。 引用队列（ReferenceQueue）\nJVM会在特定时机将引用enqueue到队列里，我们可以从队列里获取引用（remove方法在这里实际是有获取的意思）进行相关后续逻辑。尤其是幻象引用，get方法只返回null，如果再不指定引用队列，基本就没有意义了。看看下面的示例代码。利用引用队列，我们可以在对象处于相应状态时（对于幻象引用，就是前面说的被fnalize了，处于幻象可达状态），执行后期处理逻辑。\n字符串 在Java9之前的历史版本中，它是使用char数组来存数据的，这样非常直接。但是Java中的char是两个bytes大小，拉丁语系语言的字符，根本就不需要太宽的char，这样无区别的实现就造成了一定的浪费。\n在Java 9中，引入了Compact Strings的设计，对字符串进行了大刀阔斧的改进。将数据存储方式从char数组，改变为一个byte数组加上一个标识编码的所谓coder，并且将相关字符串操作类都进行了修改。另外，所有相关的Intrinsic之类也都进行了重写，以保证没有任何性能损失。虽然底层实现发生了这么大的改变，但是Java字符串的行为并没有任何大的变化，所以这个特性对于绝大部分应用来说是透明的，绝大部分情况不需要修改已有代码。当然，在极端情况下，字符串也出现了一些能力退化，比如最大字符串的大小。\nAOP JDK 动态代理，基于接口\ncglib 可以基于类，在代理方法执行前后处理一些事情。Spring的cglib方式的事务注解代理，先根据目标类生成代理类并实例化代理对象，把目标对象作为一个属性设置到代理对象上。在需要注入目标类的地方注入代理生成的子类对象。在代码执行过程中：\n调用到代理类中重写的代理方法 代理方法内调用到目标类目标方法 目标方法如果调用了自身方法，这时候会出问题，代理类是通过在目标对象上调用目标方法来执行的，并不是通过super.方法名这种形式，所以是调用不到代理方法的。\n基本类型 int \/ integer Java 5中新增了静态工厂方法valueOf，在调用它的时候会利用一个缓存机制，带来了明显的性能改进。按照Javadoc，这个值默认缓存是-128到127之间。\nBoolean 在 Java 虚拟机规范中，boolean 类型则被映射成 int 类型。具体来说，“true”被映射为整数 1，而“false”被映射为整数 0。这个编码规则约束了 Java 字节码的具体实现。\n原子更新 AtomicLong 在支持CAS的机器上，通过CAS指令更新，在不支持的机器上，加锁更新。\n原子更新通过封装类实现：\nAtomicLongFieldUpdater中代码：\n\/** * Creates and returns an updater for objects with the given field.",
+  "inLanguage" : "zh-cn",
+  "wordCount":  722 ,
+  "datePublished" : "2021-01-22T10:55:31",
+  "dateModified" : "2021-01-22T10:55:31",
+  "image" : "https:\/\/hzren.github.io\/img\/avatar-icon.png",
+  "keywords" : [ "Java, JLS" ],
+  "mainEntityOfPage" : "https:\/\/hzren.github.io\/blog\/2021-01-22-java%E8%AF%AD%E8%A8%80\/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https:\/\/hzren.github.io",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https:\/\/hzren.github.io\/img\/avatar-icon.png",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
+
+<meta property="og:title" content="Java语言" />
+<meta property="og:description" content="引用类型 不同的引用类型，主要体现的是对象不同的可达性（reachable）状态和对垃圾收集的影响
+强引用（&ldquo;Strong&rdquo; Reference），就是我们最常见的普通对象引用，只要还有强引用指向一个对象，就能表明对象还“活着”，垃圾收集器不会碰这种对象。对于一个普通的对象，如果没有其他的引用关系，只要超过了引用的作用域或者显式地将相应（强）引用赋值为null，就是可以被垃圾收集的了，当然具体回收时机还是要看垃圾收集策略。
+软引用（SoftReference），是一种相对强引用弱化一些的引用，可以让对象豁免一些垃圾收集，只有当JVM认为内存不足时，才会去试图回收软引用指向的对象。JVM会确保在抛出OutOfMemoryError之前，清理软引用指向的对象。软引用通常用来实现内存敏感的缓存，如果还有空闲内存，就可以暂时保留缓存，当内存不足时清理掉，这样就保证了使用缓存的同时，不会耗尽内存。
+**弱引用（WeakReference）**并不能使对象豁免垃圾收集，仅仅是提供一种访问在弱引用状态下对象的途径。这就可以用来构建一种没有特定约束的关系，比如，维护一种非强制性的映射关系，如果试图获取时对象还在，就使用它，否则重现实例化。它同样是很多缓存实现的选择。对于幻象引用，有时候也翻译成虚引用，你不能通过它访问对象。
+**幻象引用 (PhantomReference)**仅仅是提供了一种确保对象被fnalize以后，做某些事情的机制，比如，通常用来做所谓的Post-Mortem清理机制，我在专栏上一讲中介绍的Java平台自身Cleaner机制等，也有人利用幻象引用监控对象的创建和销毁。
+如何工作 这是JDK在语言层面提供的一种可以和GC打交道的机制。如果手动创建ReferenceQueue，一定要对ReferenceQueue里对象就行消非，不然OOM了要。
+操过过程：
+创建引用对象时需要指定引用队列(ReferenceQueue)。 JVM在调用finalize()方法后，会把对象的引用放入构造器传入的引用队列(ReferenceQueue) 通过判断该引用对象是否入队列来确定对象是否已被垃圾回收(入队时，可能已回收，也可能没回收，当前该对象已不可达) 详细逻辑参照java.lang.ref.Reference文档。
+生命周期：
+Java定义的不同可达性级别（reachability level），具体如下：
+强可达（Strongly Reachable），就是当一个对象可以有一个或多个线程可以不通过各种引用访问到的情况。比如，我们新创建一个对象，那么创建它的线程对它就是强可达。 软可达（Softly Reachable），就是当我们只能通过软引用才能访问到对象的状态。 弱可达（Weakly Reachable），类似前面提到的，就是无法通过强引用或者软引用访问，只能通过弱引用访问时的状态。这是十分临近fnalize状态的时机，当弱引用被清除的时候，就符合fnalize的条件了。 幻象可达（Phantom Reachable），上面流程图已经很直观了，就是没有强、软、弱引用关联，并且fnalize过了，只有幻象引用指向这个对象的时候。 不可达（unreachable），意味着对象可以被清除了。判断对象可达性，是JVM垃圾收集器决定如何处理对象的一部分考虑。 引用队列（ReferenceQueue）
+JVM会在特定时机将引用enqueue到队列里，我们可以从队列里获取引用（remove方法在这里实际是有获取的意思）进行相关后续逻辑。尤其是幻象引用，get方法只返回null，如果再不指定引用队列，基本就没有意义了。看看下面的示例代码。利用引用队列，我们可以在对象处于相应状态时（对于幻象引用，就是前面说的被fnalize了，处于幻象可达状态），执行后期处理逻辑。
+字符串 在Java9之前的历史版本中，它是使用char数组来存数据的，这样非常直接。但是Java中的char是两个bytes大小，拉丁语系语言的字符，根本就不需要太宽的char，这样无区别的实现就造成了一定的浪费。
+在Java 9中，引入了Compact Strings的设计，对字符串进行了大刀阔斧的改进。将数据存储方式从char数组，改变为一个byte数组加上一个标识编码的所谓coder，并且将相关字符串操作类都进行了修改。另外，所有相关的Intrinsic之类也都进行了重写，以保证没有任何性能损失。虽然底层实现发生了这么大的改变，但是Java字符串的行为并没有任何大的变化，所以这个特性对于绝大部分应用来说是透明的，绝大部分情况不需要修改已有代码。当然，在极端情况下，字符串也出现了一些能力退化，比如最大字符串的大小。
+AOP JDK 动态代理，基于接口
+cglib 可以基于类，在代理方法执行前后处理一些事情。Spring的cglib方式的事务注解代理，先根据目标类生成代理类并实例化代理对象，把目标对象作为一个属性设置到代理对象上。在需要注入目标类的地方注入代理生成的子类对象。在代码执行过程中：
+调用到代理类中重写的代理方法 代理方法内调用到目标类目标方法 目标方法如果调用了自身方法，这时候会出问题，代理类是通过在目标对象上调用目标方法来执行的，并不是通过super.方法名这种形式，所以是调用不到代理方法的。
+基本类型 int / integer Java 5中新增了静态工厂方法valueOf，在调用它的时候会利用一个缓存机制，带来了明显的性能改进。按照Javadoc，这个值默认缓存是-128到127之间。
+Boolean 在 Java 虚拟机规范中，boolean 类型则被映射成 int 类型。具体来说，“true”被映射为整数 1，而“false”被映射为整数 0。这个编码规则约束了 Java 字节码的具体实现。
+原子更新 AtomicLong 在支持CAS的机器上，通过CAS指令更新，在不支持的机器上，加锁更新。
+原子更新通过封装类实现：
+AtomicLongFieldUpdater中代码：
+/** * Creates and returns an updater for objects with the given field.">
+<meta property="og:image" content="https://hzren.github.io/img/avatar-icon.png" />
+<meta property="og:url" content="https://hzren.github.io/blog/2021-01-22-java%E8%AF%AD%E8%A8%80/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Code Mark" />
+
+  <meta name="twitter:title" content="Java语言" />
+  <meta name="twitter:description" content="引用类型 不同的引用类型，主要体现的是对象不同的可达性（reachable）状态和对垃圾收集的影响
+强引用（&ldquo;Strong&rdquo; Reference），就是我们最常见的普通对象引用，只要还有强引用指向一个对象，就能表明对象还“活着”，垃圾收集器不会碰这种对象。对于一个普通的对象，如果没有其他的引用关系，只要超过了引用的作用域或者显式地将相应（强）引用赋值为null，就是可以被垃 …">
+  <meta name="twitter:image" content="https://hzren.github.io/img/avatar-icon.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@username" />
+  <meta name="twitter:creator" content="@username" />
+  <link href='https://hzren.github.io/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <meta name="generator" content="Hugo 0.109.0">
+  <link rel="alternate" href="https://hzren.github.io/index.xml" type="application/rss+xml" title="Code Mark"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://hzren.github.io/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="https://hzren.github.io/css/highlight.min.css" /><link rel="stylesheet" href="https://hzren.github.io/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">切换导航</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://hzren.github.io">Code Mark</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="文章" href="/">文章</a>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent">代码</a>
+              <div class="navlinks-children">
+                
+                  <a href="/post/2017-03-07-bigimg-sample">Big Image Sample</a>
+                
+                  <a href="/post/2017-03-05-math-sample">Math Sample</a>
+                
+                  <a href="/post/2016-03-08-code-sample">Code Sample</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li>
+              <a title="关于我" href="/page/about/">关于我</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="分类" href="/tags">分类</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    
+      <div class="avatar-container">
+        <div class="avatar-img-border">
+          <a title="Code Mark" href="https://hzren.github.io">
+            <img class="avatar-img" src="https://hzren.github.io/img/avatar-icon.png" alt="Code Mark" />
+          </a>
+        </div>
+      </div>
+    
+
+  </div>
+</nav>
+
+
+
+
+    
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+
+  
+  
+  
+
+
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    
+    <div class="intro-header no-img">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="blog-heading">
+              
+                <h1>Java语言</h1>
+              
+              
+                <hr class="small">
+              
+              
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <h2 id="引用类型">引用类型</h2>
+<blockquote>
+<p>不同的引用类型，主要体现的是对象不同的可达性（reachable）状态和对垃圾收集的影响</p>
+</blockquote>
+<p><strong>强引用（&ldquo;Strong&rdquo; Reference）</strong>，就是我们最常见的普通对象引用，只要还有强引用指向一个对象，就能表明对象还“活着”，垃圾收集器不会碰这种对象。对于一个普通的对象，如果没有其他的引用关系，只要超过了引用的作用域或者显式地将相应（强）引用赋值为null，就是可以被垃圾收集的了，当然具体回收时机还是要看垃圾收集策略。</p>
+<p><strong>软引用（SoftReference）</strong>，是一种相对强引用弱化一些的引用，可以让对象豁免一些垃圾收集，只有当JVM认为内存不足时，才会去试图回收软引用指向的对象。JVM会确保在抛出OutOfMemoryError之前，清理软引用指向的对象。软引用通常用来实现内存敏感的缓存，如果还有空闲内存，就可以暂时保留缓存，当内存不足时清理掉，这样就保证了使用缓存的同时，不会耗尽内存。</p>
+<p>**弱引用（WeakReference）**并不能使对象豁免垃圾收集，仅仅是提供一种访问在弱引用状态下对象的途径。这就可以用来构建一种没有特定约束的关系，比如，维护一种非强制性的映射关系，如果试图获取时对象还在，就使用它，否则重现实例化。它同样是很多缓存实现的选择。对于幻象引用，有时候也翻译成虚引用，你不能通过它访问对象。</p>
+<p>**幻象引用 (PhantomReference)**仅仅是提供了一种确保对象被fnalize以后，做某些事情的机制，比如，通常用来做所谓的Post-Mortem清理机制，我在专栏上一讲中介绍的Java平台自身Cleaner机制等，也有人利用幻象引用监控对象的创建和销毁。</p>
+<h3 id="如何工作">如何工作</h3>
+<p>这是JDK在语言层面提供的一种可以和GC打交道的机制。如果手动创建ReferenceQueue，一定要对ReferenceQueue里对象就行消非，不然OOM了要。</p>
+<p>操过过程：</p>
+<ol>
+<li>创建引用对象时需要指定引用队列(ReferenceQueue)。</li>
+<li>JVM在调用<code>finalize()</code>方法后，会把对象的引用放入构造器传入的引用队列(ReferenceQueue)</li>
+<li>通过判断该引用对象是否入队列来确定对象是否已被垃圾回收(入队时，可能已回收，也可能没回收，当前该对象已不可达)</li>
+</ol>
+<p>详细逻辑参照<code>java.lang.ref.Reference</code>文档。</p>
+<p>生命周期：</p>
+<p><img src="/static/attachment/20210122/java-ref-1.jpg" alt=""></p>
+<p>Java定义的不同可达性级别（reachability level），具体如下：</p>
+<ul>
+<li>强可达（Strongly Reachable），就是当一个对象可以有一个或多个线程可以不通过各种引用访问到的情况。比如，我们新创建一个对象，那么创建它的线程对它就是强可达。</li>
+<li>软可达（Softly Reachable），就是当我们只能通过软引用才能访问到对象的状态。</li>
+<li>弱可达（Weakly Reachable），类似前面提到的，就是无法通过强引用或者软引用访问，只能通过弱引用访问时的状态。这是十分临近fnalize状态的时机，当弱引用被清除的时候，就符合fnalize的条件了。</li>
+<li>幻象可达（Phantom Reachable），上面流程图已经很直观了，就是没有强、软、弱引用关联，并且fnalize过了，只有幻象引用指向这个对象的时候。</li>
+<li>不可达（unreachable），意味着对象可以被清除了。判断对象可达性，是JVM垃圾收集器决定如何处理对象的一部分考虑。</li>
+</ul>
+<p><strong>引用队列（ReferenceQueue）</strong></p>
+<p>JVM会在特定时机将引用enqueue到队列里，我们可以从队列里获取引用（remove方法在这里实际是有获取的意思）进行相关后续逻辑。尤其是幻象引用，get方法只返回null，如果再不指定引用队列，基本就没有意义了。看看下面的示例代码。利用引用队列，我们可以在对象处于相应状态时（对于幻象引用，就是前面说的被fnalize了，处于幻象可达状态），执行后期处理逻辑。</p>
+<h2 id="字符串">字符串</h2>
+<p>在Java9之前的历史版本中，它是使用char数组来存数据的，这样非常直接。但是Java中的char是两个bytes大小，拉丁语系语言的字符，根本就不需要太宽的char，这样无区别的实现就造成了一定的浪费。</p>
+<p>在Java 9中，引入了Compact Strings的设计，对字符串进行了大刀阔斧的改进。将数据存储方式从char数组，改变为一个byte数组加上一个标识编码的所谓coder，并且将相关字符串操作类都进行了修改。另外，所有相关的Intrinsic之类也都进行了重写，以保证没有任何性能损失。虽然底层实现发生了这么大的改变，但是Java字符串的行为并没有任何大的变化，所以这个特性对于绝大部分应用来说是透明的，绝大部分情况不需要修改已有代码。当然，在极端情况下，字符串也出现了一些能力退化，比如最大字符串的大小。</p>
+<h2 id="aop">AOP</h2>
+<p>JDK 动态代理，基于接口</p>
+<p>cglib 可以基于类，在代理方法执行前后处理一些事情。Spring的cglib方式的事务注解代理，先根据目标类生成代理类并实例化代理对象，<strong>把目标对象作为一个属性设置到代理对象上</strong>。在需要注入目标类的地方注入代理生成的子类对象。在代码执行过程中：</p>
+<ul>
+<li>调用到代理类中重写的代理方法</li>
+<li>代理方法内调用到目标类目标方法</li>
+</ul>
+<p>目标方法如果调用了自身方法，这时候会出问题，代理类是通过在目标对象上调用目标方法来执行的，并不是通过super.方法名这种形式，所以是调用不到代理方法的。</p>
+<h2 id="基本类型">基本类型</h2>
+<h3 id="int--integer">int / integer</h3>
+<p>Java 5中新增了静态工厂方法valueOf，在调用它的时候会利用一个缓存机制，带来了明显的性能改进。按照Javadoc，这个值默认缓存是-128到127之间。</p>
+<h3 id="boolean">Boolean</h3>
+<p>在 Java 虚拟机规范中，boolean 类型则被映射成 int 类型。具体来说，“true”被映射为整数 1，而“false”被映射为整数 0。这个编码规则约束了 Java 字节码的具体实现。</p>
+<h3 id="原子更新">原子更新</h3>
+<p>AtomicLong 在支持CAS的机器上，通过CAS指令更新，在不支持的机器上，加锁更新。</p>
+<p>原子更新通过封装类实现：</p>
+<p><img src="/static/attachment/20210122/java-atomic-1.png" alt=""></p>
+<p>AtomicLongFieldUpdater中代码：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">    /**
+</span></span><span class="line"><span class="cl">     * Creates and returns an updater for objects with the given field.
+</span></span><span class="line"><span class="cl">     * The Class argument is needed to check that reflective types and
+</span></span><span class="line"><span class="cl">     * generic types match.
+</span></span><span class="line"><span class="cl">     *
+</span></span><span class="line"><span class="cl">     * @param tclass the class of the objects holding the field
+</span></span><span class="line"><span class="cl">     * @param fieldName the name of the field to be updated
+</span></span><span class="line"><span class="cl">     * @param &lt;U&gt; the type of instances of tclass
+</span></span><span class="line"><span class="cl">     * @return the updater
+</span></span><span class="line"><span class="cl">     * @throws IllegalArgumentException if the field is not a
+</span></span><span class="line"><span class="cl">     * volatile long type
+</span></span><span class="line"><span class="cl">     * @throws RuntimeException with a nested reflection-based
+</span></span><span class="line"><span class="cl">     * exception if the class does not hold field or is the wrong type,
+</span></span><span class="line"><span class="cl">     * or the field is inaccessible to the caller according to Java language
+</span></span><span class="line"><span class="cl">     * access control
+</span></span><span class="line"><span class="cl">     */
+</span></span><span class="line"><span class="cl">    @CallerSensitive
+</span></span><span class="line"><span class="cl">    public static &lt;U&gt; AtomicLongFieldUpdater&lt;U&gt; newUpdater(Class&lt;U&gt; tclass,
+</span></span><span class="line"><span class="cl">                                                           String fieldName) {
+</span></span><span class="line"><span class="cl">        Class&lt;?&gt; caller = Reflection.getCallerClass();
+</span></span><span class="line"><span class="cl">        if (AtomicLong.VM_SUPPORTS_LONG_CAS)
+</span></span><span class="line"><span class="cl">            return new CASUpdater&lt;U&gt;(tclass, fieldName, caller);
+</span></span><span class="line"><span class="cl">        else
+</span></span><span class="line"><span class="cl">            return new LockedUpdater&lt;U&gt;(tclass, fieldName, caller);
+</span></span><span class="line"><span class="cl">    }
+</span></span></code></pre></div><h3 id="容器集合">容器/集合</h3>
+<p>Oracle JDK Vector在扩容时会提高1倍，而ArrayList则是增加50%。</p>
+<h3 id="面向对象">面向对象</h3>
+<p>进行面向对象编程，掌握基本的设计原则是必须的，我今天介绍最通用的部分，也就是所谓的S.O.L.I.D原则。</p>
+<ul>
+<li>单一职责（Single Responsibility），类或者对象最好是只有单一职责，在程序设计中如果发现某个类承担着多种义务，可以考虑进行拆分。</li>
+<li>开关原则（Open-Close, Open for extension, close for modifcation），设计要对扩展开放，对修改关闭。换句话说，程序设计应保证平滑的扩展性，尽量避免因为新增同类功能而修改已有实现，这样可以少产出些回归（regression）问题。</li>
+<li>里氏替换（Liskov Substitution），这是面向对象的基本要素之一，进行继承关系抽象时，凡是可以用父类或者基类的地方，都可以用子类替换。</li>
+<li>接口分离（Interface Segregation），我们在进行类和接口设计时，如果在一个接口里定义了太多方法，其子类很可能面临两难，就是只有部分方法对它是有意义的，这就破坏了程序的内聚性。对于这种情况，可以通过拆分成功能单一的多个接口，将行为进行解耦。在未来维护中，如果某个接口设计有变，不会对使用其他接口的子类构成影响。</li>
+<li>依赖反转（Dependency Inversion），实体应该依赖于抽象而不是实现。也就是说高层次模块，不应该依赖于低层次模块，而是应该基于抽象。实践这一原则是保证产品代码之间适当耦合度的法宝。</li>
+</ul>
+<h3 id="设计模式">设计模式</h3>
+<p>大致按照模式的应用目标分类，设计模式可以分为创建型模式、结构型模式和行为型模式。</p>
+<ul>
+<li>创建型模式，是对对象创建过程的各种问题和解决方案的总结，包括各种工厂模式（Factory、Abstract Factory）、单例模式（Singleton）、构建器模式（Builder）、原型模式（ProtoType）。</li>
+<li>结构型模式，是针对软件设计结构的总结，关注于类、对象继承、组合方式的实践经验。常见的结构型模式，包括桥接模式（Bridge）、适配器模式（Adapter）、装饰者模式（Decorator）、代理模式（Proxy）、组合模式（Composite）、外观模式（Facade）、享元模式（Flyweight）等。行为型模式，是从类或对象之间交互、职责划分等角度总结的模式。比较常见的行为型模式有策略模式（Strategy）、解释器模式（Interpreter）、命令模式（Command）、观察者模式（Observer）、迭代器模式（Iterator）、模板方法模式（Template Method）、访问者模式（Visitor）。</li>
+</ul>
+<h3 id="synchronized和reentrantlock">synchronized和ReentrantLock</h3>
+<p>synchronized在很多场景下性能相差较大，在低竞争场景中表现可能优于ReentrantLock。</p>
+<p>锁的状态共有四种：无锁，偏向锁，轻量锁，重量锁。随着锁的竞争，锁会从偏向锁升级为轻量锁，然后升级为重量锁。锁的升级是单向的。</p>
+<ul>
+<li>每次执行前，先判断锁对象是否加锁，无锁， 锁对象头上ID是否为当前线程ID或没锁过，是，加锁成功，只有一次CAS读开销和CAS写锁标志开销</li>
+<li>如果线程ID非当前线程ID，CAS方式写入当前线程ID，写成功，加所成功</li>
+<li>写失败，升级为重量级锁，加锁等待</li>
+</ul>
+<p>在CAS过程中，加入了自旋操作，尝试一定次数加锁操作，仍然失败，进入重量级锁，自旋，自适应自旋。</p>
+<h3 id="线程状态">线程状态</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">    public enum State {
+</span></span><span class="line"><span class="cl">        /**
+</span></span><span class="line"><span class="cl">         * Thread state for a thread which has not yet started.
+</span></span><span class="line"><span class="cl">         */
+</span></span><span class="line"><span class="cl">        NEW,
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        /**
+</span></span><span class="line"><span class="cl">         * Thread state for a runnable thread.  A thread in the runnable
+</span></span><span class="line"><span class="cl">         * state is executing in the Java virtual machine but it may
+</span></span><span class="line"><span class="cl">         * be waiting for other resources from the operating system
+</span></span><span class="line"><span class="cl">         * such as processor.
+</span></span><span class="line"><span class="cl">         */
+</span></span><span class="line"><span class="cl">        RUNNABLE,
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        /**
+</span></span><span class="line"><span class="cl">         * Thread state for a thread blocked waiting for a monitor lock.
+</span></span><span class="line"><span class="cl">         * A thread in the blocked state is waiting for a monitor lock
+</span></span><span class="line"><span class="cl">         * to enter a synchronized block/method or
+</span></span><span class="line"><span class="cl">         * reenter a synchronized block/method after calling
+</span></span><span class="line"><span class="cl">         * {@link Object#wait() Object.wait}.
+</span></span><span class="line"><span class="cl">         */
+</span></span><span class="line"><span class="cl">        BLOCKED,
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        /**
+</span></span><span class="line"><span class="cl">         * Thread state for a waiting thread.
+</span></span><span class="line"><span class="cl">         * A thread is in the waiting state due to calling one of the
+</span></span><span class="line"><span class="cl">         * following methods:
+</span></span><span class="line"><span class="cl">         * &lt;ul&gt;
+</span></span><span class="line"><span class="cl">         *   &lt;li&gt;{@link Object#wait() Object.wait} with no timeout&lt;/li&gt;
+</span></span><span class="line"><span class="cl">         *   &lt;li&gt;{@link #join() Thread.join} with no timeout&lt;/li&gt;
+</span></span><span class="line"><span class="cl">         *   &lt;li&gt;{@link LockSupport#park() LockSupport.park}&lt;/li&gt;
+</span></span><span class="line"><span class="cl">         * &lt;/ul&gt;
+</span></span><span class="line"><span class="cl">         *
+</span></span><span class="line"><span class="cl">         * &lt;p&gt;A thread in the waiting state is waiting for another thread to
+</span></span><span class="line"><span class="cl">         * perform a particular action.
+</span></span><span class="line"><span class="cl">         *
+</span></span><span class="line"><span class="cl">         * For example, a thread that has called &lt;tt&gt;Object.wait()&lt;/tt&gt;
+</span></span><span class="line"><span class="cl">         * on an object is waiting for another thread to call
+</span></span><span class="line"><span class="cl">         * &lt;tt&gt;Object.notify()&lt;/tt&gt; or &lt;tt&gt;Object.notifyAll()&lt;/tt&gt; on
+</span></span><span class="line"><span class="cl">         * that object. A thread that has called &lt;tt&gt;Thread.join()&lt;/tt&gt;
+</span></span><span class="line"><span class="cl">         * is waiting for a specified thread to terminate.
+</span></span><span class="line"><span class="cl">         */
+</span></span><span class="line"><span class="cl">        WAITING,
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        /**
+</span></span><span class="line"><span class="cl">         * Thread state for a waiting thread with a specified waiting time.
+</span></span><span class="line"><span class="cl">         * A thread is in the timed waiting state due to calling one of
+</span></span><span class="line"><span class="cl">         * the following methods with a specified positive waiting time:
+</span></span><span class="line"><span class="cl">         * &lt;ul&gt;
+</span></span><span class="line"><span class="cl">         *   &lt;li&gt;{@link #sleep Thread.sleep}&lt;/li&gt;
+</span></span><span class="line"><span class="cl">         *   &lt;li&gt;{@link Object#wait(long) Object.wait} with timeout&lt;/li&gt;
+</span></span><span class="line"><span class="cl">         *   &lt;li&gt;{@link #join(long) Thread.join} with timeout&lt;/li&gt;
+</span></span><span class="line"><span class="cl">         *   &lt;li&gt;{@link LockSupport#parkNanos LockSupport.parkNanos}&lt;/li&gt;
+</span></span><span class="line"><span class="cl">         *   &lt;li&gt;{@link LockSupport#parkUntil LockSupport.parkUntil}&lt;/li&gt;
+</span></span><span class="line"><span class="cl">         * &lt;/ul&gt;
+</span></span><span class="line"><span class="cl">         */
+</span></span><span class="line"><span class="cl">        TIMED_WAITING,
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        /**
+</span></span><span class="line"><span class="cl">         * Thread state for a terminated thread.
+</span></span><span class="line"><span class="cl">         * The thread has completed execution.
+</span></span><span class="line"><span class="cl">         */
+</span></span><span class="line"><span class="cl">        TERMINATED;
+</span></span><span class="line"><span class="cl">    }
+</span></span></code></pre></div><h3 id="死锁">死锁</h3>
+<p>基本上死锁的发生是因为：</p>
+<ul>
+<li>互斥条件，类似Java中Monitor都是独占的，要么是我用，要么是你用。</li>
+<li>互斥条件是长期持有的，在使用结束之前，自己不会释放，也不能被其他线程抢占。</li>
+<li>循环依赖关系，两个或者多个个体之间出现了锁的链条环</li>
+</ul>
+<p>避免死锁的思路和方法：</p>
+<ul>
+<li>尽量避免使用多个锁，并且只有需要时才持有锁。</li>
+<li>必须使用多个锁，尽量设计好锁的获取顺序</li>
+<li>使用带超时的方法，为程序带来更多可控性。</li>
+<li>通过静态代码分析（如FindBugs）去查找固定的模式，进而定位可能的死锁或者竞争情况。</li>
+</ul>
+<h3 id="类加载器">类加载器</h3>
+<p>Java的类加载过程分为三个主要步骤：加载、链接、初始化，具体行为在Java虚拟机规范里有非常详细的定义。</p>
+<p>首先是加载阶段（Loading），它是Java将字节码数据从不同的数据源读取到JVM中，并映射为JVM认可的数据结构（Class对象），这里的数据源可能是各种各样的形态，如jar文件、class文件，甚至是网络数据源等；如果输入数据不是ClassFile的结构，则会抛出ClassFormatError。加载阶段是用户参与的阶段，我们可以自定义类加载器，去实现自己的类加载过程。</p>
+<p>第二阶段是链接（Linking），这是核心的步骤，简单说是把原始的类定义信息平滑地转化入JVM运行的过程中。这里可进一步细分为三个步骤：</p>
+<ul>
+<li>验证（Verifcation），这是虚拟机安全的重要保障，JVM需要核验字节信息是符合Java虚拟机规范的，否则就被认为是VerifyError，这样就防止了恶意信息或者不合规的信息危害JVM的运行，验证阶段有可能触发更多class的加载。</li>
+<li>准备（Preparation），创建类或接口中的静态变量，并初始化静态变量的初始值。但这里的“初始化”和下面的显式初始化阶段是有区别的，侧重点在于分配所需要的内存空间，不会去执行更进一步的JVM指令。</li>
+<li>解析（Resolution），在这一步会将常量池中的符号引用（symbolic reference）替换为直接引用。在Java虚拟机规范中，详细介绍了类、接口、方法和字段等各个方面的解析。</li>
+</ul>
+<p>最后是初始化阶段（initialization），这一步真正去执行类初始化的代码逻辑，包括静态字段赋值的动作，以及执行类定义中的静态初始化块内的逻辑，编译器在编译阶段就会把这部分逻辑整理好，父类型的初始化逻辑优先于当前类型的逻辑。</p>
+<p>再来谈谈双亲委派模型，<strong>简单说就是当类加载器（Class-Loader）试图加载某个类型的时候，除非父加载器找不到相应类型，否则尽量将这个任务代理给当前加载器的父加载器去做。使用委派模型的目的是避免重复加载Java类型。</strong></p>
+<h4 id="三种oracle-jdk内建的类加载器">三种Oracle JDK内建的类加载器。</h4>
+<ul>
+<li>启动类加载器（Bootstrap Class-Loader），加载 jre/lib下面的jar文件，如rt.jar。它是个超级公民，即使是在开启了Security Manager的时候，JDK仍赋予了它加载的程序AllPermission。</li>
+<li>扩展类加载器（Extension or Ext Class-Loader），负责加载我们放到jre/lib/ext/目录下面的jar包，这就是所谓的extension机制。该目录也可以通过设置 “java.ext.dirs”来覆盖。<code>java -Djava.ext.dirs=your_ext_dir HelloWorl</code></li>
+<li>应用类加载器（Application or App Class-Loader），就是加载我们最熟悉的classpath的内容。这里有一个容易混淆的概念，系统（System）类加载器，通常来说，其默认就是JDK内建的应用类加载器，但是它同样是可能修改的，比如：<code>java -Djava.sysem.class.loader=com.yourcorp.YourClassLoader HelloWord</code></li>
+</ul>
+<p>有的时候可能不得不去试图修改JDK的基础代码，也就是通常意义上的核心类库，我们可以使用下面的命令行参数:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># 指定新的bootclasspath，替换java.*包的内部实现
+</span></span><span class="line"><span class="cl">java -Xbootclasspath:&lt;your_boot_classpath&gt; your_App
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># a意味着append，将指定目录添加到bootclasspath后面
+</span></span><span class="line"><span class="cl">java -Xbootclasspath/a:&lt;your_dir&gt; your_App
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># p意味着prepend，将指定目录添加到bootclasspath前面
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">java -Xbootclasspath/p:&lt;your_dir&gt; your_App
+</span></span></code></pre></div><p><img src="/static/attachment/20210125/classloader1.jpg" alt=""></p>
+<h3 id="jvm内存区域的划分">JVM内存区域的划分</h3>
+<p>通常可以把JVM内存区域分为下面几个方面，其中，有的区域是以线程为单位，而有的区域则是整个JVM进程唯一的。</p>
+<ul>
+<li>首先，程序计数器（PC，Program Counter Register）。在JVM规范中，每个线程都有它自己的程序计数器，并且任何时间一个线程都只有一个方法在执行，也就是所谓的当前方法。程序计数器会存储当前线程正在执行的Java方法的JVM指令地址；或者，如果是在执行本地方法，则是未指定值（undefned）。</li>
+<li>第二，Java虚拟机栈（Java Virtual Machine Stack），早期也叫Java栈。每个线程在创建时都会创建一个虚拟机栈，其内部保存一个个的栈帧（Stack Frame），对应着一次次的Java方法调用。前面谈程序计数器时，提到了当前方法；同理，在一个时间点，对应的只会有一个活动的栈帧，通常叫作当前帧，方法所在的类叫作当前类。如果在该方法中调用了其他方法，对应的新的栈帧会被创建出来，成为新的当前帧，一直到它返回结果或者执行结束。JVM直接对Java栈的操作只有两个，就是对栈帧的压栈和出栈。栈帧中存储着局部变量表、操作数（operand）栈、动态链接、方法正常退出或者异常退出的定义等。</li>
+<li>第三，堆（Heap），它是Java内存管理的核心区域，用来放置Java对象实例，几乎所有创建的Java对象实例都是被直接分配在堆上。堆被所有的线程共享，在虚拟机启动时，我们指定的“Xmx”之类参数就是用来指定最大堆空间等指标。理所当然，堆也是垃圾收集器重点照顾的区域，所以堆内空间还会被不同的垃圾收集器进行进一步的细分，最有名的就是新生代、老年代的划分。</li>
+<li>第四，方法区（Method Area）。这也是所有线程共享的一块内存区域，用于存储所谓的元（Meta）数据，例如类结构信息，以及对应的运行时常量池、字段、方法代码等。由于早期的Hotspot JVM实现，很多人习惯于将方法区称为永久代（Permanent Generation）。Oracle JDK 8中将永久代移除，同时增加了元数据区（Metaspace）。</li>
+<li>第五，运行时常量池（Run-Time Constant Pool），这是方法区的一部分。如果仔细分析过反编译的类文件结构，你能看到版本号、字段、方法、超类、接口等各种信息，还有一项信息就是常量池。Java的常量池可以存放各种常量信息，不管是编译期生成的各种字面量，还是需要在运行时决定的符号引用，所以它比一般语言的符号表存储的信息更加宽泛。第六，本地方法栈（Native Method Stack）。它和Java虚拟机栈是非常相似的，支持对本地方法的调用，也是每个线程都会创建一个。</li>
+</ul>
+<p>在Oracle Hotspot JVM中，本地方法栈和Java虚拟机栈是在同一块儿区域，这完全取决于技术实现的决定，并未在规范中强制。</p>
+<p><img src="/static/attachment/20210125/jvm-memory-1.jpg" alt=""></p>
+<p>除了程序计数器，其他区域都有可能会因为可能的空间不足发生OutOfMemoryError，简单总结如下：</p>
+<ul>
+<li>堆内存不足是最常见的OOM原因之一，抛出的错误信息是“java.lang.OutOfMemoryError:Java heap space”，原因可能千奇百怪，例如，可能存在内存泄漏问题；也很有可能就是堆的大小不合理，比如我们要处理比较可观的数据量，但是没有显式指定JVM堆大小或者指定数值偏小；或者出现JVM处理引用不及时，导致堆积起来，内存无法释放等。</li>
+<li>而对于Java虚拟机栈和本地方法栈，这里要稍微复杂一点。如果我们写一段程序不断的进行递归调用，而且没有退出条件，就会导致不断地进行压栈。类似这种情况，JVM实际会抛出StackOverFlowError；当然，如果JVM试图去扩展栈空间的的时候失败，则会抛出OutOfMemoryError。</li>
+<li>对于老版本的Oracle JDK，因为永久代的大小是有限的，并且JVM对永久代垃圾回收（如，常量池回收、卸载不再需要的类型）非常不积极，所以当我们不断添加新类型的时候，永久代出现OutOfMemoryError也非常多见，尤其是在运行时存在大量动态类型生成的场合；类似Intern字符串缓存占用太多空间，也会导致OOM问题。对应的异常信息，会标记出来和永久代相关：“java.lang.OutOfMemoryError: PermGen space”。随着元数据区的引入，方法区内存已经不再那么窘迫，所以相应的OOM有所改观，出现OOM，异常信息则变成了：“java.lang.OutOfMemoryError: Metaspace”。</li>
+<li>直接内存不足，也会导致OOM。</li>
+</ul>
+<h4 id="年代视角的堆结构示意图">年代视角的堆结构示意图</h4>
+<p><img src="/static/attachment/20210125/jvm-memory-2.jpg" alt=""></p>
+<p>按照通常的GC年代方式划分，Java堆内分为: 新生代，老年代，永久代</p>
+<p>新生代是大部分对象创建和销毁的区域，在通常的Java应用中，绝大部分对象生命周期都是很短暂的。其内部又分为Eden区域，作为对象初始分配的区域；两个Survivor，有时候也叫from、to区域，被用来放置从Minor GC中保留下来的对象。</p>
+<p>JVM会随意选取一个Survivor区域作为“to”，然后会在GC过程中进行区域间拷贝，也就是将Eden中存活下来的对象和from区域的对象，拷贝到这个“to”区域。这种设计主要是为了防止内存的碎片化，并进一步清理无用对象。</p>
+<p>从内存模型而不是垃圾收集的角度，对Eden区域继续进行划分，Hotspot JVM还有一个概念叫做Thread Local Allocation Bufer（TLAB），据我所知所有OpenJDK衍生出来的JVM都提供了TLAB的设计。这是JVM为每个线程分配的一个私有缓存区域，否则，多线程同时分配内存时，为避免操作同一地址，可能需要使用加锁等机制，进而影响分配速度，你可以参考下面的示意图。从图中可以看出，TLAB仍然在堆上，它是分配在Eden区域内的。其内部结构比较直观易懂，start、end就是起始地址，top（指针）则表示已经分配到哪里了。所以我们分配新对象，JVM就会移动top，当top和end相遇时，即表示该缓存已满，JVM会试图再从Eden里分配一块儿。</p>
+<p><img src="/static/attachment/20210125/jvm-memory-3.jpg" alt=""></p>
+<p>老年代放置长生命周期的对象，通常都是从Survivor区域拷贝过来的对象。当然，也有特殊情况，我们知道普通的对象会被分配在TLAB上；如果对象较大，JVM会试图直接分配在Eden其他位置上；如果对象太大，完全无法在新生代找到足够长的连续空闲空间，JVM就会直接分配到老年代。</p>
+<p>永久代是早期Hotspot JVM的方法区实现方式了，储存Java类元数据、常量池、Intern字符串缓存，在JDK 8之后就不存在永久代这块儿了。</p>
+<h4 id="g1-gc">G1 GC</h4>
+<p>G1 GC这是一种兼顾吞吐量和停顿时间的GC实现，是Oracle JDK 9以后的默认GC选项。G1可以直观的设定停顿时间的目标，相比于CMS GC，G1未必能做到CMS在最好情况下的延时停顿，但是最差情况要好很多。G1 GC仍然存在着年代的概念，但是其内存结构并不是简单的条带式划分，而是类似棋盘的一个个region。Region之间是复制算法，但整体上实际可看作是标记-整理（Mark-Compact）算法，可以有效地避免内存碎片，尤其是当Java堆非常大的时候，G1的优势更加明显。</p>
+<p>从内存区域的角度，G1同样存在着年代的概念，但是与我前面介绍的内存结构很不一样，其内部是类似棋盘状的一个个region组成:</p>
+<p><img src="/static/attachment/20210125/jvm-g1-gc.jpg" alt=""></p>
+<p>Humongous(巨大无比)</p>
+<p>极客时间region的大小是一致的，数值是在1M到32M字节之间的一个2的幂值数，JVM会尽量划分2048个左右、同等大小的region，这点可以从源码heapRegionBounds.hpp中看到。当然这个数字既可以手动调整，G1也会根据堆大小自动进行调整。</p>
+<p>在G1实现中，年代是个逻辑概念，具体体现在，一部分region是作为Eden，一部分作为Survivor，除了意料之中的Old region，G1会将超过region 50%大小的对象（在应用中，通常是byte或char数组）归类为Humongous对象，并放置在相应的region中。逻辑上，Humongous region算是老年代的一部分，因为复制这样的大对象是很昂贵的操作，并不适合新生代GC的复制算法。</p>
+<p>region大小和大对象很难保证一致，这会导致空间的浪费。不知道你有没有注意到，我的示意图中有的区域是Humongous颜色，但没有用名称标记，这是为了表示，特别大的对象是可能占用超过一个region的。并且，region太小不合适，会令你在分配大对象时更难找到连续空间，这是一个长久存在的情况，这本质也可以看作是JVM的bug，尽管解决办法也非常简单，直接设置较大的region大小，参数如下:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">-XX:G1HeapRegionSize=&lt;N, 例如16&gt;M
+</span></span></code></pre></div><p>从GC算法的角度，G1选择的是复合算法，可以简化理解为：</p>
+<ul>
+<li>在新生代，G1采用的仍然是并行的复制算法，所以同样会发生Stop-The-World的暂停。</li>
+<li>在老年代，大部分情况下都是并发标记，而整理（Compact）则是和新生代GC时捎带进行，并且不是整体性的整理，而是增量进行的。</li>
+</ul>
+<p>人们喜欢把新生代GC（Young GC）叫作Minor GC，老年代GC叫作Major GC，区别于整体性的Full GC。但是现代GC中，这种概念已经不再准确，对于G1来说：</p>
+<ul>
+<li>Minor GC仍然存在，虽然具体过程会有区别，会涉及Remembered Set等相关处理。</li>
+<li>老年代回收，则是依靠Mixed GC。并发标记结束后，JVM就有足够的信息进行垃圾收集，Mixed GC不仅同时会清理Eden、Survivor区域，而且还会清理部分Old区域。可以通过设置下面的参数，指定触发阈值，并且设定最多被包含在一次Mixed GC中的region比例。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">–XX:G1MixedGCLiveThresholdPercent
+</span></span><span class="line"><span class="cl">–XX:G1OldCSetRegionThresholdPercent
+</span></span></code></pre></div><p>从G1内部运行的角度，下面的示意图描述了G1正常运行时的状态流转变化，当然，在发生逃逸失败等情况下，就会触发Full GC。</p>
+<p><img src="/static/attachment/20210125/jvm-g1-gc2.jpg" alt=""></p>
+<p>G1相关概念非常多，有一个重点就是Remembered Set，用于记录和维护region之间对象的引用关系。为什么需要这么做呢？试想，新生代GC是复制算法，也就是说，类似对象从Eden或者Survivor到to区域的“移动”，其实是“复制”，本质上是一个新的对象。在这个过程中，需要必须保证老年代到新生代的跨区引用仍然有效。</p>
+<p><img src="/static/attachment/20210125/jvm-g1-gc3.jpg" alt=""></p>
+<p>G1的很多开销都是源自Remembered Set，例如，它通常约占用Heap大小的20%或更高，这可是非常可观的比例。并且，我们进行对象复制的时候，因为需要扫描和更改CardTable的信息，这个速度影响了复制的速度，进而影响暂停时间。</p>
+<p>上面提到了Humongous对象的分配和回收，这是很多内存问题的来源，Humongous region作为老年代的一部分，通常认为它会在并发标记结束后才进行回收，但是在新版G1中，Humongous对象回收采取了更加激进的策略。我们知道G1记录了老年代region间对象引用，Humongous对象数量有限，所以能够快速的知道是否有老年代对象引用它。如果没有，能够阻止它被回收的唯一可能，就是新生代是否有对象引用了它，但这个信息是可以在Young GC时就知道的，所以完全可以在Young GC中就进行Humongous对象的回收，不用像其他老年代对象那样，等待并发标记结束</p>
+<h4 id="常见的垃圾收集算法">常见的垃圾收集算法</h4>
+<ul>
+<li>复制（Copying）算法，我前面讲到的新生代GC，基本都是基于复制算法，过程就如专栏上一讲所介绍的，将活着的对象复制到to区域，拷贝过程中将对象顺序放置，就可以避免内存碎片化。这么做的代价是，既然要进行复制，既要提前预留内存空间，有一定的浪费；另外，对于G1这种分拆成为大量region的GC，复制而不是移动，意味着GC需要维护region之间对象引用关系，这个开销也不小，不管是内存占用或者时间开销。</li>
+<li>标记-清除（Mark-Sweep）算法，首先进行标记工作，标识出所有要回收的对象，然后进行清除。这么做除了标记、清除过程效率有限，另外就是不可避免的出现碎片化问题，这就导致其不适合特别大的堆；否则，一旦出现Full GC，暂停时间可能根本无法接受。</li>
+<li>标记-整理（Mark-Compact），类似于标记-清除，但为避免内存碎片化，它会在清理过程中将对象移动，以确保移动后的对象占用连续的内存空间。</li>
+</ul>
+<h3 id="happen-before">happen-before</h3>
+<p>Happen-before关系，是Java内存模型中保证多线程操作可见性的机制，也是对早期语言规范中含糊的可见性概念的一个精确定义。它的具体表现形式，包括但远不止是我们直觉中的synchronized、volatile、lock操作顺序等方面，例如：</p>
+<ul>
+<li>线程内执行的每个操作，都保证happen-before后面的操作，这就保证了基本的程序顺序规则，这是开发者在书写程序时的基本约定。</li>
+<li>对于volatile变量，对它的写操作，保证happen-before在随后对该变量的读取操作。</li>
+<li>对于一个锁的解锁操作，保证happen-before加锁操作。</li>
+<li>对象构建完成，保证happen-before于fnalizer的开始动作。</li>
+<li>甚至是类似线程内部操作的完成，保证happen-before其他Thread.join()的线程等。</li>
+</ul>
+<p>这些happen-before关系是存在着传递性的，如果满足a happen-before b和b happen-before c，那么a happen-before c也成立。前面我一直用happen-before，而不是简单说前后，是因为它不仅仅是对执行时间的保证，也包括对内存读、写操作顺序的保证。仅仅是时钟顺序上的先后，并不能保证线程交互的可见性。</p>
+<p><strong>JMM是怎么解决可见性等问题的呢？</strong></p>
+<p><img src="/static/attachment/20210125/jmm-1.jpg" alt=""></p>
+<p>多线程共享引入了复杂的数据依赖性，不管编译器、处理器怎么做重排序，都必须尊重数据依赖性的要求，否则就打破了正确性！这就是JMM所要解决的问题。</p>
+<p>JMM内部的实现通常是依赖于所谓的内存屏障，通过禁止某些重排序的方式，提供内存可见性保证，也就是实现了各种happen-before规则。与此同时，更多复杂度在于，需要尽量确保各种编译器、各种体系结构的处理器，都能够提供一致的行为。我以volatile为例，看看如何利用内存屏障实现JMM定义的可见性？</p>
+<p>对于一个volatile变量：</p>
+<ul>
+<li>对该变量的写操作之后，编译器会插入一个写屏障</li>
+<li>对该变量的读操作之前，编译器会插入一个读屏障</li>
+</ul>
+<p>内存屏障能够在类似变量读、写操作之后，保证其他线程对volatile变量的修改对当前线程可见，或者本地修改对其他线程提供可见性。换句话说，线程写入，写屏障会通过类似强迫刷出处理器缓存的方式，让其他线程能够拿到最新数值。</p>
+
+
+        
+          <div class="blog-tags">
+            
+              <a href="https://hzren.github.io/tags/java/">Java</a>&nbsp;
+            
+              <a href="https://hzren.github.io/tags/jls/">JLS</a>&nbsp;
+            
+          </div>
+        
+
+        
+            <hr/>
+            <section id="social-share">
+              <div class="list-inline footer-links">
+                
+
+<div class="share-box" aria-hidden="true">
+    <ul class="share">
+      
+      <li>
+        <a href="//twitter.com/share?url=https%3a%2f%2fhzren.github.io%2fblog%2f2021-01-22-java%25E8%25AF%25AD%25E8%25A8%2580%2f&amp;text=Java%e8%af%ad%e8%a8%80&amp;via=username" target="_blank" title="Share on Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fhzren.github.io%2fblog%2f2021-01-22-java%25E8%25AF%25AD%25E8%25A8%2580%2f" target="_blank" title="Share on Facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//reddit.com/submit?url=https%3a%2f%2fhzren.github.io%2fblog%2f2021-01-22-java%25E8%25AF%25AD%25E8%25A8%2580%2f&amp;title=Java%e8%af%ad%e8%a8%80" target="_blank" title="Share on Reddit">
+          <i class="fab fa-reddit"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fhzren.github.io%2fblog%2f2021-01-22-java%25E8%25AF%25AD%25E8%25A8%2580%2f&amp;title=Java%e8%af%ad%e8%a8%80" target="_blank" title="Share on LinkedIn">
+          <i class="fab fa-linkedin"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fhzren.github.io%2fblog%2f2021-01-22-java%25E8%25AF%25AD%25E8%25A8%2580%2f&amp;title=Java%e8%af%ad%e8%a8%80" target="_blank" title="Share on StumbleUpon">
+          <i class="fab fa-stumbleupon"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fhzren.github.io%2fblog%2f2021-01-22-java%25E8%25AF%25AD%25E8%25A8%2580%2f&amp;description=Java%e8%af%ad%e8%a8%80" target="_blank" title="Share on Pinterest">
+          <i class="fab fa-pinterest"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+  
+
+              </div>
+            </section>
+        
+
+        
+          
+            
+          
+
+          
+                  <h4 class="see-also">也可以看看</h4>
+                  <ul>
+                
+                
+                    <li><a href="/blog/2022-08-03-spring%E5%94%AF%E4%B8%80%E7%BA%A6%E6%9D%9F%E5%BC%82%E5%B8%B8%E7%BB%9F%E4%B8%80%E5%A4%84%E7%90%86/">Spring唯一约束异常统一处理</a></li>
+                
+                    <li><a href="/blog/2021-01-27-arthas%E4%BD%BF%E7%94%A8/">Arthas使用</a></li>
+                
+                    <li><a href="/blog/2021-01-25-jvm/">JVM</a></li>
+                
+                    <li><a href="/blog/2020-09-29-java%E4%BD%BF%E7%94%A8protocol-buffers/">Java使用Protocol Buffers</a></li>
+                
+                    <li><a href="/blog/2020-07-29-spring-component-sacn-%E6%89%AB%E6%8F%8F%E5%8A%A0%E8%BD%BD%E5%85%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90/">Spring component-sacn 扫描加载全流程分析</a></li>
+                
+              </ul>
+
+          
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="https://hzren.github.io/blog/2021-01-19-linux%E7%BD%91%E7%BB%9C/" data-toggle="tooltip" data-placement="top" title="Linux网络">&larr; 前一篇</a>
+            </li>
+          
+          
+            <li class="next">
+              <a href="https://hzren.github.io/blog/2021-01-25-jvm/" data-toggle="tooltip" data-placement="top" title="JVM">后一篇 &rarr;</a>
+            </li>
+          
+        </ul>
+      
+
+
+      
+        
+        
+      
+
+    </div>
+  </div>
+</div>
+
+      
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+              <li>
+		
+		  <a href="mailto:hzren@outlook.com" title="Email me">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.facebook.com/username" title="Facebook">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-facebook fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://github.com/username" title="GitHub">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://gitlab.com/username" title="GitLab">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-gitlab fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://bitbucket.org/username" title="Bitbucket">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-bitbucket fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://twitter.com/username" title="Twitter">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://username.slack.com/" title="Slack">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-slack fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://reddit.com/u/username" title="Reddit">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-reddit-alien fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://linkedin.com/in/username" title="LinkedIn">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.xing.com/profile/username" title="Xing">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-xing fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://stackoverflow.com/users/XXXXXXX/username" title="StackOverflow">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-stack-overflow fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.snapchat.com/add/username" title="Snapchat">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-snapchat-ghost fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.instagram.com/username" title="Instagram">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-instagram fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.youtube.com/user/username" title="Youtube">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-youtube fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://soundcloud.com/username" title="SoundCloud">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-soundcloud fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://open.spotify.com/user/username" title="Spotify">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-spotify fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://username.bandcamp.com/" title="Bandcamp">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-bandcamp fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://itch.io/profile/username" title="Itch.io">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fas fa-gamepad fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://vk.com/username" title="VK">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-vk fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://paypal.me/username" title="PayPal">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-paypal fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://telegram.me/username" title="Telegram">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-telegram fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://500px.com/username" title="500px">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-500px fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://codepen.io/username" title="CodePen">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-codepen fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.kaggle.com/username" title="kaggle">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-kaggle fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a rel="me"href="https://url" title="Mastodon">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-mastodon fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://weibo.com/username" title="Weibo">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-weibo fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://discord.gg/invite%20code%20%28https://discord.gg/XXXXXXX%29" title="Discord">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-discord fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.strava.com/athletes/userid" title="Strava">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-strava fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+          
+          <li>
+            <a href="" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              <a href="https://hyllo.gitee.io/">renhongzhen</a>
+            
+          
+
+          &nbsp;&bull;&nbsp;&copy;
+          
+            2022
+          
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://hzren.github.io">Code Mark</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          由 <a href="https://gohugo.io">Hugo v0.109.0</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="https://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer><script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script src="https://hzren.github.io/js/main.js"></script>
+<script src="https://hzren.github.io/js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script>
+<script> $(document).ready(function() {$("pre.chroma").css("padding","0");}); </script><script> renderMathInElement(document.body); </script><script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://hzren.github.io/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+
+
+
+    
+  </body>
+</html>
+

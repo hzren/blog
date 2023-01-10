@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>计算机基础 on Code Mark</title>
+    <link>https://hzren.github.io/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/</link>
+    <description>Recent content in 计算机基础 on Code Mark</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <managingEditor>hzren@outlook.com (renhongzhen)</managingEditor>
+    <webMaster>hzren@outlook.com (renhongzhen)</webMaster>
+    <lastBuildDate>Tue, 22 Jun 2021 11:20:11 +0800</lastBuildDate><atom:link href="https://hzren.github.io/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Byte&amp;bit</title>
+      <link>https://hzren.github.io/blog/2021-06-22-bytebit/</link>
+      <pubDate>Tue, 22 Jun 2021 11:20:11 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2021-06-22-bytebit/</guid>
+      <description>基本概念： 在计算机科学中，bit（比特）是表示信息的最小单位，叫做二进制位，一般用0和1表示。
+Byte叫做字节，由8个位（8bit）组成一个字节(1Byte)，用于表示计算机中的一个字符。
+bit与Byte之间可以进行换算，其换算关系为：1Byte=8bit（或简写为：1B=8b）；在实际应用中一般用简称， 即1bit简写为1b(注意是小写英文字母b)，1Byte简写为1B（注意是大写英文字母B）。
+相关使用：
+在java中，基本数据类型包括byte，short，int，long，float，double，boolean，char。
+byte：8 位，用于表示最小数据单位，如文件中数据，-128~127
+short：16 位，很少用，-32768 ~ 32767
+int：32 位、最常用，-2^31~2^32-1 （21 亿）
+long：64 位、次常用
+float：32 位，后缀 F 或 f，1 位符号位，8 位指数，23 位有效尾数。
+double：64 位，最常用，后缀 D 或 d，1 位符号位，11 位指数，52 位有效尾
+char：16位，是整数类型，用单引号括起来的1个字符（可以是一个中文字符），使用Unicode码代表字符，
+0~2^16-1（65535） 。
+功能扩展 在移动开发过程中，网络请求是必不可少的，大部分都是一些简单的Get请求，少部分是一些文件上传之类的Post请求，但是网络请求的响应时间往往不同，这到底和那些因素有关呢？
+首先需要理解几个概念，服务器带宽，上行速率以及下行速率。
+服务器带宽：单位，bps（比特每秒bit per second），网络供应商所说的100M带宽，指的就是100Mbps（100兆比特每秒）。
+上行速率：单位，bps（比特每秒bit per second）。
+下行速率：单位，bps（比特每秒bit per second）。
+上传速度：Bps（字节每秒Byte per second）=B/s，一般需要上传文件的时候才用
+下载速度：Bps（字节每秒），一般我们所说的下载速度就是指这个。
+相信大家已经很清楚了，一般网络供应商所说的几兆几兆带宽和我们平时理解的下载速度多少兆每秒，不是一个单位。100Mbps带宽，按理论数值来讲，其下载速度应该是100/8=12.5MB/s（注意区分大B小b）,但是因为中途传输损耗，应该能达到10M/s就不错了，而上传文件的速度是下载速度的十分之一（因为实际需求问题，一般上行速率远小于下行速率，甚至下行速率是上行速率的3倍、5倍、10倍都有可能，腾讯云服务器那边就是粗略算10倍。），即实际上传文件的速度只有1.25M/s。
+1T=1024G，1G=1024M，1M=1024KB，1KB=1024B，B=Byte（字节）。
+大写B代表字节，小写b代表位。</description>
+    </item>
+    
+    <item>
+      <title>二进制-位移计算</title>
+      <link>https://hzren.github.io/blog/2021-05-26-%E4%BA%8C%E8%BF%9B%E5%88%B6-%E4%BD%8D%E7%A7%BB%E8%AE%A1%E7%AE%97/</link>
+      <pubDate>Wed, 26 May 2021 09:59:43 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2021-05-26-%E4%BA%8C%E8%BF%9B%E5%88%B6-%E4%BD%8D%E7%A7%BB%E8%AE%A1%E7%AE%97/</guid>
+      <description>原码 所谓原码就是机器数，是加了一位符号位的二进制数，正数符号位为0，负数符号位为1，计算机中存储、处理、运算的数据通常是8位、16位、32位或64位的，这里以最简单的8位为例讲解。注意符号位是包含在8位中的其中1位，故可直观读出的数只有7位（只有后7位数可以按权展开）。有心人可能注意到原码是有缺陷的，它只能表示255种状态，因为00000000（＋0）和10000000（－0）其实是一个数，因此原码的表示范围成了－127到＋127，这个问题需要神奇的补码来解决，因为在补码中10000000被用来表示－128。
+反码 所谓反码，英语里又叫ones&amp;rsquo; complement（对1求补），这里的1，本质上是一个有限位计数系统里所能表示出的最大值，在8位二进制里就是11111111，在1位十进制里就是9，在3位十六进制里就是FFF（再大就要进位了）。求反又被称为对一求补，用最大数减去一个数就能得到它的反，很容易看出在二进制里11111111减去任何数结果都是把这个数按位取反，0变1，1变零，所以才称之为反码。用原码求反码的方法是：正数不变，负数保留符号位1不变，剩下位按位取反。
+补码 英语里又叫two&amp;rsquo;s complement（对2求补），这个2指的是计数系统的容量（模），就是计数系统所能表示的状态数。对1位二进制数来说只有0和1两种状态，所以模是二进制 10 也就是十进制的2，对7位二进制数来说就是10 000 000，这个模是不可能取到的，因为位数多一位。用模减去一个数（无符号部分）就能得到这个数的补，比如10000000－1010010=0101110，事实上因为10 000 000=1 111 111+1， 稍加改变就成了（1 111 111－1 010 010）+1，所以又可以表述为先求反再加1。总结求补码的方法就是正数依旧不变，负数保留符号位不变，先求反码再加上1。
+原码，补码，逻辑数字对应关系：
+移位操作 二进制左移一位，其实就是将数字翻倍。
+二进制右移一位，就是将数字除以 2 并求整数商的操作。
+Java 中的左移位和右移位的表示是不太一样的; 左移位是 &amp;laquo; ，那右移位为什么是 &amp;raquo;&amp;gt; 而不是 &amp;raquo; 呢？实际上，&amp;raquo; 也是右移操作。简单来说，之所以有这两种表达方式，根本原因是 Java 的二进制数值中最高一位是符号位。
+当符号位为 0 时，表示该数值为正数；当符号位为 1 时，表示该数值为负数。我们以 32 位 Java 为例，数字 53 的二进制为 110101，从右往左数的第 32 位是 0，表示该数是正数，只是通常我们都将其省略。
+如果数字是 -53 呢？那么第 32 位就不是 0，而是 1。那么这个时候向右移位，就会产生一个问题：对于符号位（特别是符号位为 1 的时候），我们是否也需要将其右移呢？因此，Java 里定义了两种右移，逻辑右移和算术右移。逻辑右移 1 位，左边补 0 即可。
+算术右移时保持符号位不变，除符号位之外的右移一位并补符号位 1。补的 1 仍然在符号位之后。</description>
+    </item>
+    
+    <item>
+      <title>计算机编程体系</title>
+      <link>https://hzren.github.io/blog/2021-01-04-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BC%96%E7%A8%8B%E4%BD%93%E7%B3%BB/</link>
+      <pubDate>Mon, 04 Jan 2021 09:14:30 +0000</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2021-01-04-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BC%96%E7%A8%8B%E4%BD%93%E7%B3%BB/</guid>
+      <description>计算机网络 Hub / 交换机 / 路由器 计算机网络中常见中间设备名称及功能
+路由条目 路由条目
+一次内网到公网的HTTP访问请求 一次内网到公网_公网导内网的数据链路过程
+容器网络 容器网络
+TCP协议 TCP协议
+Linux操作系统 工具 sysstat sysstat包包含许多商用unix通用的各种实用程序，用于监视系统性能和使用活动。
+安装：
+yum install -y sysstat
+github地址：
+官网地址：
+使用文档地址：
+常用命令：
+iostat 报告设备、分区和网络文件系统的CPU统计信息和输入/输出统计信息。
+mpstat 报告单个或组合的处理器相关统计信息。
+pidstat 报告Linux任务（进程）的统计信息：I/O、CPU、内存等。
+tapestat 报告连接到系统的磁带机的统计信息。
+cifsiostat 报告CIFS统计信息。
+sysstat还包含可通过cron或systemd收集和历史化性能和活动数据：
+sar 收集、报告和保存系统活动信息（CPU、内存、磁盘、中断、网络接口、TTY、内核表等）
+sadc 是系统活动数据收集器，用作sar的后端。
+sa1 在系统活动每日数据文件中收集并存储二进制数据。它是sadc的前端，设计成从cron或systemd运行。
+sa2 编写每日活动总结报告。它是sar的前端，设计用于从cron或systemd运行。
+sadf 以多种格式（CSV、XML、JSON等）显示sar收集的数据，并可用于与其他程序的数据交换。该命令还可以用于为sar使用SVG（Scalable Vector Graphics）格式收集的各种活动绘制图形。
+上下文切换 上下文切换
+中断 中断
+内存管理 Linux内存管理
+DMA DMA
+文件系统 文件系统
+Linux网络 Linux网络
+Java语言 Java语言
+JVM相关 JVM
+JVM工具 Arthas使用
+MySQL数据库 序列号 百度的Snowflake算法实现</description>
+    </item>
+    
+    <item>
+      <title>统一资源定位器（URL）</title>
+      <link>https://hzren.github.io/blog/2020-08-03-%E7%BB%9F%E4%B8%80%E8%B5%84%E6%BA%90%E5%AE%9A%E4%BD%8D%E5%99%A8url/</link>
+      <pubDate>Mon, 03 Aug 2020 18:30:39 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2020-08-03-%E7%BB%9F%E4%B8%80%E8%B5%84%E6%BA%90%E5%AE%9A%E4%BD%8D%E5%99%A8url/</guid>
+      <description>目录
+1．绪论... 2
+2．常规URL语法... 2
+2．1&amp;nbsp; URL的主要部分... 2
+2．2&amp;nbsp; URL字符编码问题... 3
+2．3 分层方案和关系链接... 4
+3．特殊方案... 4
+3．1通用因特网方案语法... 4
+3．2 FTP. 5
+3．3 HTTP. 7
+3．4 GOPHER. 7
+3．5 MAILTO.. 9
+3．6 NEWS（新闻）... 10
+3．7 NNTP（Network News Transfer Protocol,网络新闻传输协议）... 10
+3．8 TELNET. 10
+3．9 WAIS（Wide Area Information Servers,广域信息服务系统）... 11
+3．10 FILES(文件) 11
+3．11 PROSPERO.. 12
+4． 新方案的注册... 13
+5．特定URL方案的BNF（巴柯斯范式）... 13
+6．安全事项... 16
+7．感谢... 16
+附录：上下文URL的推荐标准... 17
+参考文献：... 17
+编者地址：... 19
+&amp;nbsp;</description>
+    </item>
+    
+  </channel>
+</rss>

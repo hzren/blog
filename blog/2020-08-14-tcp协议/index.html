@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="zh-cn" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+ 
+
+
+      <title>TCP协议 - </title>
+
+  <meta name="description" content="传输控制协议（缩写：TCP）是一种面向连接的、可靠的、基于字节流的传输层通信协议，由IETF的RFC 793定义。在计算机网络OSI模型中，它处于第四层传输层，同用户数据报协议（UDP）位于同一层。
+应用层向TCP层发送用于网络间传输的、用8位字节表示的数据流，然后TCP把数据流分割成适当长度的报文段（通常受链接数据链路层的最大传输单元（MTU）限制）。之后TCP把结果包传给IP层，由它来透过网络将包传送给接收端实体的TCP层。
+TCP为了保证不发生丢包，就给每个包一个序号，同时序号也保证了传送到接收端实体的包的按序接收。然后接收端实体对已成功收到的包发回一个相应的确认信息（ACK）；如果发送端实体在合理的往返时延（RTT）内未收到确认，那么对应的数据包就被假设为已丢失并进行重传。TCP用一个校验和函数来检验数据是否有错误，在发送和接收时都要计算校验和。
+概念 数据在TCP层称为流（Stream），数据分组称为分段（Segment）。作为比较，数据在IP层称为Datagram，数据分组称为分片（Fragment）。 UDP 中分组称为Message。
+运行方式 一个完整的TCP链接分为三个阶段：连接建立(connection establishment)、数据传送（data transfer）和连接终止（connection termination）。操作系统将TCP连接抽象为套接字表示的本地端点（local end-point）作为编程接口给程序使用。在TCP链接的生命期周期内，本地端点会经历一系列的状态改变。
+数据包结构 链接建立 TCP协议经过三次握手建立链接:
+1. 客户端通过向服务器端发送一个SYN来建立一个主动打开，作为三次握手的一部分。客户端把这段连接的序号设定为随机数A。2. 服务器端应当为一个合法的SYN回送一个SYN/ACK。ACK的确认码应为A&#43;1，SYN/ACK包本身又有一个随机产生的序号B。3. 最后，客户端再发送一个ACK。此时包的序号被设定为A&#43;1，而ACK的确认码则为B&#43;1。当服务端收到这个ACK的时候，就完成了三次握手，并进入了连接建立状态。在第二步，服务器确认自己能收到客户端的数据包 在第三步，客户端收到服务器端的数据包，客户端确认服务器能收到自己的数据包，自己也能收到服务器的数据包 服务器端还不确定客户端是否能收到自己发送的数据包，所以服务器一定要等收到客户端发来的第二个ACK应答才真正建立链接 如果服务器端在收到了客户端的SYN后回了SYN-ACK后客户端掉线了，服务器端没有收到客户端回来的ACK，那么，这个连接就处于一个中间状态，既没有成功，也没有失败。这个时候,服务器端会在一定时间内重发SYN-ACK。在Linux下，默认重试次数为5次，重试的间隔时间从1s开始每次都翻倍，5次的重试时间间隔为1s, 2s, 4s, 8s, 16s，总共31s，第5次发出后还要等32s才知道第5次也超时了，所以，总共需要 1s &#43; 2s &#43; 4s&#43; 8s&#43; 16s &#43; 32s = 63s，服务器端才会断开这个连接。可以使用三个TCP参数来调整行为：tcp_synack_retries 减少重试次数；tcp_max_syn_backlog，增大SYN连接数；tcp_abort_on_overflow在检查到 backlog 队列已满时，直接发 RST 包给客户端终止此连接,此时客户端程序会收到 104 Connection reset by peer 错误。
+TCP_FASTOPEN 控制server socket 接收链接。
+TCP_FASTOPEN_CONNECT 控制socket发起链接。
+为什么是三次握手？
+三次以上的握手是没意义的，因为没办法给每个对方发来的数据包都做确认，这样就陷入了确认包的死循环当中。三次握手的 三次握手的核心是通讯双方都明确自身能收到对方发来的数据包，对方能收到自己发来的数据包
+绑定端口 主机在收到一个TCP包时，使用两端的IP地址与端口号来标识这个TCP包属于哪个TCP链接。主机使用一张表来存储所有的session，表中的每条称作Transmission Control Block（TCB），tcb结构上包括链接的源端口、源IP，目的端口、目的ip、序号、应答序号、对方窗口大小、己方窗口大小、tcp状态、tcp输入/输出队列、应用层输出队列、tcp的重传变量等。
+服务器端的链接数量是无限的，只受内存的限制。客户端的连接数量，在Linux kernel 4.2 之前由于在发送第一个SYN到服务器之前需要先分配一个随机空闲的端口，理论上最大链接数受限于端口数据量，最大65k。从Linux 4.">
+  <meta name="author" content="renhongzhen"/><script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "Code Mark",
+    
+    "url": "https:\/\/hzren.github.io"
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "",
+  "url": "https:\/\/hzren.github.io"
+  
+  
+  
+  
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https:\/\/hzren.github.io",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https:\/\/hzren.github.io\/blog\/2020-08-14-tcp%E5%8D%8F%E8%AE%AE\/",
+          "name": "Tcp协议"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : "renhongzhen"
+  },
+  "headline": "TCP协议",
+  "description" : "传输控制协议（缩写：TCP）是一种面向连接的、可靠的、基于字节流的传输层通信协议，由IETF的RFC 793定义。在计算机网络OSI模型中，它处于第四层传输层，同用户数据报协议（UDP）位于同一层。\n应用层向TCP层发送用于网络间传输的、用8位字节表示的数据流，然后TCP把数据流分割成适当长度的报文段（通常受链接数据链路层的最大传输单元（MTU）限制）。之后TCP把结果包传给IP层，由它来透过网络将包传送给接收端实体的TCP层。\nTCP为了保证不发生丢包，就给每个包一个序号，同时序号也保证了传送到接收端实体的包的按序接收。然后接收端实体对已成功收到的包发回一个相应的确认信息（ACK）；如果发送端实体在合理的往返时延（RTT）内未收到确认，那么对应的数据包就被假设为已丢失并进行重传。TCP用一个校验和函数来检验数据是否有错误，在发送和接收时都要计算校验和。\n概念 数据在TCP层称为流（Stream），数据分组称为分段（Segment）。作为比较，数据在IP层称为Datagram，数据分组称为分片（Fragment）。 UDP 中分组称为Message。\n运行方式 一个完整的TCP链接分为三个阶段：连接建立(connection establishment)、数据传送（data transfer）和连接终止（connection termination）。操作系统将TCP连接抽象为套接字表示的本地端点（local end-point）作为编程接口给程序使用。在TCP链接的生命期周期内，本地端点会经历一系列的状态改变。\n数据包结构 链接建立 TCP协议经过三次握手建立链接:\n1. 客户端通过向服务器端发送一个SYN来建立一个主动打开，作为三次握手的一部分。客户端把这段连接的序号设定为随机数A。\r2. 服务器端应当为一个合法的SYN回送一个SYN\/ACK。ACK的确认码应为A\u002b1，SYN\/ACK包本身又有一个随机产生的序号B。\r3. 最后，客户端再发送一个ACK。此时包的序号被设定为A\u002b1，而ACK的确认码则为B\u002b1。当服务端收到这个ACK的时候，就完成了三次握手，并进入了连接建立状态。\r在第二步，服务器确认自己能收到客户端的数据包 在第三步，客户端收到服务器端的数据包，客户端确认服务器能收到自己的数据包，自己也能收到服务器的数据包 服务器端还不确定客户端是否能收到自己发送的数据包，所以服务器一定要等收到客户端发来的第二个ACK应答才真正建立链接 如果服务器端在收到了客户端的SYN后回了SYN-ACK后客户端掉线了，服务器端没有收到客户端回来的ACK，那么，这个连接就处于一个中间状态，既没有成功，也没有失败。这个时候,服务器端会在一定时间内重发SYN-ACK。在Linux下，默认重试次数为5次，重试的间隔时间从1s开始每次都翻倍，5次的重试时间间隔为1s, 2s, 4s, 8s, 16s，总共31s，第5次发出后还要等32s才知道第5次也超时了，所以，总共需要 1s \u002b 2s \u002b 4s\u002b 8s\u002b 16s \u002b 32s = 63s，服务器端才会断开这个连接。可以使用三个TCP参数来调整行为：tcp_synack_retries 减少重试次数；tcp_max_syn_backlog，增大SYN连接数；tcp_abort_on_overflow在检查到 backlog 队列已满时，直接发 RST 包给客户端终止此连接,此时客户端程序会收到 104 Connection reset by peer 错误。\nTCP_FASTOPEN 控制server socket 接收链接。\nTCP_FASTOPEN_CONNECT 控制socket发起链接。\n为什么是三次握手？\n三次以上的握手是没意义的，因为没办法给每个对方发来的数据包都做确认，这样就陷入了确认包的死循环当中。三次握手的 三次握手的核心是通讯双方都明确自身能收到对方发来的数据包，对方能收到自己发来的数据包\n绑定端口 主机在收到一个TCP包时，使用两端的IP地址与端口号来标识这个TCP包属于哪个TCP链接。主机使用一张表来存储所有的session，表中的每条称作Transmission Control Block（TCB），tcb结构上包括链接的源端口、源IP，目的端口、目的ip、序号、应答序号、对方窗口大小、己方窗口大小、tcp状态、tcp输入\/输出队列、应用层输出队列、tcp的重传变量等。\n服务器端的链接数量是无限的，只受内存的限制。客户端的连接数量，在Linux kernel 4.2 之前由于在发送第一个SYN到服务器之前需要先分配一个随机空闲的端口，理论上最大链接数受限于端口数据量，最大65k。从Linux 4.",
+  "inLanguage" : "zh-cn",
+  "wordCount":  208 ,
+  "datePublished" : "2020-08-14T14:46:06",
+  "dateModified" : "2020-08-14T14:46:06",
+  "image" : "https:\/\/hzren.github.io\/img\/avatar-icon.png",
+  "keywords" : [ "Network, TCP" ],
+  "mainEntityOfPage" : "https:\/\/hzren.github.io\/blog\/2020-08-14-tcp%E5%8D%8F%E8%AE%AE\/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https:\/\/hzren.github.io",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https:\/\/hzren.github.io\/img\/avatar-icon.png",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
+
+<meta property="og:title" content="TCP协议" />
+<meta property="og:description" content="传输控制协议（缩写：TCP）是一种面向连接的、可靠的、基于字节流的传输层通信协议，由IETF的RFC 793定义。在计算机网络OSI模型中，它处于第四层传输层，同用户数据报协议（UDP）位于同一层。
+应用层向TCP层发送用于网络间传输的、用8位字节表示的数据流，然后TCP把数据流分割成适当长度的报文段（通常受链接数据链路层的最大传输单元（MTU）限制）。之后TCP把结果包传给IP层，由它来透过网络将包传送给接收端实体的TCP层。
+TCP为了保证不发生丢包，就给每个包一个序号，同时序号也保证了传送到接收端实体的包的按序接收。然后接收端实体对已成功收到的包发回一个相应的确认信息（ACK）；如果发送端实体在合理的往返时延（RTT）内未收到确认，那么对应的数据包就被假设为已丢失并进行重传。TCP用一个校验和函数来检验数据是否有错误，在发送和接收时都要计算校验和。
+概念 数据在TCP层称为流（Stream），数据分组称为分段（Segment）。作为比较，数据在IP层称为Datagram，数据分组称为分片（Fragment）。 UDP 中分组称为Message。
+运行方式 一个完整的TCP链接分为三个阶段：连接建立(connection establishment)、数据传送（data transfer）和连接终止（connection termination）。操作系统将TCP连接抽象为套接字表示的本地端点（local end-point）作为编程接口给程序使用。在TCP链接的生命期周期内，本地端点会经历一系列的状态改变。
+数据包结构 链接建立 TCP协议经过三次握手建立链接:
+1. 客户端通过向服务器端发送一个SYN来建立一个主动打开，作为三次握手的一部分。客户端把这段连接的序号设定为随机数A。2. 服务器端应当为一个合法的SYN回送一个SYN/ACK。ACK的确认码应为A&#43;1，SYN/ACK包本身又有一个随机产生的序号B。3. 最后，客户端再发送一个ACK。此时包的序号被设定为A&#43;1，而ACK的确认码则为B&#43;1。当服务端收到这个ACK的时候，就完成了三次握手，并进入了连接建立状态。在第二步，服务器确认自己能收到客户端的数据包 在第三步，客户端收到服务器端的数据包，客户端确认服务器能收到自己的数据包，自己也能收到服务器的数据包 服务器端还不确定客户端是否能收到自己发送的数据包，所以服务器一定要等收到客户端发来的第二个ACK应答才真正建立链接 如果服务器端在收到了客户端的SYN后回了SYN-ACK后客户端掉线了，服务器端没有收到客户端回来的ACK，那么，这个连接就处于一个中间状态，既没有成功，也没有失败。这个时候,服务器端会在一定时间内重发SYN-ACK。在Linux下，默认重试次数为5次，重试的间隔时间从1s开始每次都翻倍，5次的重试时间间隔为1s, 2s, 4s, 8s, 16s，总共31s，第5次发出后还要等32s才知道第5次也超时了，所以，总共需要 1s &#43; 2s &#43; 4s&#43; 8s&#43; 16s &#43; 32s = 63s，服务器端才会断开这个连接。可以使用三个TCP参数来调整行为：tcp_synack_retries 减少重试次数；tcp_max_syn_backlog，增大SYN连接数；tcp_abort_on_overflow在检查到 backlog 队列已满时，直接发 RST 包给客户端终止此连接,此时客户端程序会收到 104 Connection reset by peer 错误。
+TCP_FASTOPEN 控制server socket 接收链接。
+TCP_FASTOPEN_CONNECT 控制socket发起链接。
+为什么是三次握手？
+三次以上的握手是没意义的，因为没办法给每个对方发来的数据包都做确认，这样就陷入了确认包的死循环当中。三次握手的 三次握手的核心是通讯双方都明确自身能收到对方发来的数据包，对方能收到自己发来的数据包
+绑定端口 主机在收到一个TCP包时，使用两端的IP地址与端口号来标识这个TCP包属于哪个TCP链接。主机使用一张表来存储所有的session，表中的每条称作Transmission Control Block（TCB），tcb结构上包括链接的源端口、源IP，目的端口、目的ip、序号、应答序号、对方窗口大小、己方窗口大小、tcp状态、tcp输入/输出队列、应用层输出队列、tcp的重传变量等。
+服务器端的链接数量是无限的，只受内存的限制。客户端的连接数量，在Linux kernel 4.2 之前由于在发送第一个SYN到服务器之前需要先分配一个随机空闲的端口，理论上最大链接数受限于端口数据量，最大65k。从Linux 4.">
+<meta property="og:image" content="https://hzren.github.io/img/avatar-icon.png" />
+<meta property="og:url" content="https://hzren.github.io/blog/2020-08-14-tcp%E5%8D%8F%E8%AE%AE/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Code Mark" />
+
+  <meta name="twitter:title" content="TCP协议" />
+  <meta name="twitter:description" content="传输控制协议（缩写：TCP）是一种面向连接的、可靠的、基于字节流的传输层通信协议，由IETF的RFC 793定义。在计算机网络OSI模型中，它处于第四层传输层，同用户数据报协议（UDP）位于同一层。
+应用层向TCP层发送用于网络间传输的、用8位字节表示的数据流，然后TCP把数据流分割成适当长度的报文段（通常受链接数据链路层的最大传输单元（MTU）限制）。之后TCP把结果包传给IP层，由它来透过网络 …">
+  <meta name="twitter:image" content="https://hzren.github.io/img/avatar-icon.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@username" />
+  <meta name="twitter:creator" content="@username" />
+  <link href='https://hzren.github.io/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <meta name="generator" content="Hugo 0.109.0">
+  <link rel="alternate" href="https://hzren.github.io/index.xml" type="application/rss+xml" title="Code Mark"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://hzren.github.io/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="https://hzren.github.io/css/highlight.min.css" /><link rel="stylesheet" href="https://hzren.github.io/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">切换导航</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://hzren.github.io">Code Mark</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="文章" href="/">文章</a>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent">代码</a>
+              <div class="navlinks-children">
+                
+                  <a href="/post/2017-03-07-bigimg-sample">Big Image Sample</a>
+                
+                  <a href="/post/2017-03-05-math-sample">Math Sample</a>
+                
+                  <a href="/post/2016-03-08-code-sample">Code Sample</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li>
+              <a title="关于我" href="/page/about/">关于我</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="分类" href="/tags">分类</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    
+      <div class="avatar-container">
+        <div class="avatar-img-border">
+          <a title="Code Mark" href="https://hzren.github.io">
+            <img class="avatar-img" src="https://hzren.github.io/img/avatar-icon.png" alt="Code Mark" />
+          </a>
+        </div>
+      </div>
+    
+
+  </div>
+</nav>
+
+
+
+
+    
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+
+  
+  
+  
+
+
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    
+    <div class="intro-header no-img">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="blog-heading">
+              
+                <h1>TCP协议</h1>
+              
+              
+                <hr class="small">
+              
+              
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <p>传输控制协议（缩写：TCP）是一种面向连接的、可靠的、基于字节流的传输层通信协议，由IETF的RFC 793定义。在计算机网络OSI模型中，它处于第四层传输层，同用户数据报协议（UDP）位于同一层。</p>
+<blockquote>
+<p>应用层向TCP层发送用于网络间传输的、用<strong>8位字节表示的数据流</strong>，然后TCP<strong>把数据流分割成适当长度的报文段</strong>（通常受链接数据链路层的最大传输单元（MTU）限制）。之后TCP把结果包传给IP层，由它来透过网络将包传送给接收端实体的TCP层。</p>
+</blockquote>
+<blockquote>
+<p>TCP为了保证不发生丢包，就给每个包一个序号，同时序号也保证了传送到接收端实体的包的按序接收。然后接收端实体对已成功收到的包发回一个相应的确认信息（ACK）；如果发送端实体在合理的往返时延（RTT）内未收到确认，那么对应的数据包就被假设为已丢失并进行重传。TCP用一个校验和函数来检验数据是否有错误，在发送和接收时都要计算校验和。</p>
+</blockquote>
+<h2 id="概念">概念</h2>
+<p>数据在TCP层称为流（Stream），数据分组称为分段（Segment）。作为比较，数据在IP层称为Datagram，数据分组称为分片（Fragment）。 UDP 中分组称为Message。</p>
+<h2 id="运行方式">运行方式</h2>
+<p>一个完整的TCP链接分为三个阶段：连接建立(connection establishment)、数据传送（data transfer）和连接终止（connection termination）。操作系统将TCP连接抽象为套接字表示的本地端点（local end-point）作为编程接口给程序使用。在TCP链接的生命期周期内，本地端点会经历一系列的状态改变。</p>
+<h2 id="数据包结构">数据包结构</h2>
+<p><img src="/static/attachment/20200814/7a85a9d6cfd44f3f91434423eb7534d9.png" alt=""></p>
+<h3 id="链接建立">链接建立</h3>
+<p>TCP协议经过三次握手建立链接:</p>
+<pre><code>1. 客户端通过向服务器端发送一个SYN来建立一个主动打开，作为三次握手的一部分。客户端把这段连接的序号设定为随机数A。
+2. 服务器端应当为一个合法的SYN回送一个SYN/ACK。ACK的确认码应为A+1，SYN/ACK包本身又有一个随机产生的序号B。
+3. 最后，客户端再发送一个ACK。此时包的序号被设定为A+1，而ACK的确认码则为B+1。当服务端收到这个ACK的时候，就完成了三次握手，并进入了连接建立状态。
+</code></pre>
+<blockquote>
+<ul>
+<li>在第二步，服务器确认自己能收到客户端的数据包</li>
+<li>在第三步，客户端收到服务器端的数据包，客户端确认服务器能收到自己的数据包，自己也能收到服务器的数据包</li>
+<li>服务器端还不确定客户端是否能收到自己发送的数据包，所以服务器一定要等收到客户端发来的第二个ACK应答才真正建立链接</li>
+</ul>
+</blockquote>
+<p>如果服务器端在收到了客户端的SYN后回了SYN-ACK后客户端掉线了，服务器端没有收到客户端回来的ACK，那么，这个连接就处于一个中间状态，既没有成功，也没有失败。这个时候,服务器端会在一定时间内重发SYN-ACK。在Linux下，默认重试次数为5次，重试的间隔时间从1s开始每次都翻倍，5次的重试时间间隔为1s, 2s, 4s, 8s, 16s，总共31s，第5次发出后还要等32s才知道第5次也超时了，所以，总共需要 1s + 2s + 4s+ 8s+ 16s + 32s = 63s，服务器端才会断开这个连接。可以使用三个TCP参数来调整行为：tcp_synack_retries 减少重试次数；tcp_max_syn_backlog，增大SYN连接数；tcp_abort_on_overflow在检查到 backlog 队列已满时，直接发 RST 包给客户端终止此连接,此时客户端程序会收到 104 Connection reset by peer 错误。</p>
+<p>TCP_FASTOPEN 控制server socket 接收链接。</p>
+<p>TCP_FASTOPEN_CONNECT 控制socket发起链接。</p>
+<p><strong>为什么是三次握手？</strong></p>
+<blockquote>
+<p>三次以上的握手是没意义的，因为没办法给每个对方发来的数据包都做确认，这样就陷入了确认包的死循环当中。三次握手的
+<strong>三次握手的核心是通讯双方都明确自身能收到对方发来的数据包，对方能收到自己发来的数据包</strong></p>
+</blockquote>
+<h3 id="绑定端口">绑定端口</h3>
+<p>主机在收到一个TCP包时，使用两端的IP地址与端口号来标识这个TCP包属于哪个TCP链接。主机使用一张表来存储所有的session，表中的每条称作Transmission Control Block（TCB），tcb结构上包括链接的源端口、源IP，目的端口、目的ip、序号、应答序号、对方窗口大小、己方窗口大小、tcp状态、tcp输入/输出队列、应用层输出队列、tcp的重传变量等。</p>
+<p>服务器端的链接数量是无限的，只受内存的限制。客户端的连接数量，在Linux kernel 4.2 之前由于在发送第一个SYN到服务器之前需要先分配一个随机空闲的端口，理论上最大链接数受限于端口数据量，最大65k。从Linux 4.2开始，有了socket选项<strong>IP_BIND_ADDRESS_NO_PORT</strong>，它通知Linux内核在usingbind使用端口号为0时内部不绑定临时端口（不再占用一个端口），在connect时内核会自动选择一个端口确保TCP四元组是一个独一无二的四元组（同一个客户端端口可用于连接不同的服务器套接字；同一个客户端对同一服务器端套接字的最大链接数为65k）。</p>
+<blockquote>
+<p>NAT设备在链接建立时会根据源IP，源端口，目标IP，目标端口生成一个独一无二的四元组，这个四元组绑定NAT设备上的一个固定端口。NAT设备在需要向外转发数据时，NAT根据数据包四元组即可确定转发端口，在收到外部数据包时，NAT设备根据外部数据包的四元组确定内网设备的目的IP，目的端口。在这个过程中，对于NAT设备来说，存在内网数据包四元组和外网数据包四元组的一对一匹配关系。这种匹配关心在协议基础上，不同协议可以共用同一端口。</p>
+</blockquote>
+<p><strong>在操作系统层面，严格来说，操作是同时根据收到的数据包的四元组+传输层协议确定该数据包交给哪个进程，不是单单通过端口</strong>。</p>
+<p>对于无法确认的包、接收到但还没读取的数据，都会占用操作系统的资源。</p>
+<h3 id="数据传输">数据传输</h3>
+<p>TCP使用以下机制保证TCP的可靠性和稳定性。它们包括：
+1. 使用序号，对收到的TCP报文段进行排序以及检测重复的数据；
+2. 使用校验和检测报文段的错误，即无错传输；
+3. 使用确认和计时器来检测和纠正丢包或延时；
+4. 流控制（Flow control）；
+5. 拥塞控制（Congestion control）；
+6. 重传。</p>
+<h3 id="滑动窗口">滑动窗口</h3>
+<p>TCP要解决的是可靠传输以及包乱序（reordering）的问题，所以，TCP必需要知道网络实际的数据处理带宽或者数据处理速度，这样才不会引起网络拥塞，导致丢包。</p>
+<p>数据在二层是以IP报文为单个发送的，对于接收到的数据报文，接收端必须全部接收或者全部丢弃，不能只接收其中的一部分。所以，TCP引入了一些技术和设计来做流控，Sliding Window是其中一个技术。从前面的报文结构里我们可以看出，TCP头里有一个字段叫Window，又叫Advertised-Window，这个字段是接收端告诉发送端自己还有多少缓冲区可以接收数据，发送端就可以根据这个接收端的处理能力来发送数据，而不会导致接收端处理不过来。</p>
+<p>发送方窗口：</p>
+<p><img src="/static/attachment/20210114/ad-window-sender.png" alt=""></p>
+<p>上图28，29，30等数字代表TCP数据流中的每个字节，在数据传输过程中，数据从左到右依次传输。</p>
+<p>在发送端数据传输过程中，有以下几个部分：</p>
+<ul>
+<li>发送已确认。发送端已发送，并且发送端已接收到接收端ACK应答</li>
+<li>发送未确认。发送端已发送，尚未接收到接收端ACK应答</li>
+<li>发送端未发送，接收端已准备好接受。发送端还未发送，接收端表实自己可以接收过来的数据</li>
+<li>发送端未发送，接收端无法接收。发送端未发送，接收端表实这部分数据超出了自己的接收能力</li>
+</ul>
+<p>上图的<strong>发送已确认的字节位置</strong>是发送端滑动窗口的左边，超过<strong>接收端能接收的最大字位置</strong>是滑动窗口的右边。</p>
+<p><!-- raw HTML omitted -->发送端发送未确认长度 - 接收端能接收长度 = 发送端滑动窗口长度<!-- raw HTML omitted -->。</p>
+<p><strong>在整个数据发送，ACK应答过程中，滑动窗口左右边界向右滑动，这就是发送端的滑动窗口</strong>。</p>
+<ol>
+<li>接收端准备接收长度为0时，代表接收端无空间接收，如果接收未确认有长度，这时候停止发送数据，等待ACK应答，超时则重发数据</li>
+<li>整个窗口为0时，代表接收方无空间处理数据，这时候客户端停止发送数据。没有ACK应答，发送方也无法知道可发送大小，这时候发送端会发发ZWP的包给接收方，让接收方来ack他的Window尺寸，一般这个值会设置成3次，第次大约30-60秒（不同的实现可能会不一样）。如果3次过后还是0的话，有的TCP实现就会发RST把链接断了</li>
+</ol>
+<p>接收方窗口：
+<img src="/static/attachment/20210114/window-receive.png" alt=""></p>
+<p>对于接收端来讲，它的缓冲里记录的内容要简单一些。</p>
+<ol>
+<li>接受并且已确认过的</li>
+<li>还没接收，但是马上就能接收的。也即是我自己的能够接受的最大工作量。</li>
+<li>还没接收，也没法接收的。也即超过工作量的部分，实在做不完。</li>
+</ol>
+<p>接收已确认部分数据长度受应用程序读取和接收数据两方面影响。</p>
+<p><strong>应用程序读取数据，接收已确认部分减少，接收端可以接收新的数据，窗口右侧边界右移</strong>。</p>
+<p><strong>接收端确认新接收到的数据包，滑动窗口左侧边界右移</strong>。</p>
+<h3 id="可靠传输">可靠传输</h3>
+<p>每个TCP报文段中都包含一个序号和一个确认号。发送者的字节流的编号为序号（sequence number），对方的字节流编号为确认号。接收者为了确保可靠性，在接收到一定数量的连续字节流后才发送确认报文。这是对TCP的一种扩展，称为选择确认（Selective Acknowledgement）。选择确认使得接收者可以对乱序到达的数据块进行确认。<strong>每一个<em>字</em>节传输过后，SN号都会递增1。</strong></p>
+<p>通过使用序号和确认号，TCP可以把收到的报文段中的字节按照正确的顺序交付给应用层。序号是32位的无符号数，在它增大到2的32次方-1时，重新从0开始。</p>
+<p>TCP协议使用序号标识每端发出的字节的顺序，从而另一端接收数据时可以重建顺序，这样就可以解决传输时的包的乱序或丢包问题。在发送第一个包时（SYN包），<strong>会选择一个随机数作为序号的初值，以克制TCP序号预测攻击.</strong></p>
+<p>确认包（Acks）会携带已接收到的对方发来的最大字节流的编号，称为确认号，以告诉对方已经成功接收的数据流的字节位置。Ack并不意味着数据已经交付了上层应用程序。</p>
+<p>可靠性通过发送方检测到丢包来保证，有超时重传（Retransmission timeout，RTO）与重复累计确认（duplicate cumulative acknowledgements，DupAcks）两种机制。</p>
+<h4 id="基于重复累计确认的重传">基于重复累计确认的重传</h4>
+<p>如果一个包（假设它的序号是100，即该包始于第100字节）丢失，接收方就不能确认这个包及其以后的包，如果采用了累计ack机制。在接收方在收到100以后的包时，只发出对包含第99字节的包的确认。这种重复确认是包丢失的信号。发送方如果收到3次对同一个包的确认，就重传最后一个未被确认的包。阈值设为3被证实可以减少乱序包导致的无作用的重传（spurious retransmission）现象。选择性确认(SACK)的使用能明确反馈哪个包收到了，极大改善了TCP重传必要的包的能力。</p>
+<h4 id="超时重传">超时重传</h4>
+<p>发送方使用一个保守估计的时间作为收到数据包的确认的超时上限。如果超过这个上限仍未收到确认包，发送方将重传这个数据包。每当发送方收到确认包后，会重置这个重传定时器。</p>
+<h3 id="拥塞控制">拥塞控制</h3>
+<p>拥塞控制是发送方根据网络的承载情况控制分组的发送量，以获取高性能又能避免拥塞崩溃（congestion collapse，网络性能下降几个数量级）已尽量在网络流之间产生近似最大最小公平分配。</p>
+<p>发送方与接收方根据确认包或者包丢失的情况，以及定时器，估计网络拥塞情况，从而修改数据流的行为，这称为拥塞控制或网络拥塞避免。</p>
+<p>TCP的现代实现包含四种相互影响的拥塞控制算法：<strong>慢开始、拥塞避免、快速重传、快速恢复。</strong></p>
+<h2 id="最大分段大小">最大分段大小</h2>
+<p>最大分段大小 (MSS)是在单个分段中TCP愿意接受的数据的字节数最大值。MSS应当足够小以避免IP分片，分片会导致丢包或过多的重传。在TCP连接创建时，双端在SYN报文中用MSS选项宣布各自的MSS，这是从双端各自直接相连的数据链路层的最大传输单元(MTU)的尺寸减去固定的IP首部和TCP首部长度。以太网MTU为1500字节， MSS值可达1460字节。使用IEEE 802.3的MTU为1492字节，MSS可达1452字节。<strong>如果目的IP地址为“非本地的”，MSS通常的默认值为536（这个默认值允许20字节的IP首部和20字节的TCP首部以适合576字节IP数据报）</strong>。此外，发送方可用传输路径MTU发现（RFC 1191）推导出从发送方到接收方的网络路径上的最小MTU，以此动态调整MSS以避免网络IP分片。</p>
+<p>MSS发布也被称作“MSS协商”（MSS negotiation）。严格讲，这并非是协商出来一个统一的MSS值，TCP允许连接两端使用各自不同的MSS值。</p>
+<h2 id="tcp窗口缩放选项">TCP窗口缩放选项</h2>
+<p>TCP窗口范围在2至65,535字节。RFC 1323定义TCP窗口缩放选项最大窗口尺寸从65,535字节扩大至1G字节。扩大窗口尺寸是TCP优化的手段之一。</p>
+<p>某些路由器或分组防火墙会重写窗口缩放选项，这可能导致链接不稳定。</p>
+<h2 id="链接关闭">链接关闭</h2>
+<p>使用了四路握手关闭链接（four-way handshake），在这个过程中连接的每一侧都会独立地被终止。当一个端点要停止它这一侧的连接，就向对侧发送FIN，对侧回复ACK表示确认。因此，关掉一侧的链接需要一对FIN和ACK，分别由两侧端点发出。</p>
+<p>首先发出FIN的一侧，<strong>如果给对侧的FIN响应了ACK，那么就会超时等待2*MSL时间，然后关闭连接</strong>。在这段超时等待时间内，本地的端口不能被新连接使用；避免延时的包的到达与随后的新连接相混淆。RFC793定义了MSL为2分钟，Linux设置成了30s。参数tcp_max_tw_buckets控制并发的TIME_WAIT的数量，默认值是180000，如果超限，那么，系统会把多的TIME_WAIT状态的连接给destory掉，然后在日志里打一个警告（如：time wait bucket table overflow）</p>
+<p>链接可以工作在TCP半开状态。即一侧关闭了连接，不再发送数据；但另一侧没有关闭连接，仍可以发送数据。已关闭的一侧仍然应接收数据，直至对侧也关闭了链接。</p>
+<p>也可以通过测三次握手关闭连接。主机A发出FIN，主机B回复FIN &amp; ACK，然后主机A回复ACK.</p>
+<p>一些主机（如Linux或HP-UX）的TCP栈能实现半双工关闭序列。这种主机如果主动关闭一个连接但还没有读完从这个连接已经收到的数据，该主机会发送RST代替FIN。这使得一个TCP应用程序能确认远程应用程序已经读了所有已发送数据，并等待远程侧发出的FIN。但是远程的TCP栈不能区分Connection Aborting RST与Data Loss RST，两种原因都会导致远程的TCP栈失去所有的收到数据。</p>
+<h2 id="状态编码">状态编码</h2>
+<p>下表为TCP状态码列表，以S指代服务器，C指代客户端，S&amp;C表示两者，S/C表示两者之一：</p>
+<ul>
+<li><strong>LISTEN S</strong></li>
+<li>
+<pre><code>服务器等待从任意远程TCP端口的连接请求。侦听状态。
+</code></pre>
+</li>
+<li><strong>SYN-SENT C</strong></li>
+<li>
+<pre><code>客户在发送连接请求后等待匹配的连接请求。通过connect()函数向服务器发出一个同步（SYNC）信号后进入此状态。
+</code></pre>
+</li>
+<li><strong>SYN-RECEIVED S</strong></li>
+<li>
+<pre><code>服务器已经收到并发送同步（SYNC）信号之后等待确认（ACK）请求。
+</code></pre>
+</li>
+<li><strong>ESTABLISHED S&amp;C</strong></li>
+<li>
+<pre><code>服务器与客户的连接已经打开，收到的数据可以发送给用户。数据传输步骤的正常情况。此时连接两端是平等的。这称作全连接。
+</code></pre>
+</li>
+<li><strong>FIN-WAIT-1 S&amp;C</strong></li>
+<li>
+<pre><code>（服务器或客户）主动关闭端调用close（）函数发出FIN请求包，表示本方的数据发送全部结束，等待TCP连接另一端的ACK确认包或FIN&amp;ACK请求包。
+</code></pre>
+</li>
+<li><strong>FIN-WAIT-2 S&amp;C</strong></li>
+<li>
+<pre><code>主动关闭端在FIN-WAIT-1状态下收到ACK确认包，进入等待远程TCP的连接终止请求的半关闭状态。这时可以接收数据，但不再发送数据。
+</code></pre>
+</li>
+<li><strong>CLOSE-WAIT S&amp;C</strong></li>
+<li>
+<pre><code>被动关闭端接到FIN后，就发出ACK以回应FIN请求，并进入等待本地用户的连接终止请求的半关闭状态。这时可以发送数据，但不再接收数据。
+</code></pre>
+</li>
+<li><strong>CLOSING S&amp;C</strong></li>
+<li>
+<pre><code>在发出FIN后，又收到对方发来的FIN后，进入等待对方对己方的连接终止（FIN）的确认（ACK）的状态。少见。
+</code></pre>
+</li>
+<li><strong>LAST-ACK S&amp;C</strong></li>
+<li>
+<pre><code>被动关闭端全部数据发送完成之后，向主动关闭端发送FIN，进入等待确认包的状态。
+</code></pre>
+</li>
+<li><strong>TIME-WAIT S/C</strong></li>
+<li>
+<pre><code>主动关闭端接收到FIN后，就发送ACK包，等待足够时间以确保被动关闭端收到了终止请求的确认包。【按照RFC 793，一个连接可以在TIME-WAIT保证最大四分钟，即最大分段寿命（maximum segment lifetime）的2倍】
+</code></pre>
+</li>
+<li><strong>CLOSED S&amp;C</strong></li>
+<li>
+<pre><code>完全没有连接。
+</code></pre>
+</li>
+</ul>
+<h2 id="小包问题">小包问题</h2>
+<p>linux上可以通过TCP_NODELAY参数和TCP_CORK参数控制，在关闭TCP_NODELAY之后，当数据包小于对方窗口大小和MSS时，内核会等待40ms发送数据包，最长等待时间不超过200ms。</p>
+
+
+        
+          <div class="blog-tags">
+            
+              <a href="https://hzren.github.io/tags/network/">Network</a>&nbsp;
+            
+              <a href="https://hzren.github.io/tags/tcp/">TCP</a>&nbsp;
+            
+          </div>
+        
+
+        
+            <hr/>
+            <section id="social-share">
+              <div class="list-inline footer-links">
+                
+
+<div class="share-box" aria-hidden="true">
+    <ul class="share">
+      
+      <li>
+        <a href="//twitter.com/share?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-08-14-tcp%25E5%258D%258F%25E8%25AE%25AE%2f&amp;text=TCP%e5%8d%8f%e8%ae%ae&amp;via=username" target="_blank" title="Share on Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fhzren.github.io%2fblog%2f2020-08-14-tcp%25E5%258D%258F%25E8%25AE%25AE%2f" target="_blank" title="Share on Facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//reddit.com/submit?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-08-14-tcp%25E5%258D%258F%25E8%25AE%25AE%2f&amp;title=TCP%e5%8d%8f%e8%ae%ae" target="_blank" title="Share on Reddit">
+          <i class="fab fa-reddit"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-08-14-tcp%25E5%258D%258F%25E8%25AE%25AE%2f&amp;title=TCP%e5%8d%8f%e8%ae%ae" target="_blank" title="Share on LinkedIn">
+          <i class="fab fa-linkedin"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-08-14-tcp%25E5%258D%258F%25E8%25AE%25AE%2f&amp;title=TCP%e5%8d%8f%e8%ae%ae" target="_blank" title="Share on StumbleUpon">
+          <i class="fab fa-stumbleupon"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fhzren.github.io%2fblog%2f2020-08-14-tcp%25E5%258D%258F%25E8%25AE%25AE%2f&amp;description=TCP%e5%8d%8f%e8%ae%ae" target="_blank" title="Share on Pinterest">
+          <i class="fab fa-pinterest"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+  
+
+              </div>
+            </section>
+        
+
+        
+          
+            
+          
+
+          
+                  <h4 class="see-also">也可以看看</h4>
+                  <ul>
+                
+                
+                    <li><a href="/blog/2021-01-19-linux%E7%BD%91%E7%BB%9C/">Linux网络</a></li>
+                
+                    <li><a href="/blog/2021-01-13-%E8%B7%AF%E7%94%B1%E6%9D%A1%E7%9B%AE/">路由条目</a></li>
+                
+                    <li><a href="/blog/2021-01-12-%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C/">容器网络</a></li>
+                
+                    <li><a href="/blog/2021-01-06-%E4%B8%80%E6%AC%A1%E5%86%85%E7%BD%91%E5%88%B0%E5%85%AC%E7%BD%91_%E5%85%AC%E7%BD%91%E5%AF%BC%E5%86%85%E7%BD%91%E7%9A%84%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E8%BF%87%E7%A8%8B/">一次内网到公网_公网导内网的数据链路过程</a></li>
+                
+                    <li><a href="/blog/2020-08-19-tcp-udp-%E6%80%BB%E7%BB%93/">TCP / UDP 总结</a></li>
+                
+              </ul>
+
+          
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="https://hzren.github.io/blog/2020-08-13-ipv4-%E4%B8%8E-ipv6-%E5%8C%BA%E5%88%AB/" data-toggle="tooltip" data-placement="top" title="IPv4 与 IPv6 区别">&larr; 前一篇</a>
+            </li>
+          
+          
+            <li class="next">
+              <a href="https://hzren.github.io/blog/2020-08-17-%E5%AD%90%E7%BD%91-%E5%AD%90%E7%BD%91%E6%8E%A9%E7%A0%81-%E6%97%A0%E7%B1%BB%E5%88%AB%E5%9F%9F%E9%97%B4%E8%B7%AF%E7%94%B1/" data-toggle="tooltip" data-placement="top" title="子网 子网掩码 无类别域间路由">后一篇 &rarr;</a>
+            </li>
+          
+        </ul>
+      
+
+
+      
+        
+        
+      
+
+    </div>
+  </div>
+</div>
+
+      
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+              <li>
+		
+		  <a href="mailto:hzren@outlook.com" title="Email me">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.facebook.com/username" title="Facebook">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-facebook fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://github.com/username" title="GitHub">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://gitlab.com/username" title="GitLab">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-gitlab fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://bitbucket.org/username" title="Bitbucket">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-bitbucket fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://twitter.com/username" title="Twitter">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://username.slack.com/" title="Slack">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-slack fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://reddit.com/u/username" title="Reddit">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-reddit-alien fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://linkedin.com/in/username" title="LinkedIn">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.xing.com/profile/username" title="Xing">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-xing fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://stackoverflow.com/users/XXXXXXX/username" title="StackOverflow">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-stack-overflow fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.snapchat.com/add/username" title="Snapchat">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-snapchat-ghost fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.instagram.com/username" title="Instagram">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-instagram fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.youtube.com/user/username" title="Youtube">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-youtube fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://soundcloud.com/username" title="SoundCloud">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-soundcloud fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://open.spotify.com/user/username" title="Spotify">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-spotify fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://username.bandcamp.com/" title="Bandcamp">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-bandcamp fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://itch.io/profile/username" title="Itch.io">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fas fa-gamepad fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://vk.com/username" title="VK">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-vk fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://paypal.me/username" title="PayPal">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-paypal fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://telegram.me/username" title="Telegram">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-telegram fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://500px.com/username" title="500px">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-500px fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://codepen.io/username" title="CodePen">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-codepen fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.kaggle.com/username" title="kaggle">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-kaggle fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a rel="me"href="https://url" title="Mastodon">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-mastodon fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://weibo.com/username" title="Weibo">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-weibo fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://discord.gg/invite%20code%20%28https://discord.gg/XXXXXXX%29" title="Discord">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-discord fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.strava.com/athletes/userid" title="Strava">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-strava fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+          
+          <li>
+            <a href="" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              <a href="https://hyllo.gitee.io/">renhongzhen</a>
+            
+          
+
+          &nbsp;&bull;&nbsp;&copy;
+          
+            2022
+          
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://hzren.github.io">Code Mark</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          由 <a href="https://gohugo.io">Hugo v0.109.0</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="https://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer><script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script src="https://hzren.github.io/js/main.js"></script>
+<script src="https://hzren.github.io/js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script>
+<script> $(document).ready(function() {$("pre.chroma").css("padding","0");}); </script><script> renderMathInElement(document.body); </script><script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://hzren.github.io/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+
+
+
+    
+  </body>
+</html>
+

@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="zh-cn" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+ 
+
+
+      <title>Spring唯一约束异常统一处理 - </title>
+
+  <meta name="description" content="背景：在数据库唯一约束冲突时，需要根据冲突的唯一约束自动生成错误信息然后返回给前端。
+前提 Spring会将数据库层错误统一转化为DataAccessException ，DataAccessException知只是针对数据库层错误的抽象，根据错误类型不同，Spring实现了不同DataAccessException子类，本篇文章我们只处理DataIntegrityViolationException(唯一约束冲突)。
+在WEB层做统一异常处理 Controller类上添加@ControllerAdvice注解来统一所有WEB接口异常处理。
+@ResponseBody @ExceptionHandler(DataAccessException.class) public Response dbException(DataAccessException e){ if (e instanceof DataIntegrityViolationException){ DataIntegrityViolationException dive = (DataIntegrityViolationException) e; try { return parseAndReturn(dive); }catch (Exception pe){ log.error(&#34;parse Exception fail, origin:&#34; &#43; e.getMessage(), pe); } return Response.fail(dive.getMessage()); } return Response.fail(e.getMessage()); } 解析唯一约束异常中的错误信息 DataIntegrityViolationException异常信息中包含了出错的SQL和格式化之后的错误信息，SQL中可以解析出来数据库表明，格式化的错误信息中可以解析初冲突的唯一约束。
+private static Response parseAndReturn(DataIntegrityViolationException dive) throws JSQLParserException { String[] lines = dive.getMessage().split(&#34;### &#34;); String sql = findLine(lines, &#34;SQL:&#34;); String originErrMsg = dive.getCause().getMessage(); String tableName = parseTableNameFromSql(sql); String[] keyVal = parseKeyNameAndValue(originErrMsg); Map&lt;String, String&gt; tableMap = TABLE_KEY_MAP.">
+  <meta name="author" content="renhongzhen"/><script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "Code Mark",
+    
+    "url": "https:\/\/hzren.github.io"
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "",
+  "url": "https:\/\/hzren.github.io"
+  
+  
+  
+  
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https:\/\/hzren.github.io",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https:\/\/hzren.github.io\/blog\/2022-08-03-spring%E5%94%AF%E4%B8%80%E7%BA%A6%E6%9D%9F%E5%BC%82%E5%B8%B8%E7%BB%9F%E4%B8%80%E5%A4%84%E7%90%86\/",
+          "name": "Spring唯一约束异常统一处理"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : "renhongzhen"
+  },
+  "headline": "Spring唯一约束异常统一处理",
+  "description" : "背景：在数据库唯一约束冲突时，需要根据冲突的唯一约束自动生成错误信息然后返回给前端。\n前提 Spring会将数据库层错误统一转化为DataAccessException ，DataAccessException知只是针对数据库层错误的抽象，根据错误类型不同，Spring实现了不同DataAccessException子类，本篇文章我们只处理DataIntegrityViolationException(唯一约束冲突)。\n在WEB层做统一异常处理 Controller类上添加@ControllerAdvice注解来统一所有WEB接口异常处理。\n@ResponseBody @ExceptionHandler(DataAccessException.class) public Response dbException(DataAccessException e){ if (e instanceof DataIntegrityViolationException){ DataIntegrityViolationException dive = (DataIntegrityViolationException) e; try { return parseAndReturn(dive); }catch (Exception pe){ log.error(\u0026#34;parse Exception fail, origin:\u0026#34; \u002b e.getMessage(), pe); } return Response.fail(dive.getMessage()); } return Response.fail(e.getMessage()); } 解析唯一约束异常中的错误信息 DataIntegrityViolationException异常信息中包含了出错的SQL和格式化之后的错误信息，SQL中可以解析出来数据库表明，格式化的错误信息中可以解析初冲突的唯一约束。\nprivate static Response parseAndReturn(DataIntegrityViolationException dive) throws JSQLParserException { String[] lines = dive.getMessage().split(\u0026#34;### \u0026#34;); String sql = findLine(lines, \u0026#34;SQL:\u0026#34;); String originErrMsg = dive.getCause().getMessage(); String tableName = parseTableNameFromSql(sql); String[] keyVal = parseKeyNameAndValue(originErrMsg); Map\u0026lt;String, String\u0026gt; tableMap = TABLE_KEY_MAP.",
+  "inLanguage" : "zh-cn",
+  "wordCount":  590 ,
+  "datePublished" : "2022-08-03T00:00:00",
+  "dateModified" : "2022-08-03T00:00:00",
+  "image" : "https:\/\/hzren.github.io\/img\/avatar-icon.png",
+  "keywords" : [ "Java, Spring, Exception, 笔记" ],
+  "mainEntityOfPage" : "https:\/\/hzren.github.io\/blog\/2022-08-03-spring%E5%94%AF%E4%B8%80%E7%BA%A6%E6%9D%9F%E5%BC%82%E5%B8%B8%E7%BB%9F%E4%B8%80%E5%A4%84%E7%90%86\/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https:\/\/hzren.github.io",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https:\/\/hzren.github.io\/img\/avatar-icon.png",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
+
+<meta property="og:title" content="Spring唯一约束异常统一处理" />
+<meta property="og:description" content="背景：在数据库唯一约束冲突时，需要根据冲突的唯一约束自动生成错误信息然后返回给前端。
+前提 Spring会将数据库层错误统一转化为DataAccessException ，DataAccessException知只是针对数据库层错误的抽象，根据错误类型不同，Spring实现了不同DataAccessException子类，本篇文章我们只处理DataIntegrityViolationException(唯一约束冲突)。
+在WEB层做统一异常处理 Controller类上添加@ControllerAdvice注解来统一所有WEB接口异常处理。
+@ResponseBody @ExceptionHandler(DataAccessException.class) public Response dbException(DataAccessException e){ if (e instanceof DataIntegrityViolationException){ DataIntegrityViolationException dive = (DataIntegrityViolationException) e; try { return parseAndReturn(dive); }catch (Exception pe){ log.error(&#34;parse Exception fail, origin:&#34; &#43; e.getMessage(), pe); } return Response.fail(dive.getMessage()); } return Response.fail(e.getMessage()); } 解析唯一约束异常中的错误信息 DataIntegrityViolationException异常信息中包含了出错的SQL和格式化之后的错误信息，SQL中可以解析出来数据库表明，格式化的错误信息中可以解析初冲突的唯一约束。
+private static Response parseAndReturn(DataIntegrityViolationException dive) throws JSQLParserException { String[] lines = dive.getMessage().split(&#34;### &#34;); String sql = findLine(lines, &#34;SQL:&#34;); String originErrMsg = dive.getCause().getMessage(); String tableName = parseTableNameFromSql(sql); String[] keyVal = parseKeyNameAndValue(originErrMsg); Map&lt;String, String&gt; tableMap = TABLE_KEY_MAP.">
+<meta property="og:image" content="https://hzren.github.io/img/avatar-icon.png" />
+<meta property="og:url" content="https://hzren.github.io/blog/2022-08-03-spring%E5%94%AF%E4%B8%80%E7%BA%A6%E6%9D%9F%E5%BC%82%E5%B8%B8%E7%BB%9F%E4%B8%80%E5%A4%84%E7%90%86/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Code Mark" />
+
+  <meta name="twitter:title" content="Spring唯一约束异常统一处理" />
+  <meta name="twitter:description" content="背景：在数据库唯一约束冲突时，需要根据冲突的唯一约束自动生成错误信息然后返回给前端。
+前提 Spring会将数据库层错误统一转化为DataAccessException ，DataAccessException知只是针对数据库层错误的抽象，根据错误类型不同，Spring实现了不同DataAccessException子类，本篇文章我们只处 …">
+  <meta name="twitter:image" content="https://hzren.github.io/img/avatar-icon.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@username" />
+  <meta name="twitter:creator" content="@username" />
+  <link href='https://hzren.github.io/img/favicon.ico' rel='icon' type='image/x-icon'/>
+  <meta name="generator" content="Hugo 0.109.0">
+  <link rel="alternate" href="https://hzren.github.io/index.xml" type="application/rss+xml" title="Code Mark"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://hzren.github.io/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+  <link rel="stylesheet" href="https://hzren.github.io/css/highlight.min.css" /><link rel="stylesheet" href="https://hzren.github.io/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">切换导航</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://hzren.github.io">Code Mark</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="文章" href="/">文章</a>
+            </li>
+          
+        
+          
+            <li class="navlinks-container">
+              <a class="navlinks-parent">代码</a>
+              <div class="navlinks-children">
+                
+                  <a href="/post/2017-03-07-bigimg-sample">Big Image Sample</a>
+                
+                  <a href="/post/2017-03-05-math-sample">Math Sample</a>
+                
+                  <a href="/post/2016-03-08-code-sample">Code Sample</a>
+                
+              </div>
+            </li>
+          
+        
+          
+            <li>
+              <a title="关于我" href="/page/about/">关于我</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="分类" href="/tags">分类</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    
+      <div class="avatar-container">
+        <div class="avatar-img-border">
+          <a title="Code Mark" href="https://hzren.github.io">
+            <img class="avatar-img" src="https://hzren.github.io/img/avatar-icon.png" alt="Code Mark" />
+          </a>
+        </div>
+      </div>
+    
+
+  </div>
+</nav>
+
+
+
+
+    
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+
+  
+  
+  
+
+
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    
+    <div class="intro-header no-img">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="blog-heading">
+              
+                <h1>Spring唯一约束异常统一处理</h1>
+              
+              
+                <hr class="small">
+              
+              
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <p>背景：在数据库唯一约束冲突时，需要根据冲突的唯一约束自动生成错误信息然后返回给前端。</p>
+<h3 id="前提">前提</h3>
+<p>Spring会将数据库层错误统一转化为<code>DataAccessException </code>，<code>DataAccessException</code>知只是针对数据库层错误的抽象，根据错误类型不同，Spring实现了不同<code>DataAccessException</code>子类，本篇文章我们只处理<code>DataIntegrityViolationException</code>(唯一约束冲突)。</p>
+<h3 id="在web层做统一异常处理">在WEB层做统一异常处理</h3>
+<p>Controller类上添加<code>@ControllerAdvice</code>注解来统一所有WEB接口异常处理。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">    @ResponseBody
+</span></span><span class="line"><span class="cl">    @ExceptionHandler(DataAccessException.class)
+</span></span><span class="line"><span class="cl">    public Response dbException(DataAccessException e){
+</span></span><span class="line"><span class="cl">        if (e instanceof DataIntegrityViolationException){
+</span></span><span class="line"><span class="cl">            DataIntegrityViolationException dive = (DataIntegrityViolationException) e;
+</span></span><span class="line"><span class="cl">            try {
+</span></span><span class="line"><span class="cl">                return parseAndReturn(dive);
+</span></span><span class="line"><span class="cl">            }catch (Exception pe){
+</span></span><span class="line"><span class="cl">                log.error(&#34;parse Exception fail, origin:&#34; + e.getMessage(), pe);
+</span></span><span class="line"><span class="cl">            }
+</span></span><span class="line"><span class="cl">            return Response.fail(dive.getMessage());
+</span></span><span class="line"><span class="cl">        }
+</span></span><span class="line"><span class="cl">        return Response.fail(e.getMessage());
+</span></span><span class="line"><span class="cl">    }
+</span></span></code></pre></div><h3 id="解析唯一约束异常中的错误信息">解析唯一约束异常中的错误信息</h3>
+<p><code>DataIntegrityViolationException</code>异常信息中包含了出错的SQL和格式化之后的错误信息，SQL中可以解析出来数据库表明，格式化的错误信息中可以解析初冲突的唯一约束。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">    private static Response parseAndReturn(DataIntegrityViolationException dive) throws JSQLParserException {
+</span></span><span class="line"><span class="cl">        String[] lines = dive.getMessage().split(&#34;### &#34;);
+</span></span><span class="line"><span class="cl">        String sql = findLine(lines, &#34;SQL:&#34;);
+</span></span><span class="line"><span class="cl">        String originErrMsg = dive.getCause().getMessage();
+</span></span><span class="line"><span class="cl">        String tableName = parseTableNameFromSql(sql);
+</span></span><span class="line"><span class="cl">        String[] keyVal = parseKeyNameAndValue(originErrMsg);
+</span></span><span class="line"><span class="cl">        Map&lt;String, String&gt; tableMap = TABLE_KEY_MAP.get(tableName);
+</span></span><span class="line"><span class="cl">        String name = tableMap.get(keyVal[0]);
+</span></span><span class="line"><span class="cl">        String msg = &#34;操作失败！&#34; + name + &#34;重复！&#34;;
+</span></span><span class="line"><span class="cl">        return Response.fail(msg);
+</span></span><span class="line"><span class="cl">    }
+</span></span></code></pre></div><h4 id="解析sql中的表名">解析SQL中的表名</h4>
+<p>需要引入SQL解析库：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">        &lt;!-- https://mvnrepository.com/artifact/com.github.jsqlparser/jsqlparser --&gt;
+</span></span><span class="line"><span class="cl">        &lt;dependency&gt;
+</span></span><span class="line"><span class="cl">            &lt;groupId&gt;com.github.jsqlparser&lt;/groupId&gt;
+</span></span><span class="line"><span class="cl">            &lt;artifactId&gt;jsqlparser&lt;/artifactId&gt;
+</span></span><span class="line"><span class="cl">            &lt;version&gt;4.5&lt;/version&gt;
+</span></span><span class="line"><span class="cl">        &lt;/dependency&gt;
+</span></span></code></pre></div><p>解析表名：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">    private static String parseTableNameFromSql(String sql) throws JSQLParserException {
+</span></span><span class="line"><span class="cl">        Statement stmt = CCJSqlParserUtil.parse(sql);
+</span></span><span class="line"><span class="cl">        if (stmt instanceof Update){
+</span></span><span class="line"><span class="cl">            Update u = (Update) stmt;
+</span></span><span class="line"><span class="cl">            return u.getTable().getName();
+</span></span><span class="line"><span class="cl">        }else if (stmt instanceof Insert){
+</span></span><span class="line"><span class="cl">            Insert i = (Insert) stmt;
+</span></span><span class="line"><span class="cl">            return i.getTable().getName();
+</span></span><span class="line"><span class="cl">        }else {
+</span></span><span class="line"><span class="cl">            log.error(&#34;unexpect stmt type:&#34; + stmt.getClass().getSimpleName()+ &#34;, origin sql:&#34; + sql);
+</span></span><span class="line"><span class="cl">        }
+</span></span><span class="line"><span class="cl">        return null;
+</span></span><span class="line"><span class="cl">    }
+</span></span></code></pre></div><h4 id="解析冲突的唯一约束">解析冲突的唯一约束</h4>
+<p>冲突信息为固定格式，一般为：</p>
+<blockquote>
+<p>Duplicate entry &lsquo;冲突值&rsquo; for key &lsquo;唯一约束名称&rsquo;</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">    private static String[] parseKeyNameAndValue(String line){
+</span></span><span class="line"><span class="cl">        String sep = &#34;&#39;&#34;;
+</span></span><span class="line"><span class="cl">        //固定字符串拼接， 从后往前推
+</span></span><span class="line"><span class="cl">        //Duplicate entry &#39;已存在&#39; for key &#39;uk_deptName&#39;
+</span></span><span class="line"><span class="cl">        line = line.substring(0, line.length() - 1);
+</span></span><span class="line"><span class="cl">        int last = line.lastIndexOf(sep);
+</span></span><span class="line"><span class="cl">        String keyName = line.substring(last + 1);
+</span></span><span class="line"><span class="cl">        //去掉key 部分
+</span></span><span class="line"><span class="cl">        line = line.substring(0, last);
+</span></span><span class="line"><span class="cl">        last = line.lastIndexOf(sep);
+</span></span><span class="line"><span class="cl">        int first = line.indexOf(sep);
+</span></span><span class="line"><span class="cl">        String val = line.substring(first + 1, last - 1);
+</span></span><span class="line"><span class="cl">        return new String[]{keyName, val};
+</span></span><span class="line"><span class="cl">    }
+</span></span></code></pre></div><h4 id="转换约束名称">转换约束名称</h4>
+<p>数据库表中的约束名称对系统用户来说一般是看不懂的，处于安全考虑，也不能把唯一约束名称暴露给客户，需要将约束名称转换为客户能看懂的名称。</p>
+<p>一个数据库包含多张表，每个表包含多个约束，需要根据表名来组织约束名称的映射。当前我们直接定义在代码文件中，（也可以定义在资源文件中，看个人需求）</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">    private final static HashMap&lt;String, Map&lt;String, String&gt;&gt; TABLE_KEY_MAP = new HashMap&lt;&gt;(4);
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    static {
+</span></span><span class="line"><span class="cl">        TABLE_KEY_MAP.put(&#34;t1&#34;, t1Map());
+</span></span><span class="line"><span class="cl">        TABLE_KEY_MAP.put(&#34;t2&#34;, t2Map());
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    private static Map&lt;String, String&gt; t1Map(){
+</span></span><span class="line"><span class="cl">        HashMap&lt;String, String&gt; map = new HashMap&lt;&gt;(4);
+</span></span><span class="line"><span class="cl">        map.put(&#34;uk_1, &#34;冲突1&#34;);
+</span></span><span class="line"><span class="cl">        map.put(&#34;uk_2&#34;, &#34;冲突2&#34;);
+</span></span><span class="line"><span class="cl">        return map;
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    private static Map&lt;String, String&gt; t2Map(){
+</span></span><span class="line"><span class="cl">        HashMap&lt;String, String&gt; map = new HashMap&lt;&gt;(4);
+</span></span><span class="line"><span class="cl">        map.put(&#34;uk_3&#34;, &#34;冲突3&#34;);
+</span></span><span class="line"><span class="cl">        return map;
+</span></span><span class="line"><span class="cl">    }
+</span></span></code></pre></div><h3 id="完整代码如下">完整代码如下</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">com</span><span class="p">.</span><span class="nx">hzren</span><span class="p">.</span><span class="nx">test</span><span class="p">.</span><span class="nx">web</span><span class="p">.</span><span class="nx">controller</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nx">com</span><span class="p">.</span><span class="nx">hzren</span><span class="p">.</span><span class="nx">test</span><span class="p">.</span><span class="nx">web</span><span class="p">.</span><span class="nx">vo</span><span class="p">.</span><span class="nx">Response</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nx">lombok</span><span class="p">.</span><span class="nx">extern</span><span class="p">.</span><span class="nx">slf4j</span><span class="p">.</span><span class="nx">Slf4j</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nx">net</span><span class="p">.</span><span class="nx">sf</span><span class="p">.</span><span class="nx">jsqlparser</span><span class="p">.</span><span class="nx">JSQLParserException</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nx">net</span><span class="p">.</span><span class="nx">sf</span><span class="p">.</span><span class="nx">jsqlparser</span><span class="p">.</span><span class="nx">parser</span><span class="p">.</span><span class="nx">CCJSqlParserUtil</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nx">net</span><span class="p">.</span><span class="nx">sf</span><span class="p">.</span><span class="nx">jsqlparser</span><span class="p">.</span><span class="nx">statement</span><span class="p">.</span><span class="nx">Statement</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nx">net</span><span class="p">.</span><span class="nx">sf</span><span class="p">.</span><span class="nx">jsqlparser</span><span class="p">.</span><span class="nx">statement</span><span class="p">.</span><span class="nx">insert</span><span class="p">.</span><span class="nx">Insert</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nx">net</span><span class="p">.</span><span class="nx">sf</span><span class="p">.</span><span class="nx">jsqlparser</span><span class="p">.</span><span class="nx">statement</span><span class="p">.</span><span class="nx">update</span><span class="p">.</span><span class="nx">Update</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nx">org</span><span class="p">.</span><span class="nx">springframework</span><span class="p">.</span><span class="nx">dao</span><span class="p">.</span><span class="nx">DataAccessException</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nx">org</span><span class="p">.</span><span class="nx">springframework</span><span class="p">.</span><span class="nx">dao</span><span class="p">.</span><span class="nx">DataIntegrityViolationException</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nx">org</span><span class="p">.</span><span class="nx">springframework</span><span class="p">.</span><span class="nx">web</span><span class="p">.</span><span class="nx">bind</span><span class="p">.</span><span class="nx">annotation</span><span class="p">.</span><span class="nx">ControllerAdvice</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nx">org</span><span class="p">.</span><span class="nx">springframework</span><span class="p">.</span><span class="nx">web</span><span class="p">.</span><span class="nx">bind</span><span class="p">.</span><span class="nx">annotation</span><span class="p">.</span><span class="nx">ExceptionHandler</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nx">org</span><span class="p">.</span><span class="nx">springframework</span><span class="p">.</span><span class="nx">web</span><span class="p">.</span><span class="nx">bind</span><span class="p">.</span><span class="nx">annotation</span><span class="p">.</span><span class="nx">ResponseBody</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nx">org</span><span class="p">.</span><span class="nx">springframework</span><span class="p">.</span><span class="nx">web</span><span class="p">.</span><span class="nx">bind</span><span class="p">.</span><span class="nx">annotation</span><span class="p">.</span><span class="nx">RestController</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nx">java</span><span class="p">.</span><span class="nx">util</span><span class="p">.</span><span class="nx">HashMap</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nx">java</span><span class="p">.</span><span class="nx">util</span><span class="p">.</span><span class="nx">Map</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="err">@</span><span class="nx">Slf4j</span>
+</span></span><span class="line"><span class="cl"><span class="err">@</span><span class="nx">RestController</span>
+</span></span><span class="line"><span class="cl"><span class="err">@</span><span class="nx">ControllerAdvice</span>
+</span></span><span class="line"><span class="cl"><span class="nx">public</span> <span class="nx">class</span> <span class="nx">DbExceptionAdvice</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nx">private</span> <span class="nx">final</span> <span class="nx">static</span> <span class="nx">HashMap</span><span class="p">&lt;</span><span class="nx">String</span><span class="p">,</span> <span class="nx">Map</span><span class="p">&lt;</span><span class="nx">String</span><span class="p">,</span> <span class="nx">String</span><span class="o">&gt;&gt;</span> <span class="nx">TABLE_KEY_MAP</span> <span class="p">=</span> <span class="nx">new</span> <span class="nx">HashMap</span><span class="p">&lt;&gt;(</span><span class="mi">4</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nx">static</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">TABLE_KEY_MAP</span><span class="p">.</span><span class="nf">put</span><span class="p">(</span><span class="s">&#34;t1&#34;</span><span class="p">,</span> <span class="nf">t1Map</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">TABLE_KEY_MAP</span><span class="p">.</span><span class="nf">put</span><span class="p">(</span><span class="s">&#34;t2&#34;</span><span class="p">,</span> <span class="nf">t2Map</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nx">private</span> <span class="nx">static</span> <span class="nx">Map</span><span class="p">&lt;</span><span class="nx">String</span><span class="p">,</span> <span class="nx">String</span><span class="p">&gt;</span> <span class="nf">t1Map</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">HashMap</span><span class="p">&lt;</span><span class="nx">String</span><span class="p">,</span> <span class="nx">String</span><span class="p">&gt;</span> <span class="kd">map</span> <span class="p">=</span> <span class="nx">new</span> <span class="nx">HashMap</span><span class="p">&lt;&gt;(</span><span class="mi">4</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="kd">map</span><span class="p">.</span><span class="nf">put</span><span class="p">(</span><span class="s">&#34;uk_1, &#34;</span><span class="err">冲突</span><span class="mi">1</span><span class="s">&#34;);
+</span></span></span><span class="line"><span class="cl"><span class="s">        map.put(&#34;</span><span class="nx">uk_2</span><span class="s">&#34;, &#34;</span><span class="err">冲突</span><span class="mi">2</span><span class="s">&#34;);
+</span></span></span><span class="line"><span class="cl"><span class="s">        return map;
+</span></span></span><span class="line"><span class="cl"><span class="s">    }
+</span></span></span><span class="line"><span class="cl"><span class="s">
+</span></span></span><span class="line"><span class="cl"><span class="s">    private static Map&lt;String, String&gt; t2Map(){
+</span></span></span><span class="line"><span class="cl"><span class="s">        HashMap&lt;String, String&gt; map = new HashMap&lt;&gt;(4);
+</span></span></span><span class="line"><span class="cl"><span class="s">        map.put(&#34;</span><span class="nx">uk_3</span><span class="s">&#34;, &#34;</span><span class="err">冲突</span><span class="mi">3</span><span class="s">&#34;);
+</span></span></span><span class="line"><span class="cl"><span class="s">        return map;
+</span></span></span><span class="line"><span class="cl"><span class="s">    }
+</span></span></span><span class="line"><span class="cl"><span class="s">
+</span></span></span><span class="line"><span class="cl"><span class="s">    @ResponseBody
+</span></span></span><span class="line"><span class="cl"><span class="s">    @ExceptionHandler(DataAccessException.class)
+</span></span></span><span class="line"><span class="cl"><span class="s">    public Response dbException(DataAccessException e){
+</span></span></span><span class="line"><span class="cl"><span class="s">        if (e instanceof DataIntegrityViolationException){
+</span></span></span><span class="line"><span class="cl"><span class="s">            DataIntegrityViolationException dive = (DataIntegrityViolationException) e;
+</span></span></span><span class="line"><span class="cl"><span class="s">            try {
+</span></span></span><span class="line"><span class="cl"><span class="s">                return parseAndReturn(dive);
+</span></span></span><span class="line"><span class="cl"><span class="s">            }catch (Exception pe){
+</span></span></span><span class="line"><span class="cl"><span class="s">                log.error(&#34;</span><span class="nx">parse</span> <span class="nx">Exception</span> <span class="nx">fail</span><span class="p">,</span> <span class="nx">origin</span><span class="p">:</span><span class="s">&#34; + e.getMessage(), pe);
+</span></span></span><span class="line"><span class="cl"><span class="s">            }
+</span></span></span><span class="line"><span class="cl"><span class="s">            return Response.fail(dive.getMessage());
+</span></span></span><span class="line"><span class="cl"><span class="s">        }
+</span></span></span><span class="line"><span class="cl"><span class="s">        return Response.fail(e.getMessage());
+</span></span></span><span class="line"><span class="cl"><span class="s">    }
+</span></span></span><span class="line"><span class="cl"><span class="s">
+</span></span></span><span class="line"><span class="cl"><span class="s">    private static Response parseAndReturn(DataIntegrityViolationException dive) throws JSQLParserException {
+</span></span></span><span class="line"><span class="cl"><span class="s">        String[] lines = dive.getMessage().split(&#34;</span><span class="err">###</span> <span class="s">&#34;);
+</span></span></span><span class="line"><span class="cl"><span class="s">        String sql = findLine(lines, &#34;</span><span class="nx">SQL</span><span class="p">:</span><span class="s">&#34;);
+</span></span></span><span class="line"><span class="cl"><span class="s">        String originErrMsg = dive.getCause().getMessage();
+</span></span></span><span class="line"><span class="cl"><span class="s">        String tableName = parseTableNameFromSql(sql);
+</span></span></span><span class="line"><span class="cl"><span class="s">        String[] keyVal = parseKeyNameAndValue(originErrMsg);
+</span></span></span><span class="line"><span class="cl"><span class="s">        Map&lt;String, String&gt; tableMap = TABLE_KEY_MAP.get(tableName);
+</span></span></span><span class="line"><span class="cl"><span class="s">        String name = tableMap.get(keyVal[0]);
+</span></span></span><span class="line"><span class="cl"><span class="s">        String msg = &#34;</span><span class="err">操作失败！</span><span class="s">&#34; + name + &#34;</span><span class="err">重复！</span><span class="s">&#34;;
+</span></span></span><span class="line"><span class="cl"><span class="s">        return Response.fail(msg);
+</span></span></span><span class="line"><span class="cl"><span class="s">    }
+</span></span></span><span class="line"><span class="cl"><span class="s">
+</span></span></span><span class="line"><span class="cl"><span class="s">    private static String[] parseKeyNameAndValue(String line){
+</span></span></span><span class="line"><span class="cl"><span class="s">        String sep = &#34;</span><span class="err">&#39;</span><span class="s">&#34;;
+</span></span></span><span class="line"><span class="cl"><span class="s">        //固定字符串拼接， 从后往前推
+</span></span></span><span class="line"><span class="cl"><span class="s">        //Duplicate entry &#39;已存在&#39; for key &#39;uk_deptName&#39;
+</span></span></span><span class="line"><span class="cl"><span class="s">        line = line.substring(0, line.length() - 1);
+</span></span></span><span class="line"><span class="cl"><span class="s">        int last = line.lastIndexOf(sep);
+</span></span></span><span class="line"><span class="cl"><span class="s">        String keyName = line.substring(last + 1);
+</span></span></span><span class="line"><span class="cl"><span class="s">        //去掉key 部分
+</span></span></span><span class="line"><span class="cl"><span class="s">        line = line.substring(0, last);
+</span></span></span><span class="line"><span class="cl"><span class="s">        last = line.lastIndexOf(sep);
+</span></span></span><span class="line"><span class="cl"><span class="s">        int first = line.indexOf(sep);
+</span></span></span><span class="line"><span class="cl"><span class="s">        String val = line.substring(first + 1, last - 1);
+</span></span></span><span class="line"><span class="cl"><span class="s">        return new String[]{keyName, val};
+</span></span></span><span class="line"><span class="cl"><span class="s">    }
+</span></span></span><span class="line"><span class="cl"><span class="s">
+</span></span></span><span class="line"><span class="cl"><span class="s">    private static String parseTableNameFromSql(String sql) throws JSQLParserException {
+</span></span></span><span class="line"><span class="cl"><span class="s">        Statement stmt = CCJSqlParserUtil.parse(sql);
+</span></span></span><span class="line"><span class="cl"><span class="s">        if (stmt instanceof Update){
+</span></span></span><span class="line"><span class="cl"><span class="s">            Update u = (Update) stmt;
+</span></span></span><span class="line"><span class="cl"><span class="s">            return u.getTable().getName();
+</span></span></span><span class="line"><span class="cl"><span class="s">        }else if (stmt instanceof Insert){
+</span></span></span><span class="line"><span class="cl"><span class="s">            Insert i = (Insert) stmt;
+</span></span></span><span class="line"><span class="cl"><span class="s">            return i.getTable().getName();
+</span></span></span><span class="line"><span class="cl"><span class="s">        }else {
+</span></span></span><span class="line"><span class="cl"><span class="s">            log.error(&#34;</span><span class="nx">unexpect</span> <span class="nx">stmt</span> <span class="kd">type</span><span class="p">:</span><span class="s">&#34; + stmt.getClass().getSimpleName()+ &#34;</span><span class="p">,</span> <span class="nx">origin</span> <span class="nx">sql</span><span class="p">:</span><span class="err">&#34;</span> <span class="o">+</span> <span class="nx">sql</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nx">null</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nx">private</span> <span class="nx">static</span> <span class="nx">String</span> <span class="nf">findLine</span><span class="p">(</span><span class="nx">String</span><span class="p">[]</span> <span class="nx">lines</span><span class="p">,</span> <span class="nx">String</span> <span class="nx">prefix</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="p">(</span><span class="nx">String</span> <span class="nx">line</span> <span class="p">:</span> <span class="nx">lines</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="nx">line</span><span class="p">.</span><span class="nf">startsWith</span><span class="p">(</span><span class="nx">prefix</span><span class="p">)){</span>
+</span></span><span class="line"><span class="cl">                <span class="k">return</span> <span class="nx">line</span><span class="p">.</span><span class="nf">substring</span><span class="p">(</span><span class="nx">prefix</span><span class="p">.</span><span class="nf">length</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nx">null</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>依赖SQL解析包</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"></code></pre></div>
+
+        
+          <div class="blog-tags">
+            
+              <a href="https://hzren.github.io/tags/java/">Java</a>&nbsp;
+            
+              <a href="https://hzren.github.io/tags/spring/">Spring</a>&nbsp;
+            
+              <a href="https://hzren.github.io/tags/exception/">Exception</a>&nbsp;
+            
+              <a href="https://hzren.github.io/tags/%E7%AC%94%E8%AE%B0/">笔记</a>&nbsp;
+            
+          </div>
+        
+
+        
+            <hr/>
+            <section id="social-share">
+              <div class="list-inline footer-links">
+                
+
+<div class="share-box" aria-hidden="true">
+    <ul class="share">
+      
+      <li>
+        <a href="//twitter.com/share?url=https%3a%2f%2fhzren.github.io%2fblog%2f2022-08-03-spring%25E5%2594%25AF%25E4%25B8%2580%25E7%25BA%25A6%25E6%259D%259F%25E5%25BC%2582%25E5%25B8%25B8%25E7%25BB%259F%25E4%25B8%2580%25E5%25A4%2584%25E7%2590%2586%2f&amp;text=Spring%e5%94%af%e4%b8%80%e7%ba%a6%e6%9d%9f%e5%bc%82%e5%b8%b8%e7%bb%9f%e4%b8%80%e5%a4%84%e7%90%86&amp;via=username" target="_blank" title="Share on Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fhzren.github.io%2fblog%2f2022-08-03-spring%25E5%2594%25AF%25E4%25B8%2580%25E7%25BA%25A6%25E6%259D%259F%25E5%25BC%2582%25E5%25B8%25B8%25E7%25BB%259F%25E4%25B8%2580%25E5%25A4%2584%25E7%2590%2586%2f" target="_blank" title="Share on Facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//reddit.com/submit?url=https%3a%2f%2fhzren.github.io%2fblog%2f2022-08-03-spring%25E5%2594%25AF%25E4%25B8%2580%25E7%25BA%25A6%25E6%259D%259F%25E5%25BC%2582%25E5%25B8%25B8%25E7%25BB%259F%25E4%25B8%2580%25E5%25A4%2584%25E7%2590%2586%2f&amp;title=Spring%e5%94%af%e4%b8%80%e7%ba%a6%e6%9d%9f%e5%bc%82%e5%b8%b8%e7%bb%9f%e4%b8%80%e5%a4%84%e7%90%86" target="_blank" title="Share on Reddit">
+          <i class="fab fa-reddit"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.linkedin.com/shareArticle?url=https%3a%2f%2fhzren.github.io%2fblog%2f2022-08-03-spring%25E5%2594%25AF%25E4%25B8%2580%25E7%25BA%25A6%25E6%259D%259F%25E5%25BC%2582%25E5%25B8%25B8%25E7%25BB%259F%25E4%25B8%2580%25E5%25A4%2584%25E7%2590%2586%2f&amp;title=Spring%e5%94%af%e4%b8%80%e7%ba%a6%e6%9d%9f%e5%bc%82%e5%b8%b8%e7%bb%9f%e4%b8%80%e5%a4%84%e7%90%86" target="_blank" title="Share on LinkedIn">
+          <i class="fab fa-linkedin"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.stumbleupon.com/submit?url=https%3a%2f%2fhzren.github.io%2fblog%2f2022-08-03-spring%25E5%2594%25AF%25E4%25B8%2580%25E7%25BA%25A6%25E6%259D%259F%25E5%25BC%2582%25E5%25B8%25B8%25E7%25BB%259F%25E4%25B8%2580%25E5%25A4%2584%25E7%2590%2586%2f&amp;title=Spring%e5%94%af%e4%b8%80%e7%ba%a6%e6%9d%9f%e5%bc%82%e5%b8%b8%e7%bb%9f%e4%b8%80%e5%a4%84%e7%90%86" target="_blank" title="Share on StumbleUpon">
+          <i class="fab fa-stumbleupon"></i>
+        </a>
+      </li>
+  
+      
+      <li>
+        <a href="//www.pinterest.com/pin/create/button/?url=https%3a%2f%2fhzren.github.io%2fblog%2f2022-08-03-spring%25E5%2594%25AF%25E4%25B8%2580%25E7%25BA%25A6%25E6%259D%259F%25E5%25BC%2582%25E5%25B8%25B8%25E7%25BB%259F%25E4%25B8%2580%25E5%25A4%2584%25E7%2590%2586%2f&amp;description=Spring%e5%94%af%e4%b8%80%e7%ba%a6%e6%9d%9f%e5%bc%82%e5%b8%b8%e7%bb%9f%e4%b8%80%e5%a4%84%e7%90%86" target="_blank" title="Share on Pinterest">
+          <i class="fab fa-pinterest"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+  
+
+              </div>
+            </section>
+        
+
+        
+          
+            
+          
+
+          
+                  <h4 class="see-also">也可以看看</h4>
+                  <ul>
+                
+                
+                    <li><a href="/blog/2021-01-27-arthas%E4%BD%BF%E7%94%A8/">Arthas使用</a></li>
+                
+                    <li><a href="/blog/2021-01-25-jvm/">JVM</a></li>
+                
+                    <li><a href="/blog/2021-01-22-java%E8%AF%AD%E8%A8%80/">Java语言</a></li>
+                
+                    <li><a href="/blog/2020-09-29-java%E4%BD%BF%E7%94%A8protocol-buffers/">Java使用Protocol Buffers</a></li>
+                
+                    <li><a href="/blog/2020-08-04-%E4%B8%80%E6%AC%A1httpheaders-setcontentdispositionformdata-%E5%BC%95%E5%8F%91%E7%9A%84%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%93%BE%E6%8E%A5%E5%BC%82%E5%B8%B8%E8%AE%B0%E5%BD%95/">一次HttpHeaders setContentDispositionFormData 引发的服务端链接异常记录</a></li>
+                
+              </ul>
+
+          
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="https://hzren.github.io/blog/2022-08-02-mysql%E8%BD%AC%E4%B9%89%E5%AD%97%E7%AC%A6/" data-toggle="tooltip" data-placement="top" title="Mysql转义字符">&larr; 前一篇</a>
+            </li>
+          
+          
+        </ul>
+      
+
+
+      
+        
+        
+      
+
+    </div>
+  </div>
+</div>
+
+      
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+              <li>
+		
+		  <a href="mailto:hzren@outlook.com" title="Email me">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.facebook.com/username" title="Facebook">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-facebook fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://github.com/username" title="GitHub">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://gitlab.com/username" title="GitLab">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-gitlab fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://bitbucket.org/username" title="Bitbucket">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-bitbucket fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://twitter.com/username" title="Twitter">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://username.slack.com/" title="Slack">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-slack fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://reddit.com/u/username" title="Reddit">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-reddit-alien fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://linkedin.com/in/username" title="LinkedIn">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.xing.com/profile/username" title="Xing">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-xing fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://stackoverflow.com/users/XXXXXXX/username" title="StackOverflow">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-stack-overflow fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.snapchat.com/add/username" title="Snapchat">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-snapchat-ghost fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.instagram.com/username" title="Instagram">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-instagram fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.youtube.com/user/username" title="Youtube">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-youtube fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://soundcloud.com/username" title="SoundCloud">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-soundcloud fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://open.spotify.com/user/username" title="Spotify">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-spotify fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://username.bandcamp.com/" title="Bandcamp">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-bandcamp fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://itch.io/profile/username" title="Itch.io">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fas fa-gamepad fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://vk.com/username" title="VK">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-vk fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://paypal.me/username" title="PayPal">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-paypal fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://telegram.me/username" title="Telegram">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-telegram fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://500px.com/username" title="500px">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-500px fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://codepen.io/username" title="CodePen">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-codepen fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.kaggle.com/username" title="kaggle">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-kaggle fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a rel="me"href="https://url" title="Mastodon">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-mastodon fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://weibo.com/username" title="Weibo">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-weibo fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://discord.gg/invite%20code%20%28https://discord.gg/XXXXXXX%29" title="Discord">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-discord fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+		
+		  <a href="https://www.strava.com/athletes/userid" title="Strava">
+		
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-strava fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+          
+          <li>
+            <a href="" title="RSS">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              <a href="https://hyllo.gitee.io/">renhongzhen</a>
+            
+          
+
+          &nbsp;&bull;&nbsp;&copy;
+          
+            2022
+          
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://hzren.github.io">Code Mark</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          由 <a href="https://gohugo.io">Hugo v0.109.0</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="https://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer><script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script src="https://hzren.github.io/js/main.js"></script>
+<script src="https://hzren.github.io/js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script>
+<script> $(document).ready(function() {$("pre.chroma").css("padding","0");}); </script><script> renderMathInElement(document.body); </script><script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://hzren.github.io/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+
+
+
+    
+  </body>
+</html>
+

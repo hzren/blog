@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Java on Code Mark</title>
+    <link>https://hzren.github.io/tags/java/</link>
+    <description>Recent content in Java on Code Mark</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <managingEditor>hzren@outlook.com (renhongzhen)</managingEditor>
+    <webMaster>hzren@outlook.com (renhongzhen)</webMaster>
+    <lastBuildDate>Wed, 03 Aug 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://hzren.github.io/tags/java/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Spring唯一约束异常统一处理</title>
+      <link>https://hzren.github.io/blog/2022-08-03-spring%E5%94%AF%E4%B8%80%E7%BA%A6%E6%9D%9F%E5%BC%82%E5%B8%B8%E7%BB%9F%E4%B8%80%E5%A4%84%E7%90%86/</link>
+      <pubDate>Wed, 03 Aug 2022 00:00:00 +0000</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2022-08-03-spring%E5%94%AF%E4%B8%80%E7%BA%A6%E6%9D%9F%E5%BC%82%E5%B8%B8%E7%BB%9F%E4%B8%80%E5%A4%84%E7%90%86/</guid>
+      <description>背景：在数据库唯一约束冲突时，需要根据冲突的唯一约束自动生成错误信息然后返回给前端。
+前提 Spring会将数据库层错误统一转化为DataAccessException ，DataAccessException知只是针对数据库层错误的抽象，根据错误类型不同，Spring实现了不同DataAccessException子类，本篇文章我们只处理DataIntegrityViolationException(唯一约束冲突)。
+在WEB层做统一异常处理 Controller类上添加@ControllerAdvice注解来统一所有WEB接口异常处理。
+@ResponseBody @ExceptionHandler(DataAccessException.class) public Response dbException(DataAccessException e){ if (e instanceof DataIntegrityViolationException){ DataIntegrityViolationException dive = (DataIntegrityViolationException) e; try { return parseAndReturn(dive); }catch (Exception pe){ log.error(&amp;#34;parse Exception fail, origin:&amp;#34; + e.getMessage(), pe); } return Response.fail(dive.getMessage()); } return Response.fail(e.getMessage()); } 解析唯一约束异常中的错误信息 DataIntegrityViolationException异常信息中包含了出错的SQL和格式化之后的错误信息，SQL中可以解析出来数据库表明，格式化的错误信息中可以解析初冲突的唯一约束。
+private static Response parseAndReturn(DataIntegrityViolationException dive) throws JSQLParserException { String[] lines = dive.getMessage().split(&amp;#34;### &amp;#34;); String sql = findLine(lines, &amp;#34;SQL:&amp;#34;); String originErrMsg = dive.getCause().getMessage(); String tableName = parseTableNameFromSql(sql); String[] keyVal = parseKeyNameAndValue(originErrMsg); Map&amp;lt;String, String&amp;gt; tableMap = TABLE_KEY_MAP.</description>
+    </item>
+    
+    <item>
+      <title>Arthas使用</title>
+      <link>https://hzren.github.io/blog/2021-01-27-arthas%E4%BD%BF%E7%94%A8/</link>
+      <pubDate>Wed, 27 Jan 2021 15:11:16 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2021-01-27-arthas%E4%BD%BF%E7%94%A8/</guid>
+      <description>官方教程
+文档
+下载 下载全量zip包：从Github Releases页下载
+wget https://github.com/alibaba/arthas/releases/download/arthas-all-3.4.6/arthas-bin.zip 下载完成之后解压：
+unzip arthas-bin.zip arthas 依赖JDK，如果只安装了JRE，是没法使用的。
+启动 可以通过as.sh脚本启动：
+./as.sh 也可以通过java命令启动：
+java -jar arthas-boot.jar 启动之后会显示当前操作系统上运行的Java进行，选择应用java进程：
+$ $ java -jar arthas-boot.jar * [1]: 35542 [2]: 71560 arthas-demo.jar Demo进程是第2个，则输入2，再输入回车/enter。Arthas会attach到目标进程上，并输出日志：
+[INFO] Try to attach process 71560 [INFO] Attach process 71560 success. [INFO] arthas-client connect 127.0.0.1 3658 ,---. ,------. ,--------.,--. ,--. ,---. ,---. / O \ | .--. &amp;#39;&amp;#39;--. .--&amp;#39;| &amp;#39;--&amp;#39; | / O \ &amp;#39; .-&amp;#39; | .-. || &amp;#39;--&amp;#39;.</description>
+    </item>
+    
+    <item>
+      <title>JVM</title>
+      <link>https://hzren.github.io/blog/2021-01-25-jvm/</link>
+      <pubDate>Mon, 25 Jan 2021 15:48:02 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2021-01-25-jvm/</guid>
+      <description>在 Java 虚拟机规范中，局部变量区等价于一个数组，并且可以用正整数来索引。除了 long、double 值需要用两个数组单元来存储之外，其他基本类型以及引用类型的值均占用一个数组单元。
+也就是说，boolean、byte、char、short 这四种类型，在栈上占用的空间和 int 是一样的，和引用类型也是一样的。因此，在 32 位的 HotSpot 中，这些类型在栈上将占用 4 个字节；而在 64 位的 HotSpot 中，他们将占 8 个字节。
+当然，这种情况仅存在于局部变量，而并不会出现在存储于堆中的字段或者数组元素上。对于 byte、char 以及 short 这三种类型的字段或者数组单元，它们在堆上占用的空间分别为一字节、两字节，以及两字节，也就是说，跟这些类型的值域相吻合。
+因此，当我们将一个 int 类型的值，存储到这些类型的字段或数组时，相当于做了一次隐式的掩码操作。举例来说，当我们把 0xFFFFFFFF（-1）存储到一个声明为 char 类型的字段里时，由于该字段仅占两字节，所以高两位的字节便会被截取掉，最终存入“\uFFFF”。
+boolean 字段和 boolean 数组则比较特殊。在 HotSpot 中，boolean 字段占用一字节，而 boolean 数组则直接用 byte 数组来实现。为了保证堆中的 boolean 值是合法的，HotSpot 在存储时显式地进行掩码操作，也就是说，只取最后一位的值存入 boolean 字段或数组中。
+重载 重载的方法在编译过程中即可完成识别。具体到每一个方法调用，Java 编译器会根据所传入参数的声明类型（注意与实际类型区分）来选取重载方法。选取的过程共分为三个阶段：
+在不考虑对基本类型自动装拆箱（auto-boxing，auto-unboxing），以及可变长参数的情况下选取重载方法； 如果在第 1 个阶段中没有找到适配的方法，那么在允许自动装拆箱，但不允许可变长参数的情况下选取重载方法； 如果在第 2 个阶段中没有找到适配的方法，那么在允许自动装拆箱以及可变长参数的情况下选取重载方法。 如果 Java 编译器在同一个阶段中找到了多个适配的方法，那么它会在其中选择一个最为贴切的，而决定贴切程度的一个关键就是形式参数类型的继承关系。
+JVM 的静态绑定和动态绑定 Java 虚拟机中关于方法重写的判定同样基于方法描述符。也就是说，如果子类定义了与父类中非私有、非静态方法同名的方法，那么只有当这两个方法的参数类型以及返回类型一致，Java 虚拟机才会判定为重写。
+对于 Java 语言中重写而 Java 虚拟机中非重写的情况，编译器会通过生成桥接方法来实现 Java 中的重写语义。</description>
+    </item>
+    
+    <item>
+      <title>Java语言</title>
+      <link>https://hzren.github.io/blog/2021-01-22-java%E8%AF%AD%E8%A8%80/</link>
+      <pubDate>Fri, 22 Jan 2021 10:55:31 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2021-01-22-java%E8%AF%AD%E8%A8%80/</guid>
+      <description>引用类型 不同的引用类型，主要体现的是对象不同的可达性（reachable）状态和对垃圾收集的影响
+强引用（&amp;ldquo;Strong&amp;rdquo; Reference），就是我们最常见的普通对象引用，只要还有强引用指向一个对象，就能表明对象还“活着”，垃圾收集器不会碰这种对象。对于一个普通的对象，如果没有其他的引用关系，只要超过了引用的作用域或者显式地将相应（强）引用赋值为null，就是可以被垃圾收集的了，当然具体回收时机还是要看垃圾收集策略。
+软引用（SoftReference），是一种相对强引用弱化一些的引用，可以让对象豁免一些垃圾收集，只有当JVM认为内存不足时，才会去试图回收软引用指向的对象。JVM会确保在抛出OutOfMemoryError之前，清理软引用指向的对象。软引用通常用来实现内存敏感的缓存，如果还有空闲内存，就可以暂时保留缓存，当内存不足时清理掉，这样就保证了使用缓存的同时，不会耗尽内存。
+**弱引用（WeakReference）**并不能使对象豁免垃圾收集，仅仅是提供一种访问在弱引用状态下对象的途径。这就可以用来构建一种没有特定约束的关系，比如，维护一种非强制性的映射关系，如果试图获取时对象还在，就使用它，否则重现实例化。它同样是很多缓存实现的选择。对于幻象引用，有时候也翻译成虚引用，你不能通过它访问对象。
+**幻象引用 (PhantomReference)**仅仅是提供了一种确保对象被fnalize以后，做某些事情的机制，比如，通常用来做所谓的Post-Mortem清理机制，我在专栏上一讲中介绍的Java平台自身Cleaner机制等，也有人利用幻象引用监控对象的创建和销毁。
+如何工作 这是JDK在语言层面提供的一种可以和GC打交道的机制。如果手动创建ReferenceQueue，一定要对ReferenceQueue里对象就行消非，不然OOM了要。
+操过过程：
+创建引用对象时需要指定引用队列(ReferenceQueue)。 JVM在调用finalize()方法后，会把对象的引用放入构造器传入的引用队列(ReferenceQueue) 通过判断该引用对象是否入队列来确定对象是否已被垃圾回收(入队时，可能已回收，也可能没回收，当前该对象已不可达) 详细逻辑参照java.lang.ref.Reference文档。
+生命周期：
+Java定义的不同可达性级别（reachability level），具体如下：
+强可达（Strongly Reachable），就是当一个对象可以有一个或多个线程可以不通过各种引用访问到的情况。比如，我们新创建一个对象，那么创建它的线程对它就是强可达。 软可达（Softly Reachable），就是当我们只能通过软引用才能访问到对象的状态。 弱可达（Weakly Reachable），类似前面提到的，就是无法通过强引用或者软引用访问，只能通过弱引用访问时的状态。这是十分临近fnalize状态的时机，当弱引用被清除的时候，就符合fnalize的条件了。 幻象可达（Phantom Reachable），上面流程图已经很直观了，就是没有强、软、弱引用关联，并且fnalize过了，只有幻象引用指向这个对象的时候。 不可达（unreachable），意味着对象可以被清除了。判断对象可达性，是JVM垃圾收集器决定如何处理对象的一部分考虑。 引用队列（ReferenceQueue）
+JVM会在特定时机将引用enqueue到队列里，我们可以从队列里获取引用（remove方法在这里实际是有获取的意思）进行相关后续逻辑。尤其是幻象引用，get方法只返回null，如果再不指定引用队列，基本就没有意义了。看看下面的示例代码。利用引用队列，我们可以在对象处于相应状态时（对于幻象引用，就是前面说的被fnalize了，处于幻象可达状态），执行后期处理逻辑。
+字符串 在Java9之前的历史版本中，它是使用char数组来存数据的，这样非常直接。但是Java中的char是两个bytes大小，拉丁语系语言的字符，根本就不需要太宽的char，这样无区别的实现就造成了一定的浪费。
+在Java 9中，引入了Compact Strings的设计，对字符串进行了大刀阔斧的改进。将数据存储方式从char数组，改变为一个byte数组加上一个标识编码的所谓coder，并且将相关字符串操作类都进行了修改。另外，所有相关的Intrinsic之类也都进行了重写，以保证没有任何性能损失。虽然底层实现发生了这么大的改变，但是Java字符串的行为并没有任何大的变化，所以这个特性对于绝大部分应用来说是透明的，绝大部分情况不需要修改已有代码。当然，在极端情况下，字符串也出现了一些能力退化，比如最大字符串的大小。
+AOP JDK 动态代理，基于接口
+cglib 可以基于类，在代理方法执行前后处理一些事情。Spring的cglib方式的事务注解代理，先根据目标类生成代理类并实例化代理对象，把目标对象作为一个属性设置到代理对象上。在需要注入目标类的地方注入代理生成的子类对象。在代码执行过程中：
+调用到代理类中重写的代理方法 代理方法内调用到目标类目标方法 目标方法如果调用了自身方法，这时候会出问题，代理类是通过在目标对象上调用目标方法来执行的，并不是通过super.方法名这种形式，所以是调用不到代理方法的。
+基本类型 int / integer Java 5中新增了静态工厂方法valueOf，在调用它的时候会利用一个缓存机制，带来了明显的性能改进。按照Javadoc，这个值默认缓存是-128到127之间。
+Boolean 在 Java 虚拟机规范中，boolean 类型则被映射成 int 类型。具体来说，“true”被映射为整数 1，而“false”被映射为整数 0。这个编码规则约束了 Java 字节码的具体实现。
+原子更新 AtomicLong 在支持CAS的机器上，通过CAS指令更新，在不支持的机器上，加锁更新。
+原子更新通过封装类实现：
+AtomicLongFieldUpdater中代码：
+/** * Creates and returns an updater for objects with the given field.</description>
+    </item>
+    
+    <item>
+      <title>Java使用Protocol Buffers</title>
+      <link>https://hzren.github.io/blog/2020-09-29-java%E4%BD%BF%E7%94%A8protocol-buffers/</link>
+      <pubDate>Tue, 29 Sep 2020 16:00:09 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2020-09-29-java%E4%BD%BF%E7%94%A8protocol-buffers/</guid>
+      <description>简介 Protocol Buffers，是Google公司开发的一种数据描述语言，类似于XML能够将结构化数据序列化，可用于数据存储、通信协议等方面。
+准备工作 下载protoc代码生成器 编写.proto文件 编译.proto文件 下载protoc代码生成器 protoc可以从Google Protocol Buffers官网下载, 也可以从github ProtocBuffer仓库下载. 仓库地址
+下载文成后, 编译器位于bin文件夹下面.
+编写protoc文件 protoc文件有一套固定的语法格式, 当前份protoc2, protoc3两个版本, 官方语法文档地址.
+定义消息类型
+以proto3为例:
+syntax = &amp;#34;proto3&amp;#34;; message SearchRequest { string query = 1; int32 page_number = 2; int32 result_per_page = 3; } 指定消息字段类型
+在上面的示例中，所有字段都是标量类型：两个整数（page_number和result_per_page）和一个字符串（query）。但是，也可以为字段指定复合类型，包括枚举和其他消息类型。
+指定字段编号
+从上面可以看到，消息定义中的每个字段都有一个唯一的编号。这些数字用于标识字段在消息二进制格式中的位置，一旦消息类型已经被使用了，这些数字就不能再被更改。请注意，1到15范围内的字段号需要一个字节进行编码，包括字段号和字段类型。16到2047范围内的字段号需要两个字节。所以，应该为频繁出现的消息元素保留1到15个字段, 并且为将来可能添加的出现的元素留出一些空间。
+指定字段规则
+消息字段规则有以下三种类型：
+required：格式正确的消息必须正好包含此字段。 optional：格式良好的消息可以有零个或一个此字段（但不能超过一个）。 repeated：在格式良好的消息中，此字段可以重复任意次数（包括零）。将保留重复值的顺序。 编译.proto文件 protoc是一个命令行工具, 一般使用如下:
+protoc --proto_path=src --java_out=build/gen src/foo.proto 更多信息可以参考protoc命令行提示.
+Java集成 添加依赖 添加maven插件 生成代码 编写测试代码 添加依赖 pom文件下添加protocbuf 依赖
+&amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;com.google.protobuf&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;protobuf-java&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;3.</description>
+    </item>
+    
+    <item>
+      <title>Spring component-sacn 扫描加载全流程分析</title>
+      <link>https://hzren.github.io/blog/2020-07-29-spring-component-sacn-%E6%89%AB%E6%8F%8F%E5%8A%A0%E8%BD%BD%E5%85%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90/</link>
+      <pubDate>Wed, 29 Jul 2020 15:11:56 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2020-07-29-spring-component-sacn-%E6%89%AB%E6%8F%8F%E5%8A%A0%E8%BD%BD%E5%85%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90/</guid>
+      <description>@ComponentScan 如果你理解了ComponentScan， 你就理解了Spring。 Spring是一个依赖注入(dependency injection)框架。所有的内容都是关于bean的定义及其依赖关系。 定义Spring Beans的第一步是使用正确的注解-@Component或@Service或@Repository或@Controller等等。 在Spring容器启动过程中，Spring并不知道你定义了哪个bean，除非它知道从哪里可以找到这个bean。
+Spring 找到Bean的集中方式 XML文件定义Bean Configuration类通过Java 风格定义Bean元素 ComponentScan 自动扫描加载Bean 通过XML定义加载Bean Spring 解析XML元素，根据元素内配置的Bean定义，找到Bean的package和className，通过constructor配置直接反射生成Bean对象
+Configuration类通过Java 风格定义Bean元素 Spring容器找到@Configuration注解所在类，通过反射获取其所有方法，依次调用标有@Bean注解的方法，生成对应Bean对象
+通过ComponentScan动态扫描加载Bean 对于Spring容器来说，这种方式是最复杂的方式，也是最慢的方式，在Spring容器启动的时候，Spring并不知道其要加载的Bean有多少，甚至连这些Bean的Class文件所在位置在那里都不知道，加载这些Bean，对于Spring容器来说，是一个漫长的过程。 这些Spring要加载的Bean的Class文件，可能位于Jar包当中，也可能位于Class文件当中，Spring需要去查看每个Jar包来寻找这个Class文件。
+@ComponentScan加载代码分析 通过ComponentScanBeanDefinitionParser类来支持@ComponentScan注解 参见 org.springframework.context.config.ContextNamespaceHandler
+@Override public void init() { registerBeanDefinitionParser(&amp;#34;property-placeholder&amp;#34;, new PropertyPlaceholderBeanDefinitionParser()); registerBeanDefinitionParser(&amp;#34;property-override&amp;#34;, new PropertyOverrideBeanDefinitionParser()); registerBeanDefinitionParser(&amp;#34;annotation-config&amp;#34;, new AnnotationConfigBeanDefinitionParser()); registerBeanDefinitionParser(&amp;#34;component-scan&amp;#34;, new ComponentScanBeanDefinitionParser()); registerBeanDefinitionParser(&amp;#34;load-time-weaver&amp;#34;, new LoadTimeWeaverBeanDefinitionParser()); registerBeanDefinitionParser(&amp;#34;spring-configured&amp;#34;, new SpringConfiguredBeanDefinitionParser()); registerBeanDefinitionParser(&amp;#34;mbean-export&amp;#34;, new MBeanExportBeanDefinitionParser()); registerBeanDefinitionParser(&amp;#34;mbean-server&amp;#34;, new MBeanServerBeanDefinitionParser()); } org.springframework.context.annotation.ComponentScanBeanDefinitionParser 主要逻辑如下 protected ClassPathBeanDefinitionScanner configureScanner(ParserContext parserContext, Element element) { boolean useDefaultFilters = true; if (element.</description>
+    </item>
+    
+  </channel>
+</rss>

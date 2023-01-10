@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Exception on Code Mark</title>
+    <link>https://hzren.github.io/tags/exception/</link>
+    <description>Recent content in Exception on Code Mark</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <managingEditor>hzren@outlook.com (renhongzhen)</managingEditor>
+    <webMaster>hzren@outlook.com (renhongzhen)</webMaster>
+    <lastBuildDate>Wed, 03 Aug 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://hzren.github.io/tags/exception/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Spring唯一约束异常统一处理</title>
+      <link>https://hzren.github.io/blog/2022-08-03-spring%E5%94%AF%E4%B8%80%E7%BA%A6%E6%9D%9F%E5%BC%82%E5%B8%B8%E7%BB%9F%E4%B8%80%E5%A4%84%E7%90%86/</link>
+      <pubDate>Wed, 03 Aug 2022 00:00:00 +0000</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2022-08-03-spring%E5%94%AF%E4%B8%80%E7%BA%A6%E6%9D%9F%E5%BC%82%E5%B8%B8%E7%BB%9F%E4%B8%80%E5%A4%84%E7%90%86/</guid>
+      <description>背景：在数据库唯一约束冲突时，需要根据冲突的唯一约束自动生成错误信息然后返回给前端。
+前提 Spring会将数据库层错误统一转化为DataAccessException ，DataAccessException知只是针对数据库层错误的抽象，根据错误类型不同，Spring实现了不同DataAccessException子类，本篇文章我们只处理DataIntegrityViolationException(唯一约束冲突)。
+在WEB层做统一异常处理 Controller类上添加@ControllerAdvice注解来统一所有WEB接口异常处理。
+@ResponseBody @ExceptionHandler(DataAccessException.class) public Response dbException(DataAccessException e){ if (e instanceof DataIntegrityViolationException){ DataIntegrityViolationException dive = (DataIntegrityViolationException) e; try { return parseAndReturn(dive); }catch (Exception pe){ log.error(&amp;#34;parse Exception fail, origin:&amp;#34; + e.getMessage(), pe); } return Response.fail(dive.getMessage()); } return Response.fail(e.getMessage()); } 解析唯一约束异常中的错误信息 DataIntegrityViolationException异常信息中包含了出错的SQL和格式化之后的错误信息，SQL中可以解析出来数据库表明，格式化的错误信息中可以解析初冲突的唯一约束。
+private static Response parseAndReturn(DataIntegrityViolationException dive) throws JSQLParserException { String[] lines = dive.getMessage().split(&amp;#34;### &amp;#34;); String sql = findLine(lines, &amp;#34;SQL:&amp;#34;); String originErrMsg = dive.getCause().getMessage(); String tableName = parseTableNameFromSql(sql); String[] keyVal = parseKeyNameAndValue(originErrMsg); Map&amp;lt;String, String&amp;gt; tableMap = TABLE_KEY_MAP.</description>
+    </item>
+    
+  </channel>
+</rss>

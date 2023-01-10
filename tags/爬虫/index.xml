@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>爬虫 on Code Mark</title>
+    <link>https://hzren.github.io/tags/%E7%88%AC%E8%99%AB/</link>
+    <description>Recent content in 爬虫 on Code Mark</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <managingEditor>hzren@outlook.com (renhongzhen)</managingEditor>
+    <webMaster>hzren@outlook.com (renhongzhen)</webMaster>
+    <lastBuildDate>Fri, 31 Jul 2020 15:11:23 +0800</lastBuildDate><atom:link href="https://hzren.github.io/tags/%E7%88%AC%E8%99%AB/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>第三方网站数据爬取经验总结</title>
+      <link>https://hzren.github.io/blog/2020-07-31-%E7%AC%AC%E4%B8%89%E6%96%B9%E7%BD%91%E7%AB%99%E6%95%B0%E6%8D%AE%E7%88%AC%E5%8F%96%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93/</link>
+      <pubDate>Fri, 31 Jul 2020 15:11:23 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2020-07-31-%E7%AC%AC%E4%B8%89%E6%96%B9%E7%BD%91%E7%AB%99%E6%95%B0%E6%8D%AE%E7%88%AC%E5%8F%96%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93/</guid>
+      <description>尝试爬取过大大小小很多网站，有些许体会心得。根据个人难易成度感觉排序，开发语言主要是Java。
+主要工具 Chrome DevTools 用来查看页面请求流程，请求头信息，响应信息，cookie Fiddler 有些页面有重定向，对于此类页面Chrome DevTools 不太好看到请求流程，可以使用Fiddler抓包，另外Fiddler也可以抓一些移动端APP的报文 Jsoup Java HTML解析器 httpclient-fluent Java HTTP请求库 selenium Java库 用来控制selenium 各浏览器对应webdriver 用来控制浏览器，和selenium搭配使用 常见问题 有用户名密码验证 登录有图形验证码 登录有滑动验证码 登录有控件 请求过程中存在数据加密，登录过程中存在多个页面重定向，多次重定向过程中生成cookie 请求响应的数据有加密，或者存在于JS或者HTML代码中 解决办法 1. 有用户名密码验证 对于有用户名密码验证的网站，有两种方式
+手工在浏览器登录，复制cookie至代码中，在代码中使用该cookie登录 分析登录接口，使用代码，登陆后获得cookie，然后爬取数据 2. 登录有图形验证码 手工登录，登陆后复制cookie 在代码登录前，先调用获取验证码接口获得新验证码，存储至本地，对于简单的验证码，可以用ocr软件训练识别，对于负责验证码，调用第三方打码网站识别(12306刷票就是接的第三方打码) 3. 登录有滑动验证码 接入滑动验证码是有成本的，有用户使用成本和费用成本
+手工登录，复制cookie 对于支持很多用户手工登录，可以设计为在移动端APP内打开，然后结合WebView脚本注入来实现登录，具体流程如下： a. 用户在APP内通过WebView打开页面 b. APP注入JS脚本，检测登录状态，控制页面在APP内的打开样式 c. 用户登录，脚本检测到用户登录成功后，APP获得WebView Cookie，然后把Cookie发送给服务器 d. 如果该Cookie支持多IP访问，直接在服务器端爬取数据 e. 如果该Cookie不支持多IP访问，客户端爬取数据，传递到服务器，客户端APP尽量定时打开页面刷新Cookie 上述方法可以破解一般的滑动验证码登录，对于阿里云的WAF验证也可破解，在通过服务器IP爬取数据的过程中， 在请求过程中，服务器本身尽量把自己模拟出代理服务器，尽量避免第三方服务器的一些IP访问限制
+4. 登录有控件 登录有控件只能在windows上破解 手动登录，复制cookie后爬取 使用selenium打开浏览器，移动鼠标至控件位置，点击聚焦，模拟键盘输入， 输入完成之后找到登录按钮，点击提交 登录完成后从selenium拿到浏览器cookie，同步至程序，使用程序进行后面的爬取解析工作 5. 请求过程中存在数据加密，登录过程中存在多个页面重定向，多次重定向过程中生成cookie 使用selenium完成整个登录流程，登录完成后同步cookie到程序爬取
+6. 请求响应的数据有加密，或者存在于JS或者HTML代码中 使用selenium打开加载整个页面，加载完成后从selenium获取页面代码至程序，接续爬取。</description>
+    </item>
+    
+  </channel>
+</rss>

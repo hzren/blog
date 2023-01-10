@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>tool on Code Mark</title>
+    <link>https://hzren.github.io/tags/tool/</link>
+    <description>Recent content in tool on Code Mark</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <managingEditor>hzren@outlook.com (renhongzhen)</managingEditor>
+    <webMaster>hzren@outlook.com (renhongzhen)</webMaster>
+    <lastBuildDate>Tue, 07 Dec 2021 17:12:13 +0800</lastBuildDate><atom:link href="https://hzren.github.io/tags/tool/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Spring Boot Maven Plugin K8s</title>
+      <link>https://hzren.github.io/blog/2021-12-07-spring-boot-maven-plugin-k8s/</link>
+      <pubDate>Tue, 07 Dec 2021 17:12:13 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2021-12-07-spring-boot-maven-plugin-k8s/</guid>
+      <description>需先安装好docker，minikube等环境依赖 minikube 启动时指定镜像 国内从官网下载太慢, 需指定镜像地址
+minikube start --driver=docker --force=true --image-mirror-country=cn --image-repository=registry.cn-hangzhou.aliyuncs.com/google_containers --registry-mirror=https://ubo05wor.mirror.aliyuncs.com --cache-images=true 配置docker 从docker.hub下载也太慢了，配置docker镜像
+[root@localhost demo]# vi /etc/docker/daemon.json { &amp;#34;registry-mirrors&amp;#34;: [&amp;#34;https://ubo05wor.mirror.aliyuncs.com&amp;#34;], &amp;#34;insecure-registries&amp;#34; : [&amp;#34;10.100.3.35:5000&amp;#34;] } 重启docker服务，10.100.3.35:5000为私有docker仓库，配置为不需要https访问
+配置 paketobuildpacks 官网地址：https://paketo.io/docs/howto/configuration/
+spring-boot-maven-plugin用到了paketobuildpacks,这个工具会从github等网站上下载文件，国内需要配置下代理
+spring-boot-maven-plugin本身提供了配置接口
+&amp;lt;plugin&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-maven-plugin&amp;lt;/artifactId&amp;gt; &amp;lt;configuration&amp;gt; &amp;lt;image&amp;gt; &amp;lt;name&amp;gt;10.100.3.35:5000/k8s-example:${project.artifactId}&amp;lt;/name&amp;gt; &amp;lt;publish&amp;gt;true&amp;lt;/publish&amp;gt; &amp;lt;env&amp;gt; &amp;lt;HTTP_PROXY&amp;gt;socks5://10.100.3.12:20070&amp;lt;/HTTP_PROXY&amp;gt; &amp;lt;HTTPS_PROXY&amp;gt;socks5://10.100.3.12:20070&amp;lt;/HTTPS_PROXY&amp;gt; &amp;lt;/env&amp;gt; &amp;lt;/image&amp;gt; &amp;lt;docker&amp;gt; &amp;lt;publishRegistry&amp;gt; &amp;lt;username&amp;gt;admin&amp;lt;/username&amp;gt; &amp;lt;password&amp;gt;admin&amp;lt;/password&amp;gt; &amp;lt;url&amp;gt;http://10.100.3.35:5000/&amp;lt;/url&amp;gt; &amp;lt;email&amp;gt;user@example.com&amp;lt;/email&amp;gt; &amp;lt;/publishRegistry&amp;gt; &amp;lt;/docker&amp;gt; &amp;lt;/configuration&amp;gt; &amp;lt;executions&amp;gt; &amp;lt;execution&amp;gt; &amp;lt;goals&amp;gt; &amp;lt;goal&amp;gt;build-image&amp;lt;/goal&amp;gt; &amp;lt;/goals&amp;gt; &amp;lt;/execution&amp;gt; &amp;lt;/executions&amp;gt; &amp;lt;/plugin&amp;gt; 参考env节点下配置以及paketobuildpacks官网文档
+push镜像 参考上面xml配置，我本地push，pull镜像是不需要登录的或token的，上面的配置只是个样式</description>
+    </item>
+    
+    <item>
+      <title>Go语言</title>
+      <link>https://hzren.github.io/blog/2021-06-22-go%E8%AF%AD%E8%A8%80/</link>
+      <pubDate>Tue, 22 Jun 2021 11:20:11 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2021-06-22-go%E8%AF%AD%E8%A8%80/</guid>
+      <description>GOPATH 在一台电脑上GOPATH值是固定的，不因开发的代码工程的目录改变而改变。GOPATH可以通过go env命令查看：
+go env
+输出：
+C:\Users\Administrator\go&amp;gt;go env set GO111MODULE=on set GOARCH=amd64 set GOBIN= set GOCACHE=C:\Users\Administrator\AppData\Local\go-build set GOENV=C:\Users\Administrator\AppData\Roaming\go\env set GOEXE=.exe set GOFLAGS= set GOHOSTARCH=amd64 set GOHOSTOS=windows set GOINSECURE= set GOMODCACHE=C:\Users\Administrator\go\pkg\mod set GONOPROXY= set GONOSUMDB= set GOOS=windows set GOPATH=C:\Users\Administrator\go set GOPRIVATE= set GOPROXY=https://mirrors.aliyun.com/goproxy/ set GOROOT=C:\Program Files\Go set GOSUMDB=sum.golang.org set GOTMPDIR= set GOTOOLDIR=C:\Program Files\Go\pkg\tool\windows_amd64 set GOVCS= set GOVERSION=go1.16.4 set GCCGO=gccgo set AR=ar set CC=gcc set CXX=g++ set CGO_ENABLED=1 set GOMOD=NUL set CGO_CFLAGS=-g -O2 set CGO_CPPFLAGS= set CGO_CXXFLAGS=-g -O2 set CGO_FFLAGS=-g -O2 set CGO_LDFLAGS=-g -O2 set PKG_CONFIG=pkg-config set GOGCCFLAGS=-m64 -mthreads -fno-caret-diagnostics -Qunused-arguments -fmessage-length=0 -fdebug-prefix-map=C:\Users\ADMINI~1\AppData\Local\Temp\go-build3183789003=/tmp/go-build -gno-record-gcc-switches 在我电脑上GOPATH指向C:\Users\Administrator\go，在这个目录下有三个文件夹: bin, pkg, src; bin目录存放可执行文件，pkg目录存放归档文件(代码压缩包，编译后的文件例如.</description>
+    </item>
+    
+    <item>
+      <title>Arthas使用</title>
+      <link>https://hzren.github.io/blog/2021-01-27-arthas%E4%BD%BF%E7%94%A8/</link>
+      <pubDate>Wed, 27 Jan 2021 15:11:16 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2021-01-27-arthas%E4%BD%BF%E7%94%A8/</guid>
+      <description>官方教程
+文档
+下载 下载全量zip包：从Github Releases页下载
+wget https://github.com/alibaba/arthas/releases/download/arthas-all-3.4.6/arthas-bin.zip 下载完成之后解压：
+unzip arthas-bin.zip arthas 依赖JDK，如果只安装了JRE，是没法使用的。
+启动 可以通过as.sh脚本启动：
+./as.sh 也可以通过java命令启动：
+java -jar arthas-boot.jar 启动之后会显示当前操作系统上运行的Java进行，选择应用java进程：
+$ $ java -jar arthas-boot.jar * [1]: 35542 [2]: 71560 arthas-demo.jar Demo进程是第2个，则输入2，再输入回车/enter。Arthas会attach到目标进程上，并输出日志：
+[INFO] Try to attach process 71560 [INFO] Attach process 71560 success. [INFO] arthas-client connect 127.0.0.1 3658 ,---. ,------. ,--------.,--. ,--. ,---. ,---. / O \ | .--. &amp;#39;&amp;#39;--. .--&amp;#39;| &amp;#39;--&amp;#39; | / O \ &amp;#39; .-&amp;#39; | .-. || &amp;#39;--&amp;#39;.</description>
+    </item>
+    
+  </channel>
+</rss>

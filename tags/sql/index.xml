@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>SQL on Code Mark</title>
+    <link>https://hzren.github.io/tags/sql/</link>
+    <description>Recent content in SQL on Code Mark</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <managingEditor>hzren@outlook.com (renhongzhen)</managingEditor>
+    <webMaster>hzren@outlook.com (renhongzhen)</webMaster>
+    <lastBuildDate>Thu, 07 Jan 2016 16:56:57 +0800</lastBuildDate><atom:link href="https://hzren.github.io/tags/sql/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>译文：使用子查询计算非重复数目以提高速度</title>
+      <link>https://hzren.github.io/blog/2016-01-07-%E8%AF%91%E6%96%87%E4%BD%BF%E7%94%A8%E5%AD%90%E6%9F%A5%E8%AF%A2%E8%AE%A1%E7%AE%97%E9%9D%9E%E9%87%8D%E5%A4%8D%E6%95%B0%E7%9B%AE%E4%BB%A5%E6%8F%90%E9%AB%98%E9%80%9F%E5%BA%A6/</link>
+      <pubDate>Thu, 07 Jan 2016 16:56:57 +0800</pubDate>
+      <author>hzren@outlook.com (renhongzhen)</author>
+      <guid>https://hzren.github.io/blog/2016-01-07-%E8%AF%91%E6%96%87%E4%BD%BF%E7%94%A8%E5%AD%90%E6%9F%A5%E8%AF%A2%E8%AE%A1%E7%AE%97%E9%9D%9E%E9%87%8D%E5%A4%8D%E6%95%B0%E7%9B%AE%E4%BB%A5%E6%8F%90%E9%AB%98%E9%80%9F%E5%BA%A6/</guid>
+      <description>本文说的这个技术是通用的，但为了解释说明，我们选用了 PostgreSQL。感谢 pgAdminIII 提供的解释性插图，这些插图有很大帮助。 很有用，但是却很慢 计算非重复的数目是SQL分析的一个灾难。
+首先一点：我们如果有一个很大的数据集而且可以容忍它不精确。一个像 HyperLogLog的概率统计器可能是你的首选（我们在以后的博客中会讲到HyperLogLog ），但是要追求快速精准的结果，子查询的方法会节省你很多时间。
+让我们从一个简单的查询语句开始吧：哪一个dashboard用户访问的最频繁。
+SELECT dashboards.name, COUNT(DISTINCT time_on_site_logs.user_id) FROM time_on_site_logs JOIN dashboards ON time_on_site_logs.dashboard_id = dashboards.id GROUP BY name ORDER BY count DESC 首先，让我们假设在user_id 和 dashboard_id上都有高效的索引，并且日志行数要比user_id 和 dashboard_id多很多。
+仅仅一千万行数据，查询语句就花费了48秒的时间。知道为什么吗？让我们看一下明了的图解吧。
+慢的原因是数据库要遍历dashboards表和logs表的所有记录，然后JOIN操作，然后排序，之后才进行实际需要的分组和聚集操作。
+先聚集，然后联合数据表
+分组和聚集之后，一切数据库操作的代价都变小了，因为数据的数量变小了。在分组和聚集的时候，因为我们不需要dashboards.name，所以我们可以在JOIN操作前先进行聚集操作：
+SELECT dashboards.name, log_counts.ct FROM dashboards JOIN (SELECT dashboard_id, COUNT(DISTINCT user_id) AS ct FROM time_on_site_logs GROUP BY dashboard_id) AS log_counts ON log_counts.dashboard_id = dashboards.id ORDER BY log_counts.ct DESC 语句运行了24秒，获得了2.4倍的性能提高。在来看一下，图解可以清楚无误的表明原因。
+像我们预期地那样，join操作之前先进行了group-and-aggregate操作。快上加快，我们还可以在time_on_site_logs 表上加上索引。
+**第一步，让你的数据变小 **</description>
+    </item>
+    
+  </channel>
+</rss>
